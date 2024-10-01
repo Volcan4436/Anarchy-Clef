@@ -2,8 +2,8 @@ Experimental AI Task System
 
 Currently Done:
 - Utils (1%)
-- RewardSystem (0%)
-- Tasks (0%)
+- RewardSystem (1%)
+- Tasks (1%)
 
 Current Things to Add:
 - Save AI Data to File to continue Learning every Session
