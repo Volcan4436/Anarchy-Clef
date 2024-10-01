@@ -3,7 +3,7 @@ package adris.altoclef.tasks.stupid;
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
-import adris.altoclef.awareness.AwarenessSystem;
+import adris.altoclef.experimental.awareness.AwarenessSystem;
 import adris.altoclef.tasks.construction.PlaceBlockTask;
 import adris.altoclef.tasks.construction.PlaceStructureBlockTask;
 import adris.altoclef.tasks.container.SmeltInFurnaceTask;
@@ -92,17 +92,17 @@ public class TerminatorTask extends Task {
                 Debug.logMessage("TerminatorTask: Threat level is high, RunningAway.");
                 return _runAwayTask;
             }
-            else if (mod.getPlayer().hurtTime == 1 && mod.getPlayer().getHealth() < 6) {
+/*            else if (mod.getPlayer().hurtTime == 1 && mod.getPlayer().getHealth() < 6) {
                 AwarenessSystem.addThreatLevel(10);
-            }
-            else if (_closestPlayerLastPos.distanceTo(mod.getPlayer().getPos()) > 25 && AwarenessSystem.getThreatLevel() < 50) {
+            }*/
+/*            else if (_closestPlayerLastPos.distanceTo(mod.getPlayer().getPos()) > 25 && AwarenessSystem.getThreatLevel() < 50) {
                 Debug.logMessage("TerminatorTask: Threat Level is low, setting to 50.");
                 AwarenessSystem.setThreatLevel(50);
             }
             else if (_closestPlayerLastPos.distanceTo(mod.getPlayer().getPos()) < 25 && AwarenessSystem.getThreatLevel() < 75) {
                 Debug.logMessage("TerminatorTask: Threat Level is high, setting to 75.");
                 AwarenessSystem.setThreatLevel(75);
-            }
+            }*/
             else if (mod.getPlayer().getHealth() > 6 && AwarenessSystem.getThreatLevel() >= 100) {
                 AwarenessSystem.setThreatLevel(0);
                 return new DoToClosestEntityTask(
