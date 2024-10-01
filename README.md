@@ -1,5 +1,7 @@
 # Altoclef [Anarchy Edition]
 
+### [New AI System Coming Soon]
+
 Plays block game.
 
 Powered by Baritone.
@@ -27,8 +29,9 @@ or this [Video explanation](https://youtu.be/q5OmcinQ2ck?t=387)
 - Print the entire bee movie script with signs in a straight line, automatically collecting signs + bridging materials
   along the way.
 - Become the terminator: Run away from players while unarmed, gather diamond gear in secret, then return and wreak
-  havoc.
-- Experimental Awareness System
+  havoc. (Currently being improved)
+- Experimental Awareness System (Not Fully Working Yet)
+- Experimental AI (Not Fully Working Yet)
 
 ## Download
 Check Releases
@@ -41,7 +44,8 @@ You can Join Older Versions using these:
 - ViaFabric
 - ViaFabricPlus
 - MultiConnect
-- ViaProxy
+- ViaProxy (**More Advanced Setup**)
+- ViaVersion/ViaBackwards Plugin (**To be installed on Server**)
 
 ## Goals for this Fork
 - Survive in the Anarchy Enviroment without any User Input
