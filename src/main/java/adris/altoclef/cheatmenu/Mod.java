@@ -1,9 +1,12 @@
 package adris.altoclef.cheatmenu;
 
 import adris.altoclef.cheatmenu.modules.settings.Setting;
+import adris.altoclef.eventbus.EventHandler;
+import adris.altoclef.eventbus.events.TickEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.world.tick.Tick;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +127,7 @@ public class Mod {
         return false;
     }
 
+
     public void onTick() {
     }
 
@@ -149,7 +153,7 @@ public class Mod {
         COMBAT("Combat"),
         MOVEMENT("Movement"),
         PLAYER("Player"),
-        MISC("Misc"),
+        BARITONE("Baritone"),
         WORLD("World"),
         RENDER("Render"),
         EXPLOIT("Exploit"),

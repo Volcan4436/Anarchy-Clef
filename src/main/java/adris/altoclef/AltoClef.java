@@ -30,6 +30,7 @@ import baritone.api.Settings;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.util.math.MatrixStack;
@@ -43,8 +44,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 import java.util.function.Consumer;
-
-import static baritone.api.utils.Helper.mc;
 
 /**
  * Central access point for AltoClef
@@ -225,6 +224,7 @@ public class AltoClef implements ModInitializer {
     private void onClientRenderOverlay(MatrixStack matrixStack) {
         _commandStatusOverlay.render(this, matrixStack);
     }
+
 
     private void initializeBaritoneSettings() {
         getExtraBaritoneSettings().canWalkOnEndPortal(false);

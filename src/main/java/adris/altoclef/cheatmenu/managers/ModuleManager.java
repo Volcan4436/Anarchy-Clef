@@ -1,6 +1,7 @@
 package adris.altoclef.cheatmenu.managers;
 
 import adris.altoclef.cheatmenu.Mod;
+import adris.altoclef.cheatmenu.modules.settings.Movement.Sprint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,5 +64,7 @@ public class ModuleManager {
     //This is where you add the modules to show on the clickgui
     private void addModules() {
 
+        //Movement
+        modules.add(new Sprint());
     }
 }

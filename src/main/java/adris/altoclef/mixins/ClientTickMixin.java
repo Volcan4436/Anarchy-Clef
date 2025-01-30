@@ -1,5 +1,6 @@
 package adris.altoclef.mixins;
 
+import adris.altoclef.AltoClef;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.events.ClientTickEvent;
 import net.minecraft.client.MinecraftClient;
@@ -17,5 +18,10 @@ public final class ClientTickMixin {
     )
     private void clientTick(CallbackInfo ci) {
         EventBus.publish(new ClientTickEvent());
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+    public void onTick(CallbackInfo ci) {
+        AltoClef.INSTANCE.onTick();
     }
 }
