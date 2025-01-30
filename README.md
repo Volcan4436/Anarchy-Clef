@@ -30,6 +30,7 @@ or this [Video explanation](https://youtu.be/q5OmcinQ2ck?t=387)
   along the way.
 - Become the terminator: Run away from players while unarmed, gather diamond gear in secret, then return and wreak
   havoc. (Currently being improved)
+- Cheat Menu (Currently in Beta)
 - Experimental Awareness System (Not Fully Working Yet)
 - Experimental AI (Not Fully Working Yet)
 
