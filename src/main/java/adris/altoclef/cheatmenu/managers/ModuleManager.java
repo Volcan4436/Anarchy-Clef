@@ -1,6 +1,7 @@
 package adris.altoclef.cheatmenu.managers;
 
 import adris.altoclef.cheatmenu.Mod;
+import adris.altoclef.cheatmenu.modules.settings.Movement.Flight;
 import adris.altoclef.cheatmenu.modules.settings.Movement.Sprint;
 
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class ModuleManager {
     private void addModules() {
 
         //Movement
+        modules.add(new Flight());
         modules.add(new Sprint());
     }
 }
