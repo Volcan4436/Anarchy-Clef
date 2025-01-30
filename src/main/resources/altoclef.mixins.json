@@ -25,9 +25,11 @@
     "ClientOpenScreenMixin",
     "ClientTickMixin",
     "EntryMixin",
+    "KeyboardMixin",
     "LoadChunkMixin",
     "MixinLocalPlayer",
-    "PlayerCollidesWithEntityMixin"
+    "PlayerCollidesWithEntityMixin",
+    "WorldRenderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

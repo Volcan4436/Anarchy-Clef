@@ -51,7 +51,7 @@ public class TerminatorTask extends Task {
     private static final int PREFERRED_BUILDING_BLOCKS = 60;
 
     private static Item[] GEAR_TO_COLLECT = new Item[]{
-            Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_SWORD, Items.WATER_BUCKET
+            Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_SWORD
     };
     private final Task _prepareDiamondMiningEquipmentTask = TaskCatalogue.getSquashedItemTask(
             new ItemTarget(Items.IRON_PICKAXE, 3), new ItemTarget(Items.IRON_SWORD, 1)
@@ -79,19 +79,18 @@ public class TerminatorTask extends Task {
 
     @Override
     protected void onStart(AltoClef mod) {
-        mod.getBehaviour().push();
         mod.getBehaviour().setForceFieldPlayers(true);
+        mod.getBehaviour().push();
     }
 
     @Override
     protected Task onTick(AltoClef mod) {
-
         if (_runAwayTask == null && isReadyToPunk(mod) && _closestPlayerLastPos != null) {
             //AwarenessSystem
-            if (AwarenessSystem.getThreatLevel() >= 100) {
-                Debug.logMessage("TerminatorTask: Threat level is high, RunningAway.");
-                return _runAwayTask;
-            }
+//            if (AwarenessSystem.getThreatLevel() >= 100) {
+//                Debug.logMessage("TerminatorTask: Threat level is high, RunningAway.");
+//                return _runAwayTask;
+//            }
 /*            else if (mod.getPlayer().hurtTime == 1 && mod.getPlayer().getHealth() < 6) {
                 AwarenessSystem.addThreatLevel(10);
             }*/
@@ -103,22 +102,20 @@ public class TerminatorTask extends Task {
                 Debug.logMessage("TerminatorTask: Threat Level is high, setting to 75.");
                 AwarenessSystem.setThreatLevel(75);
             }*/
-            else if (mod.getPlayer().getHealth() > 6 && AwarenessSystem.getThreatLevel() >= 100) {
-                AwarenessSystem.setThreatLevel(0);
-                return new DoToClosestEntityTask(
-                        entity -> {
-                            if (entity instanceof PlayerEntity) {
-                                tryDoFunnyMessageTo(mod, (PlayerEntity) entity);
-                                return new KillPlayerTask(entity.getName().getString());
-                            }
-                            // Should never happen.
-                            Debug.logWarning("This should never happen.");
-                            return _scanTask;
-                        },
-                        interact -> shouldPunk(mod, (PlayerEntity) interact),
-                        PlayerEntity.class
-                );
-            }
+            /*                AwarenessSystem.setThreatLevel(0);*/
+            return new DoToClosestEntityTask(
+                    entity -> {
+                        if (entity instanceof PlayerEntity) {
+                            tryDoFunnyMessageTo(mod, (PlayerEntity) entity);
+                            return new KillPlayerTask(entity.getName().getString());
+                        }
+                        // Should never happen.
+                        Debug.logWarning("This should never happen.");
+                        return _scanTask;
+                    },
+                    interact -> shouldPunk(mod, (PlayerEntity) interact),
+                    PlayerEntity.class
+            );
         }
 
         Optional<Entity> closest = mod.getEntityTracker().getClosestEntity(mod.getPlayer().getPos(), toPunk -> shouldPunk(mod, (PlayerEntity) toPunk), PlayerEntity.class);
@@ -285,14 +282,13 @@ public class TerminatorTask extends Task {
     }
 
     private boolean isReadyToPunk(AltoClef mod) {
-        if (mod.getPlayer().getHealth() <= 5) return false; // We need to heal.
         return StorageHelper.isArmorEquippedAll(mod, ItemHelper.DIAMOND_ARMORS) && mod.getItemStorage().hasItem(Items.DIAMOND_SWORD);
     }
 
     private boolean shouldPunk(AltoClef mod, PlayerEntity player) {
         if (player == null || player.isDead()) return false;
         if (player.isCreative() || player.isSpectator()) return false;
-        return !mod.getButler().isUserAuthorized(player.getName().getString()) && _canTerminate.test(player);
+        return _canTerminate.test(player);
     }
 
     private void tryDoFunnyMessageTo(AltoClef mod, PlayerEntity player) {
