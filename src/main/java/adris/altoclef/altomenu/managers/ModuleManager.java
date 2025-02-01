@@ -1,8 +1,8 @@
-package adris.altoclef.cheatmenu.managers;
+package adris.altoclef.altomenu.managers;
 
-import adris.altoclef.cheatmenu.Mod;
-import adris.altoclef.cheatmenu.modules.settings.Movement.Flight;
-import adris.altoclef.cheatmenu.modules.settings.Movement.Sprint;
+import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.modules.settings.Movement.Flight;
+import adris.altoclef.altomenu.modules.settings.Movement.Sprint;
 
 import java.util.ArrayList;
 import java.util.List;

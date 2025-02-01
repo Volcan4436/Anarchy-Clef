@@ -1,7 +1,7 @@
 package adris.altoclef.tasks.stupid;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.cheatmenu.UI.screens.clickgui.ClickGUI;
+import adris.altoclef.altomenu.UI.screens.clickgui.ClickGUI;
 import adris.altoclef.tasksystem.Task;
 
 public class OpenGUI extends Task {

@@ -1,17 +1,16 @@
-package adris.altoclef.cheatmenu.UI.screens.clickgui;
+package adris.altoclef.altomenu.UI.screens.clickgui;
 
-import adris.altoclef.cheatmenu.Mod;
-import adris.altoclef.cheatmenu.UI.screens.clickgui.setting.CheckBox;
-import adris.altoclef.cheatmenu.UI.screens.clickgui.setting.ModeBox;
-import adris.altoclef.cheatmenu.UI.screens.clickgui.setting.Slider;
-import adris.altoclef.cheatmenu.modules.settings.BooleanSetting;
-import adris.altoclef.cheatmenu.modules.settings.ModeSetting;
-import adris.altoclef.cheatmenu.modules.settings.NumberSetting;
-import adris.altoclef.cheatmenu.modules.settings.Setting;
+import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.UI.screens.clickgui.setting.CheckBox;
+import adris.altoclef.altomenu.UI.screens.clickgui.setting.ModeBox;
+import adris.altoclef.altomenu.UI.screens.clickgui.setting.Slider;
+import adris.altoclef.altomenu.modules.settings.BooleanSetting;
+import adris.altoclef.altomenu.modules.settings.ModeSetting;
+import adris.altoclef.altomenu.modules.settings.NumberSetting;
+import adris.altoclef.altomenu.modules.settings.Setting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import adris.altoclef.cheatmenu.UI.screens.clickgui.setting.Component;
-import net.minecraft.client.util.math.MatrixStack;
+import adris.altoclef.altomenu.UI.screens.clickgui.setting.Component;
 
 import java.awt.*;
 import java.util.ArrayList;

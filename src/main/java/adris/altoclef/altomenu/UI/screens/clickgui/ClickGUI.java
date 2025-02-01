@@ -1,17 +1,15 @@
-package adris.altoclef.cheatmenu.UI.screens.clickgui;
+package adris.altoclef.altomenu.UI.screens.clickgui;
 
-import adris.altoclef.cheatmenu.Mod;
+import adris.altoclef.altomenu.Mod;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 import java.awt.*;
-import java.awt.image.renderable.RenderContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import static adris.altoclef.cheatmenu.UI.screens.clickgui.ModuleButton.mc;
+import static adris.altoclef.altomenu.UI.screens.clickgui.ModuleButton.mc;
 
 public class ClickGUI extends Screen {
 

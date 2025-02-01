@@ -1,4 +1,4 @@
-package adris.altoclef.cheatmenu.modules.settings;
+package adris.altoclef.altomenu.modules.settings;
 
 public class BooleanSetting extends Setting {
 

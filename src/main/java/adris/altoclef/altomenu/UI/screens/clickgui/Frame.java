@@ -1,11 +1,10 @@
-package adris.altoclef.cheatmenu.UI.screens.clickgui;
+package adris.altoclef.altomenu.UI.screens.clickgui;
 
-import adris.altoclef.cheatmenu.Mod;
-import adris.altoclef.cheatmenu.UI.screens.clickgui.setting.Component;
-import adris.altoclef.cheatmenu.managers.ModuleManager;
+import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.UI.screens.clickgui.setting.Component;
+import adris.altoclef.altomenu.managers.ModuleManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 
 import java.awt.*;
 import java.util.ArrayList;

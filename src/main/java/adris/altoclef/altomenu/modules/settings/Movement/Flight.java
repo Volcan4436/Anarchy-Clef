@@ -1,6 +1,6 @@
-package adris.altoclef.cheatmenu.modules.settings.Movement;
+package adris.altoclef.altomenu.modules.settings.Movement;
 
-import adris.altoclef.cheatmenu.Mod;
+import adris.altoclef.altomenu.Mod;
 
 public class Flight extends Mod {
     public Flight() {

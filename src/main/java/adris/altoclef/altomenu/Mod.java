@@ -1,12 +1,9 @@
-package adris.altoclef.cheatmenu;
+package adris.altoclef.altomenu;
 
-import adris.altoclef.cheatmenu.modules.settings.Setting;
-import adris.altoclef.eventbus.EventHandler;
-import adris.altoclef.eventbus.events.TickEvent;
+import adris.altoclef.altomenu.modules.settings.Setting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import net.minecraft.world.tick.Tick;
 
 import java.util.ArrayList;
 import java.util.List;

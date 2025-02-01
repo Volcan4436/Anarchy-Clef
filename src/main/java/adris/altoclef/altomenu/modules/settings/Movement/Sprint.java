@@ -1,9 +1,7 @@
-package adris.altoclef.cheatmenu.modules.settings.Movement;
+package adris.altoclef.altomenu.modules.settings.Movement;
 
-import adris.altoclef.cheatmenu.Mod;
-import adris.altoclef.cheatmenu.modules.settings.ModeSetting;
-import adris.altoclef.eventbus.EventHandler;
-import adris.altoclef.eventbus.events.TickEvent;
+import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.modules.settings.ModeSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,11 +1,10 @@
-package adris.altoclef.cheatmenu.UI.screens.clickgui.setting;
+package adris.altoclef.altomenu.UI.screens.clickgui.setting;
 
-import adris.altoclef.cheatmenu.UI.screens.clickgui.ModuleButton;
-import adris.altoclef.cheatmenu.modules.settings.NumberSetting;
-import adris.altoclef.cheatmenu.modules.settings.Setting;
+import adris.altoclef.altomenu.UI.screens.clickgui.ModuleButton;
+import adris.altoclef.altomenu.modules.settings.NumberSetting;
+import adris.altoclef.altomenu.modules.settings.Setting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 
 import java.awt.*;
 import java.math.BigDecimal;
