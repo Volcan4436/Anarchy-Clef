@@ -3,6 +3,7 @@ package adris.altoclef.altomenu.managers;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.settings.Movement.Flight;
 import adris.altoclef.altomenu.modules.settings.Movement.Infjump;
+import adris.altoclef.altomenu.modules.settings.Movement.Speed;
 import adris.altoclef.altomenu.modules.settings.Movement.Sprint;
 import adris.altoclef.altomenu.modules.settings.Render.Fullbright;
 import adris.altoclef.altomenu.modules.settings.Render.RenderTags;
@@ -73,5 +74,6 @@ public class ModuleManager {
         modules.add(new RenderTags());
         modules.add(new Infjump());
         modules.add(new Sprint());
+        modules.add(new Speed());
     }
 }
