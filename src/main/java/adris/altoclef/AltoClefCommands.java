@@ -38,7 +38,8 @@ public class AltoClefCommands {
                 new CoverWithSandCommand(),
                 new CoverWithBlocksCommand(),
                 new SelfCareCommand(),
-                new CheatMenuCommand()
+                new CheatMenuCommand(),
+                new AnarchyCommand()
                 //new TestMoveInventoryCommand(),
                 //    new TestSwapInventoryCommand()
         );
