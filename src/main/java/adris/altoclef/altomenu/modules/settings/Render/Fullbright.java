@@ -11,13 +11,13 @@ public class Fullbright extends Mod {
     }
     @Override
     public void onEnable() {
-
+        System.out.println("fullbright enabled");
         super.onEnable();
     }
 
     @Override
     public void onDisable() {
-
+        System.out.println("fullbright disabled");
         super.onDisable();
     }
 }

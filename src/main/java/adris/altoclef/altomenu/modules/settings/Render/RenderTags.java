@@ -10,13 +10,13 @@ public class RenderTags extends Mod {
     }
     @Override
     public void onEnable() {
-
+        System.out.println("RenderTags Enabled");
         super.onEnable();
     }
 
     @Override
     public void onDisable() {
-
+        System.out.println("RenderTags Disabled");
         super.onDisable();
     }
 }
