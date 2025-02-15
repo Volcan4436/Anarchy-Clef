@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.settings;
+package adris.altoclef.altomenu.settings;
 
 public class BooleanSetting extends Setting {
 

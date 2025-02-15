@@ -1,8 +1,8 @@
-package adris.altoclef.altomenu.modules.settings.Movement;
+package adris.altoclef.altomenu.modules.Movement;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.cheatUtils.CMoveUtil;
-import adris.altoclef.altomenu.modules.settings.ModeSetting;
+import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.eventbus.EventHandler;
 
 public class Speed extends Mod {

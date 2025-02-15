@@ -1,9 +1,10 @@
 package adris.altoclef.altomenu.managers;
 
 import adris.altoclef.altomenu.Mod;
-import adris.altoclef.altomenu.modules.settings.Movement.*;
-import adris.altoclef.altomenu.modules.settings.Render.Fullbright;
-import adris.altoclef.altomenu.modules.settings.Render.RenderTags;
+import adris.altoclef.altomenu.modules.Baritone.ChatBot;
+import adris.altoclef.altomenu.modules.Movement.*;
+import adris.altoclef.altomenu.modules.Render.Fullbright;
+import adris.altoclef.altomenu.modules.Render.RenderTags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,9 @@ public class ModuleManager {
 
     //This is where you add the modules to show on the clickgui
     private void addModules() {
+
+        //Baritone
+        modules.add(new ChatBot());
 
         //Movement
         modules.add(new Infjump());

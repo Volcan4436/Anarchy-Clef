@@ -1,8 +1,8 @@
 package adris.altoclef.altomenu.UI.screens.clickgui.setting;
 
 import adris.altoclef.altomenu.UI.screens.clickgui.ModuleButton;
-import adris.altoclef.altomenu.modules.settings.NumberSetting;
-import adris.altoclef.altomenu.modules.settings.Setting;
+import adris.altoclef.altomenu.settings.NumberSetting;
+import adris.altoclef.altomenu.settings.Setting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 

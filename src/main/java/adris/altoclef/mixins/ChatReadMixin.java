@@ -1,5 +1,6 @@
 package adris.altoclef.mixins;
 
+import adris.altoclef.altomenu.managers.ChatHandler;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
 import com.mojang.authlib.GameProfile;
@@ -19,6 +20,8 @@ public final class ChatReadMixin {
             at = @At("HEAD")
     )
     private void onChatMessage(SignedMessage message, GameProfile sender, MessageType.Parameters params, CallbackInfo ci) {
+        ChatHandler chatHandler = new ChatHandler();
+        chatHandler.handleChatMessage(message);
         ChatMessageEvent evt = new ChatMessageEvent(message, sender, params);
         EventBus.publish(evt);
     }

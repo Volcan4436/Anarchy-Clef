@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.settings.Render;
+package adris.altoclef.altomenu.modules.Render;
 
 import adris.altoclef.altomenu.Mod;
 

@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.settings.Movement;
+package adris.altoclef.altomenu.modules.Movement;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.eventbus.EventHandler;

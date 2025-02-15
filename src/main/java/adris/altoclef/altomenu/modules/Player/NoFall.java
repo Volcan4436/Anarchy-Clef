@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.settings.Player;
+package adris.altoclef.altomenu.modules.Player;
 
 public class NoFall {
     //TODO implement
