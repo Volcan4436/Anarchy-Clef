@@ -5,6 +5,7 @@ import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.baritone.GoalRunAwayFromEntities;
 import adris.altoclef.util.helpers.BaritoneHelper;
 import baritone.api.pathing.goals.Goal;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.SkeletonEntity;
 
@@ -44,6 +45,9 @@ public class RunAwayFromHostilesTask extends CustomBaritoneGoalTask {
 
     @Override
     protected String toDebugString() {
+        if (MinecraftClient.getInstance().options.language.equals("ja_jp")) {
+            return "逃げるんだよー, スモーキー!";
+        }
         return "NIGERUNDAYOO, SUMOOKEYY!";
     }
 

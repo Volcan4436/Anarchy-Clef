@@ -3,6 +3,7 @@ package adris.altoclef.tasks.stupid;
 import adris.altoclef.AltoClef;
 import adris.altoclef.altomenu.UI.screens.clickgui.ClickGUI;
 import adris.altoclef.tasksystem.Task;
+import net.minecraft.client.MinecraftClient;
 
 public class OpenGUI extends Task {
 
@@ -30,7 +31,7 @@ public class OpenGUI extends Task {
 
     @Override
     protected String toDebugString() {
-        return "";
+        return "[Anarchy] Debug";
     }
 
     @Override

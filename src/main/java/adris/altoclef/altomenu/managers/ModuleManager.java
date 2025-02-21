@@ -76,6 +76,7 @@ public class ModuleManager {
         modules.add(new Speed());
         modules.add(new AutoWalk());
         modules.add(new Flight());
+        modules.add(new AdvancedFly());
 
         //Render
         modules.add(new Fullbright());

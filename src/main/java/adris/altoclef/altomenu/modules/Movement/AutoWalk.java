@@ -3,6 +3,8 @@ package adris.altoclef.altomenu.modules.Movement;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.eventbus.EventHandler;
 
+//Todo
+// Create an experimental mode that uses Baritone to walk in a straight line in the fastest way possible
 public class AutoWalk extends Mod {
 
     public AutoWalk() {

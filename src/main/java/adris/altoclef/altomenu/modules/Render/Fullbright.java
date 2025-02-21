@@ -2,6 +2,10 @@ package adris.altoclef.altomenu.modules.Render;
 
 import adris.altoclef.altomenu.Mod;
 
+//TODO
+// add Light Colour Changer (Similar to Future Client)
+// add NightVision Spoof mode
+// add Intensity Slider
 public class Fullbright extends Mod {
     public static Fullbright Instance;
     public Fullbright() {

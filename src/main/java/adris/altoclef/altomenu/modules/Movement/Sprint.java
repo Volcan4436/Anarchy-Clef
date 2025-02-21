@@ -5,6 +5,7 @@ import adris.altoclef.altomenu.settings.ModeSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//We need a true OmniSprint
 public class Sprint extends Mod {
 
     private static final Logger log = LoggerFactory.getLogger(Sprint.class);
