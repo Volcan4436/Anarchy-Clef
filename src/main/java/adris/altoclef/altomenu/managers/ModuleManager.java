@@ -2,6 +2,7 @@ package adris.altoclef.altomenu.managers;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.Baritone.ChatBot;
+import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;
 import adris.altoclef.altomenu.modules.Movement.*;
 import adris.altoclef.altomenu.modules.Render.Jesus;
 import adris.altoclef.altomenu.modules.Render.Fullbright;
@@ -79,6 +80,10 @@ public class ModuleManager {
         modules.add(new AutoWalk());
         modules.add(new Flight());
         modules.add(new AdvancedFly());
+
+
+        //Exploit
+        modules.add(new UnlockRecipes());
 
         //Render
         modules.add(new Fullbright());
