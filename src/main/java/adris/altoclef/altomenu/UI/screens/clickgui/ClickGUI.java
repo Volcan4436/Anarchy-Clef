@@ -67,7 +67,7 @@ public class ClickGUI extends Screen {
     @Override
     public void render(DrawContext matrices, int mouseX, int mouseY, float delta) {
         matrices.fill(0, 0, 100000000, 100000000, 0x80000000);
-        //Draw a text that says "Envy on Top" in the bottom right corner
+        //Draw a text that says "AltoMenu on Top" in the bottom right corner
         matrices.drawCenteredTextWithShadow(this.textRenderer, "AltoMenu [BETA]", this.width - 50, this.height - 20, Color.RED.getRGB());
         for (Frame frame : frames) {
             frame.render(matrices, mouseX, mouseY, delta);

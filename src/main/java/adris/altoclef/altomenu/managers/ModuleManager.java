@@ -3,8 +3,10 @@ package adris.altoclef.altomenu.managers;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.Baritone.ChatBot;
 import adris.altoclef.altomenu.modules.Movement.*;
+import adris.altoclef.altomenu.modules.Render.Jesus;
 import adris.altoclef.altomenu.modules.Render.Fullbright;
 import adris.altoclef.altomenu.modules.Render.RenderTags;
+import adris.altoclef.altomenu.modules.Utility.Stealer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,5 +83,9 @@ public class ModuleManager {
         //Render
         modules.add(new Fullbright());
         modules.add(new RenderTags());
+        modules.add(new Jesus());
+
+        //Util-Dev
+        modules.add(new Stealer());
     }
 }
