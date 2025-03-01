@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AltoClef Web Control</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --background-dark: #1e1e1e;
+            --panel-dark: #2d2d2d;
+            --text-light: #ffffff;
+            --text-gray: #a0a0a0;
+            --border-color: #4d4d4d;
+            --category-color: #3d3d3d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .panel {
+            background-color: var(--panel-dark);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--text-light);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: var(--text-light);
+            margin: 20px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+
+        .command-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            background-color: #3d3d3d;
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .button-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .button-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .command-category {
+            background-color: var(--category-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .command-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        #status {
+            white-space: pre-wrap;
+            background-color: #3d3d3d;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', monospace;
+            margin-top: 15px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-online {
+            background-color: var(--primary-color);
+        }
+
+        .status-offline {
+            background-color: #f44336;
+        }
+
+        /* Add new styles for tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background-color: var(--panel-dark);
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            margin-right: 10px;
+            border-radius: 5px 5px 0 0;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background-color: var(--primary-color);
+        }
+
+        .tab-button:hover {
+            opacity: 0.9;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Add styles for module toggle buttons */
+        .module-button {
+            position: relative;
+            padding-right: 40px;
+        }
+
+        .module-status {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #f44336;
+        }
+
+        .module-status.enabled {
+            background-color: var(--primary-color);
+        }
+
+        /* Add styles for settings controls */
+        .setting-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: var(--panel-dark);
+            border-radius: 5px;
+        }
+
+        .setting-label {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .setting-control {
+            width: 120px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            background-color: var(--border-color);
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-color);
+        }
+
+        .setting-value {
+            min-width: 40px;
+            text-align: right;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AltoClef Web Control</h1>
+        
+        <div class="panel">
+            <h2>Bot Status</h2>
+            <div id="connection-status">
+                <span class="status-indicator"></span>
+                <span id="connection-text">Connecting...</span>
+                <button class="button button-secondary" style="float: right; padding: 5px 10px; margin-top: -5px;" onclick="fetchModuleStatus()">Refresh Status</button>
+            </div>
+            <pre id="status">Initializing...</pre>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('commands')">Commands</button>
+            <button class="tab-button" onclick="switchTab('cheatmenu')">Cheat Menu</button>
+        </div>
+
+        <div id="commands-tab" class="tab-content active">
+            <div class="panel">
+                <h2>Command Control</h2>
+                <div class="command-input">
+                    <input type="text" id="command" placeholder="Enter custom command (e.g. @goto 0 80 0)">
+                    <button class="button button-primary" onclick="sendCommand()">Send</button>
+                </div>
+
+                <div class="command-category">
+                    <h3>Basic Controls</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@stop')">Stop</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@help')">Help</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@status')">Status</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@coords')">Coordinates</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@list')">List Resources</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@quit')">Quit</button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Resource Gathering</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@get diamond 1')">Get Diamond</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@get iron_ingot 64')">Get Iron</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@get gold_ingot 64')">Get Gold</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@get coal 64')">Get Coal</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@get log 64')">Get Logs</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@get stone 64')">Get Stone</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@food')">Get Food</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@meat')">Get Meat</button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Navigation & Movement</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@goto 0 80 0')">Goto Origin</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@follow')">Follow Player</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@locate_structure stronghold')">Find Stronghold</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@locate_structure desert_temple')">Find Temple</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@idle')">Idle Mode</button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Combat & Defense</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@hero')">Kill Hostiles</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@punk')">Attack Player</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@selfcare')">Self Care</button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Equipment & Inventory</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@equip')">Equip Armor</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@inventory list')">List Inventory</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@stash all')">Stash Items</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@deposit all')">Deposit Items</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@give')">Give Items</button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Building & Protection</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@coverwithblocks')">Cover with Blocks</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@coverwithsand')">Cover with Sand</button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Game Modes</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@gamer')">Beat Game</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@ai')">AI Mode</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@anarchy')">Anarchy Mode</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@marvion')">Marvion Mode</button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Settings & Utilities</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@setgamma')">Set Gamma</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@reload_settings')">Reload Settings</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@bind')">Bind Command</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@cheatmenu')">Cheat Menu</button>
+                        <button class="button button-secondary" onclick="sendPredefinedCommand('@test')">Test</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="cheatmenu-tab" class="tab-content">
+            <div class="panel">
+                <h2>Cheat Menu Modules</h2>
+
+                <div class="command-category">
+                    <h3>Combat</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary module-button" onclick="toggleModule('combat', 'killaura')">
+                            Kill Aura
+                            <span class="module-status" id="module-killaura"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('combat', 'velocity')">
+                            Velocity
+                            <span class="module-status" id="module-velocity"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('combat', 'criticals')">
+                            Criticals
+                            <span class="module-status" id="module-criticals"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('combat', 'autoarmor')">
+                            Auto Armor
+                            <span class="module-status" id="module-autoarmor"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('combat', 'antiknockback')">
+                            Anti Knockback
+                            <span class="module-status" id="module-antiknockback"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('combat', 'reach')">
+                            Reach
+                            <span class="module-status" id="module-reach"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Movement</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary module-button" onclick="toggleModule('movement', 'speed')">
+                            Speed
+                            <span class="module-status" id="module-speed"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('movement', 'flight')">
+                            Flight
+                            <span class="module-status" id="module-flight"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('movement', 'nofall')">
+                            No Fall
+                            <span class="module-status" id="module-nofall"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('movement', 'jesus')">
+                            Jesus
+                            <span class="module-status" id="module-jesus"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('movement', 'sprint')">
+                            Sprint
+                            <span class="module-status" id="module-sprint"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('movement', 'step')">
+                            Step
+                            <span class="module-status" id="module-step"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Player</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary module-button" onclick="toggleModule('player', 'autoeat')">
+                            Auto Eat
+                            <span class="module-status" id="module-autoeat"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('player', 'autototem')">
+                            Auto Totem
+                            <span class="module-status" id="module-autototem"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('player', 'scaffold')">
+                            Scaffold
+                            <span class="module-status" id="module-scaffold"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('player', 'freecam')">
+                            Freecam
+                            <span class="module-status" id="module-freecam"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Render</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary module-button" onclick="toggleModule('render', 'esp')">
+                            ESP
+                            <span class="module-status" id="module-esp"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('render', 'tracers')">
+                            Tracers
+                            <span class="module-status" id="module-tracers"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('render', 'fullbright')">
+                            Fullbright
+                            <span class="module-status" id="module-fullbright"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('render', 'nametags')">
+                            Nametags
+                            <span class="module-status" id="module-nametags"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Baritone</h3>
+                    <div class="command-buttons">
+                        <button class="button button-secondary module-button" onclick="toggleModule('baritone', 'autowalk')">
+                            Auto Walk
+                            <span class="module-status" id="module-autowalk"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('baritone', 'pathfinding')">
+                            Pathfinding
+                            <span class="module-status" id="module-pathfinding"></span>
+                        </button>
+                        <button class="button button-secondary module-button" onclick="toggleModule('baritone', 'automine')">
+                            Auto Mine
+                            <span class="module-status" id="module-automine"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="command-category">
+                    <h3>Settings</h3>
+                    <div class="setting-row">
+                        <span class="setting-label">Kill Aura Range</span>
+                        <div class="setting-control">
+                            <input type="range" min="3" max="6" step="0.1" id="killaura-range" onchange="updateSetting('killaura', 'range', this.value)">
+                        </div>
+                        <span class="setting-value" id="killaura-range-value">3.0</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Speed Value</span>
+                        <div class="setting-control">
+                            <input type="range" min="0.1" max="5" step="0.1" id="speed-value" onchange="updateSetting('speed', 'value', this.value)">
+                        </div>
+                        <span class="setting-value" id="speed-value-value">1.0</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Auto Eat Health</span>
+                        <div class="setting-control">
+                            <input type="range" min="1" max="20" step="1" id="autoeat-health" onchange="updateSetting('autoeat', 'health', this.value)">
+                        </div>
+                        <span class="setting-value" id="autoeat-health-value">10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.protocol + '//' + window.location.host;
+        let ws;
+
+        function connectWebSocket() {
+            ws = new WebSocket(`ws://${window.location.host}/api/ws`);
+            
+            ws.onopen = () => {
+                updateConnectionStatus(true);
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateStatus(data);
+            };
+
+            ws.onclose = () => {
+                updateConnectionStatus(false);
+                setTimeout(connectWebSocket, 5000);
+            };
+        }
+
+        function updateConnectionStatus(isConnected) {
+            const indicator = document.querySelector('.status-indicator');
+            const connectionText = document.getElementById('connection-text');
+            
+            if (isConnected) {
+                indicator.className = 'status-indicator status-online';
+                connectionText.textContent = 'Connected';
+            } else {
+                indicator.className = 'status-indicator status-offline';
+                connectionText.textContent = 'Disconnected - Reconnecting...';
+            }
+        }
+
+        function updateStatus(data) {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function sendCommand() {
+            const commandInput = document.getElementById('command');
+            const command = commandInput.value.trim();
+            if (!command) return;
+            
+            try {
+                await fetch(`${API_URL}/api/command`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ command: command })
+                });
+                
+                commandInput.value = '';
+            } catch (error) {
+                console.error('Error sending command:', error);
+            }
+        }
+
+        function sendPredefinedCommand(command) {
+            document.getElementById('command').value = command;
+            sendCommand();
+        }
+
+        async function fetchStatus() {
+            try {
+                const response = await fetch(`${API_URL}/api/status`);
+                const data = await response.json();
+                updateStatus(data);
+            } catch (error) {
+                console.error('Error fetching status:', error);
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            document.getElementById(tabName + '-tab').classList.add('active');
+            document.querySelector(`.tab-button[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        }
+
+        function toggleModule(category, moduleName) {
+            const moduleElement = document.getElementById(`module-${moduleName}`);
+            const isEnabled = moduleElement.classList.contains('enabled');
+            
+            try {
+                fetch(`${API_URL}/api/command`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ command: `@cheatmenu toggle ${category} ${moduleName}` })
+                });
+                
+                moduleElement.classList.toggle('enabled');
+            } catch (error) {
+                console.error('Error toggling module:', error);
+            }
+        }
+
+        function updateSetting(module, setting, value) {
+            try {
+                fetch(`${API_URL}/api/command`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ command: `@cheatmenu settings ${module} ${setting} ${value}` })
+                });
+                
+                document.getElementById(`${module}-${setting}-value`).textContent = value;
+            } catch (error) {
+                console.error('Error updating setting:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type="range"]').forEach(input => {
+                const value = input.value;
+                const [module, setting] = input.id.split('-');
+                document.getElementById(`${module}-${setting}-value`).textContent = value;
+            });
+            
+            document.querySelectorAll('.module-status').forEach(indicator => {
+                indicator.classList.remove('enabled');
+            });
+            
+            fetchModuleStatus();
+        });
+        
+        async function fetchModuleStatus() {
+            try {
+                const response = await fetch(`${API_URL}/api/status`);
+                const data = await response.json();
+                updateStatus(data);
+                
+                if (data.modules) {
+                    for (const [moduleName, enabled] of Object.entries(data.modules)) {
+                        const indicator = document.getElementById(`module-${moduleName}`);
+                        if (indicator) {
+                            if (enabled) {
+                                indicator.classList.add('enabled');
+                            } else {
+                                indicator.classList.remove('enabled');
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching module status:', error);
+            }
+        }
+
+        connectWebSocket();
+        setInterval(fetchStatus, 1000);
+
+        document.getElementById('command').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendCommand();
+            }
+        });
+    </script>
+</body>
+</html> 
