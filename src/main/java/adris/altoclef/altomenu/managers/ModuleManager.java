@@ -4,7 +4,6 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.Baritone.ChatBot;
 import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;
 import adris.altoclef.altomenu.modules.Movement.*;
-import adris.altoclef.altomenu.modules.Render.Jesus;
 import adris.altoclef.altomenu.modules.Render.Fullbright;
 import adris.altoclef.altomenu.modules.Render.RenderTags;
 import adris.altoclef.altomenu.modules.Utility.Stealer;
@@ -74,13 +73,13 @@ public class ModuleManager {
         modules.add(new ChatBot());
 
         //Movement
-        modules.add(new Infjump());
-        modules.add(new Sprint());
-        modules.add(new Speed());
+        modules.add(new AdvancedFly());
         modules.add(new AutoWalk());
         modules.add(new Flight());
-        modules.add(new AdvancedFly());
-
+        modules.add(new Infjump());
+        modules.add(new Jesus());
+        modules.add(new Speed());
+        modules.add(new Sprint());
 
         //Exploit
         modules.add(new UnlockRecipes());

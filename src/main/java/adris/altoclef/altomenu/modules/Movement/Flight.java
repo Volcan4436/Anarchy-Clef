@@ -5,6 +5,8 @@ import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
 
+//todo:
+// Add Modes: Glide, Velocity, Fireball (For Minigame Servers), AirWalk (Collision Spoof)
 public class Flight extends Mod {
     public Flight() {
         super("Flight", "Fly", Mod.Category.MOVEMENT);

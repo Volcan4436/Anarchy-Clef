@@ -3,6 +3,7 @@ package adris.altoclef.altomenu.modules.Movement;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.eventbus.EventHandler;
 
+// todo: add a JumpHeight Modifier Module that works well with this
 public class Infjump extends Mod {
     public Infjump() {
         super("InfJump", "Jump Forever!", Mod.Category.MOVEMENT);

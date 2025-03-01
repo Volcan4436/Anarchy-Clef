@@ -9,6 +9,14 @@ import adris.altoclef.eventbus.EventHandler;
 
 //We Will Need a scrollable ClickGUI for this at some point
 // as well as the ability to change Settings of a Module with commands
+//todo:
+// add ElytraPacket Spammer (Can Allow us to mess with older Anticheats)
+// add Position Shifter (Shift our position in a really small area as we move to mess with Anticheats)
+// add Stutter (Stutter our movement to mess with Anticheats)
+// add GroundSpoof Spammer (Can help with FallDamage and might cause Disablers)
+// add Blink
+// add SlowFall Potion Effect Spoofer
+// Add Strict Mode that uses a yawStep to slow your rotations that might help with bypassing
 public class AdvancedFly extends Mod {
 
     public AdvancedFly() {

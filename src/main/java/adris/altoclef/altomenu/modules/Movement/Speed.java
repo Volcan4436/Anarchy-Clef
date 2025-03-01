@@ -5,6 +5,9 @@ import adris.altoclef.altomenu.cheatUtils.CMoveUtil;
 import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.eventbus.EventHandler;
 
+//todo
+// Add Modes: PhysicsCalc, onGround, Strict, NCPStrict, Grim (Entity + YawSpoof), Matrix7
+// Add SetBack Toggle
 public class Speed extends Mod {
 
     public Speed() {

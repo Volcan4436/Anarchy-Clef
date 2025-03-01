@@ -12,6 +12,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+//todo add Rotations + MovementCorrection
 public class Stealer extends Mod {
 
     public Stealer() {

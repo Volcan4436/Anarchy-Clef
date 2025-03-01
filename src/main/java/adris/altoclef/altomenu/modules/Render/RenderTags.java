@@ -2,6 +2,7 @@ package adris.altoclef.altomenu.modules.Render;
 
 import adris.altoclef.altomenu.Mod;
 
+//todo Render through walls
 public class RenderTags extends Mod {
     public static RenderTags Instance;
     public RenderTags() {
