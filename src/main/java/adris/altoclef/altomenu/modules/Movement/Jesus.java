@@ -14,7 +14,6 @@ public class Jesus extends Mod {
 
     public Jesus() {
         super("Jesus", "Allows you to walk on water / Interact with water", Mod.Category.MOVEMENT);
-        addSettings(mode);
     }
 
     //ModeSetting

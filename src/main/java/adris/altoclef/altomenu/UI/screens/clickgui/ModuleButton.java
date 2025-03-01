@@ -65,7 +65,6 @@ public class ModuleButton {
             else if (button == 1) {
                 extended = !extended;
                 parent.updateButtons();
-
             }
         }
 

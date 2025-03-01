@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class Mod {
 
@@ -120,7 +121,6 @@ public class Mod {
     }
 
     public boolean onShitTick() {
-
         return false;
     }
 
@@ -137,7 +137,19 @@ public class Mod {
 
         return intset;
     }
-
+    
+    public void registerSettings() {
+        settings = List.of(Stream.of(this.getClass().getDeclaredFields(), Module.class.getDeclaredFields()).flatMap(Stream::of)
+            .filter(field -> Setting.class.isAssignableFrom(field.getType()))
+            .map(field -> {
+                field.setAccessible(true);
+                try {
+                    return (Setting) field.get(this);
+                } catch (IllegalAccessException ignore) {
+                    return null;
+                }
+            }).toArray(Setting[]::new));
+    }
 
     public boolean onActivate() {
         return false;
@@ -156,7 +168,7 @@ public class Mod {
         EXPLOIT("Exploit"),
         DEVELOPMENT("Development");
 
-        public String name;
+        public final String name;
 
         private Category(String name) {
             this.name = name;

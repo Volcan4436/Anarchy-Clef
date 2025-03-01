@@ -10,7 +10,6 @@ import adris.altoclef.eventbus.EventHandler;
 public class Flight extends Mod {
     public Flight() {
         super("Flight", "Fly", Mod.Category.MOVEMENT);
-        addSettings(mode, updateposY, updateposH);
     }
     ModeSetting mode = new ModeSetting("Mode", "Creative", "Creative", "Position");
     NumberSetting updateposY = new NumberSetting("Update Vertical", 0.1, 10, 1, 0.1);

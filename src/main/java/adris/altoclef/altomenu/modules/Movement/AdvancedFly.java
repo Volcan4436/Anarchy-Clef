@@ -21,7 +21,6 @@ public class AdvancedFly extends Mod {
 
     public AdvancedFly() {
         super("AdvancedFly", "Advanced Fly", Mod.Category.MOVEMENT);
-        addSettings(spoofCanFly, antiKick, strafe, flyMethod, vertical, horizontal);
     }
 
     int ticks = 0;

@@ -8,6 +8,7 @@ public class Infjump extends Mod {
     public Infjump() {
         super("InfJump", "Jump Forever!", Mod.Category.MOVEMENT);
     }
+    
     @EventHandler
     public boolean onShitTick() {
         if (mc.options.jumpKey.wasPressed()) {

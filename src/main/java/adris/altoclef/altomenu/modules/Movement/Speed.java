@@ -12,7 +12,6 @@ public class Speed extends Mod {
 
     public Speed() {
         super("Speed", "Changes your speed", Mod.Category.MOVEMENT);
-        addSetting(mode);
     }
     ModeSetting mode = new ModeSetting("Mode", "Legit", "Legit", "Strafe", "StrafeHop", "GroundStrafe", "GroundStrafeHop");
 

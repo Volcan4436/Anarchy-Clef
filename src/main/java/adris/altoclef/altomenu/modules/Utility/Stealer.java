@@ -17,8 +17,6 @@ public class Stealer extends Mod {
 
     public Stealer() {
         super("Stealer", "Stealer Shits", Mod.Category.DEVELOPMENT);
-        addSetting(mode);
-        addSetting(distance);
     }
     ModeSetting mode = new ModeSetting("Mode", "Break", "Break", "Steal", "Pussy");
     NumberSetting distance = new NumberSetting("NumSet", 1, 5, 3, 1);

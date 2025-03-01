@@ -24,7 +24,6 @@ public class ModuleManager {
     }
 
     public List<Mod> getEnabledModules() {
-
         List<Mod> enabled = new ArrayList<>();
         for (Mod module : modules) {
             if (module.isEnabled()) enabled.add(module);
@@ -33,7 +32,6 @@ public class ModuleManager {
     }
 
     public Mod getModuleByName(String name) {
-
         for (Mod module : modules) {
             if (module.getName().equalsIgnoreCase(name)) return module;
         }
@@ -64,32 +62,35 @@ public class ModuleManager {
 
         return null;
     }
-
-
+    
+    public void addModule(final Mod module) {
+        modules.add(module);
+        module.registerSettings();
+    }
+    
     //This is where you add the modules to show on the clickgui
     private void addModules() {
-
         //Baritone
-        modules.add(new ChatBot());
-
+        addModule(new ChatBot());
+        
         //Movement
-        modules.add(new AdvancedFly());
-        modules.add(new AutoWalk());
-        modules.add(new Flight());
-        modules.add(new Infjump());
-        modules.add(new Jesus());
-        modules.add(new Speed());
-        modules.add(new Sprint());
+        addModule(new AdvancedFly());
+        addModule(new AutoWalk());
+        addModule(new Flight());
+        addModule(new Infjump());
+        addModule(new Jesus());
+        addModule(new Speed());
+        addModule(new Sprint());
 
         //Exploit
-        modules.add(new UnlockRecipes());
+        addModule(new UnlockRecipes());
 
         //Render
-        modules.add(new Fullbright());
-        modules.add(new RenderTags());
-        modules.add(new Jesus());
+        addModule(new Fullbright());
+        addModule(new RenderTags());
+        addModule(new Jesus());
 
         //Util-Dev
-        modules.add(new Stealer());
+        addModule(new Stealer());
     }
 }

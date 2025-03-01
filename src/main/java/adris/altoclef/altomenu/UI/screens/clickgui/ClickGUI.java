@@ -20,30 +20,11 @@ public class ClickGUI extends Screen {
 
         frames = new ArrayList<>();
         int x = 20;
-
-        Frame combatFrame = new Frame(Mod.Category.COMBAT, x, 30, 100, 15);
-        frames.add(combatFrame);
-        x += 120;
-        Frame settingsFrame = new Frame(Mod.Category.BARITONE, x, 30, 100, 15);
-        frames.add(settingsFrame);
-        x += 120;
-        Frame playerFrame = new Frame(Mod.Category.PLAYER, x, 30, 100, 15);
-        frames.add(playerFrame);
-        x += 120;
-        Frame renderFrame = new Frame(Mod.Category.RENDER, x, 30, 100, 15);
-        frames.add(renderFrame);
-        x += 120;
-        Frame movementFrame = new Frame(Mod.Category.MOVEMENT, x, 30, 100, 15);
-        frames.add(movementFrame);
-        x += 120;
-        Frame worldFrame = new Frame(Mod.Category.WORLD, x, 30, 100, 15);
-        frames.add(worldFrame);
-        x += 120;
-        Frame chatFrame = new Frame(Mod.Category.EXPLOIT, x, 30, 100, 15);
-        frames.add(chatFrame);
-        x += 120;
-        Frame hudFrame = new Frame(Mod.Category.DEVELOPMENT, x, 30, 100, 15);
-        frames.add(hudFrame);
+        for (adris.altoclef.altomenu.Mod.Category category : Mod.Category.values()) {
+            frames.add(new Frame(category, x, 30, 100, 15));
+            x+=120;
+        }
+    
         // Add the frames to the list of frames
 /*        frames.add(settingsFrame);
         frames.add(playerFrame);
