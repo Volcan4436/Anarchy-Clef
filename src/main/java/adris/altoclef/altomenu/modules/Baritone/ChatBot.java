@@ -36,7 +36,6 @@ public class ChatBot extends Mod {
     public static ChatBot instance;
     public ChatBot() {
         super("ChatBot", "ChatBot", Mod.Category.BARITONE);
-        addSetting(messageDelay);
         instance = this;
     }
 

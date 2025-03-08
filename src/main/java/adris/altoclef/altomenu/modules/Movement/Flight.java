@@ -7,6 +7,8 @@ import adris.altoclef.eventbus.EventHandler;
 
 //todo:
 // Add Modes: Glide, Velocity, Fireball (For Minigame Servers), AirWalk (Collision Spoof)
+// Add Option to Start Fly Under a Block (For Legacy Anticheat Support)
+// Add Option to Start Fly after Phasing into a Block (Similar to Old Hypixel Fly Methods) (For Legacy Anticheat Support)
 public class Flight extends Mod {
     public Flight() {
         super("Flight", "Fly", Mod.Category.MOVEMENT);

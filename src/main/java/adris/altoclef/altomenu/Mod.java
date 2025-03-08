@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+//todo:
+// allow other mods to hook into our Cheat menu (Cheats, Baritone Settings, AnarchyClef Settings, Command System, etc)
+// Support RusherHack AddonSystem by adding our Hacks to their ClickGUI using their API
 public class Mod {
 
 

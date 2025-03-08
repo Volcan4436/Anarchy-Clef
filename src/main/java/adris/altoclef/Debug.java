@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 // TODO: Debug library or use Minecraft's built in debugger
+// todo: add more stuff to this to improve debugging
 public class Debug {
 
     public static AltoClef jankModInstance;

@@ -12,7 +12,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-//todo add Rotations + MovementCorrection
+//todo:
+// add Rotations + MovementCorrection
+// add SilentSteal (Silently Opens the Chest inventory hides the menu from the player so we dont get interupted then steals items while its Silently Opened)
 public class Stealer extends Mod {
 
     public Stealer() {

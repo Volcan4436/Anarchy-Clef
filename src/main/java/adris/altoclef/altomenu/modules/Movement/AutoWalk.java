@@ -8,6 +8,7 @@ import adris.altoclef.eventbus.EventHandler;
 // Support Jumping Over Blocks that get in our way
 // Support Using Rockets if using an Elytra
 // Add Yaw/Pitch Lock
+// Support Disabling module on Disconnect or Death
 public class AutoWalk extends Mod {
 
     public AutoWalk() {

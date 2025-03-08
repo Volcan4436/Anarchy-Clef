@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+//todo Hook into baritone
 public class CMoveUtil {
 
     protected static MinecraftClient mc = MinecraftClient.getInstance();

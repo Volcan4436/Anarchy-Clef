@@ -8,6 +8,7 @@ import adris.altoclef.eventbus.EventHandler;
 //todo
 // Add Modes: PhysicsCalc, onGround, Strict, NCPStrict, Grim (Entity + YawSpoof), Matrix7
 // Add SetBack Toggle
+// Add LowHop (Similar to Future Client)
 public class Speed extends Mod {
 
     public Speed() {

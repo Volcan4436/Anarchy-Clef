@@ -17,6 +17,8 @@ import adris.altoclef.eventbus.EventHandler;
 // add Blink
 // add SlowFall Potion Effect Spoofer
 // Add Strict Mode that uses a yawStep to slow your rotations that might help with bypassing
+// Add Option to Start Fly Under a Block (For Legacy Anticheat Support)
+// Add Option to Start Fly after Phasing into a Block (Similar to Old Hypixel Fly Methods) (For Legacy Anticheat Support)
 public class AdvancedFly extends Mod {
 
     public AdvancedFly() {

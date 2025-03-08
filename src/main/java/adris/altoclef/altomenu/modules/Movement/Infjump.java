@@ -4,6 +4,7 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.eventbus.EventHandler;
 
 // todo: add a JumpHeight Modifier Module that works well with this
+//  add: Height Limiter
 public class Infjump extends Mod {
     public Infjump() {
         super("InfJump", "Jump Forever!", Mod.Category.MOVEMENT);

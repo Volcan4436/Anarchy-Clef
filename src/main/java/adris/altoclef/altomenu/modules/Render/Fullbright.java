@@ -6,6 +6,7 @@ import adris.altoclef.altomenu.Mod;
 // add Light Colour Changer (Similar to Future Client)
 // add NightVision Spoof mode
 // add Intensity Slider
+// Somehow add Support For Shaders like SuesPTGI
 public class Fullbright extends Mod {
     public static Fullbright Instance;
     public Fullbright() {

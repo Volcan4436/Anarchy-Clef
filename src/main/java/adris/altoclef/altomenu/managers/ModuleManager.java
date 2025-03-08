@@ -11,6 +11,9 @@ import adris.altoclef.altomenu.modules.Utility.Stealer;
 import java.util.ArrayList;
 import java.util.List;
 
+//todo
+// Make this auto register modules on Compile
+// Make it Also Register on the WebPanel once its Merged with Main Branch
 public class ModuleManager {
     public static final ModuleManager INSTANCE = new ModuleManager();
     private List<Mod> modules = new ArrayList<>();
@@ -81,6 +84,7 @@ public class ModuleManager {
         addModule(new Jesus());
         addModule(new Speed());
         addModule(new Sprint());
+        addModule(new Step());
 
         //Exploit
         addModule(new UnlockRecipes());

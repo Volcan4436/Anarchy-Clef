@@ -11,6 +11,18 @@ import java.util.List;
 
 import static adris.altoclef.altomenu.UI.screens.clickgui.ModuleButton.mc;
 
+//todo:
+// Move Frames up and Down with ScrollWheel to fix the issue with modules going off screen if too many options
+// improve the look of the ClickGUI
+// Add a search bar
+// add a Bind Button
+// add Config System
+// Add Position Reset Button (for if they go off screen)
+// Add Scripting API (Similar to Astolfo Client) + Support Hooking into Baritone with the Scripting API
+// add Panic Button (toggles all modules and removes all HUD elements of the Bot and Disables Bots Prefix)
+// **Difficult** allow you to connect to the ClickGUI using a Websocket (Create a App for 3DS, Switch and Android so we can remotely toggle modules) over Direct IP Connection
+// Add TabGUI on HUD (Similar to 1.8 Clients)
+// Add Support for Gamepads to use the GUI
 public class ClickGUI extends Screen {
 
     private final List<Frame> frames;

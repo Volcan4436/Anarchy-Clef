@@ -8,9 +8,8 @@ public class SafeMode extends Mod {
 
     public SafeMode() {
         super("SafeMode", "Disables Certain Features to reduce ban risk", Mod.Category.BARITONE);
-        addSettings(mode);
     }
 
     //Settings
-    ModeSetting mode = new ModeSetting("Mode", "None", "None", "Matrix7", "MatrixLabs", "Vulcan", "Grim", "NCP", "Spartan", "Verus", "Intave", "AACV3", "AACV4", "AACV5" , "MineMenClub" , "Hypixel", "CubeCraft", "HopLite");
+    ModeSetting mode = new ModeSetting("Mode", "None", "None", "Matrix7", "MatrixLabs", "Vulcan", "GrimV2", "GrimV3", "NCP", "Spartan", "Verus", "Intave", "AACV3", "AACV4", "AACV5" , "MineMenClub" , "Hypixel", "CubeCraft", "HopLite");
 }

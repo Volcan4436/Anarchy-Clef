@@ -3,6 +3,7 @@ package adris.altoclef.altomenu.modules.Render;
 import adris.altoclef.altomenu.Mod;
 
 //todo Render through walls
+//todo Hide Real Tags
 public class RenderTags extends Mod {
     public static RenderTags Instance;
     public RenderTags() {
