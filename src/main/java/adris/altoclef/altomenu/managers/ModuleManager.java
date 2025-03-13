@@ -78,6 +78,7 @@ public class ModuleManager {
         
         //Movement
         addModule(new AdvancedFly());
+        addModule(new AutoJump());
         addModule(new AutoWalk());
         addModule(new Flight());
         addModule(new Infjump());
