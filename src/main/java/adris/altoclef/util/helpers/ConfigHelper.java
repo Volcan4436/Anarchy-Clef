@@ -35,7 +35,7 @@ public class ConfigHelper {
      * @param path The relative path of the configuration file.
      * @return The File object representing the configuration file.
      */
-    private static File getConfigFile(String path) {
+    public static File getConfigFile(String path) {
         // Get the full path by concatenating the ALTO_FOLDER and the given path
         String fullPath = ALTO_FOLDER + File.separator + path;
 

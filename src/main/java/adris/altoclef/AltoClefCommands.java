@@ -28,6 +28,7 @@ public class AltoClefCommands {
                 new TestCommand(),
                 new FoodCommand(),
                 new MeatCommand(),
+                new OpenFolderCommand(),
                 new ReloadSettingsCommand(),
                 new GamerCommand(),
                 new MarvionCommand(),
