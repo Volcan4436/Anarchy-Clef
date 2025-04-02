@@ -36,16 +36,20 @@ public class NoFall extends Mod {
                 mc.player.setVelocity(mc.player.getVelocity().x, 0.1, mc.player.getVelocity().z);
                 velocityCheck = true;
             }
-            if (mc.player.fallDistance == 0 && velocityCheck) {
-                velocityCheck = false;
-            }
+            if (mc.player.fallDistance == 0 && velocityCheck) velocityCheck = false;
         }
         else if (Objects.equals(mode.getMode(), "Jump")) {
-            if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3 && !jumpCheck) mc.player.jump();
+            if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3 && !jumpCheck) {
+                mc.player.jump();
+                jumpCheck = true;
+            }
             if (mc.player.fallDistance == 0 && jumpCheck) jumpCheck = false;
         }
         else if (Objects.equals(mode.getMode(), "Position")) {
-            if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3 && !positionCheck) mc.player.updatePosition(mc.player.getX(), mc.player.getY() + 0.3, mc.player.getZ());
+            if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3 && !positionCheck) {
+                mc.player.updatePosition(mc.player.getX(), mc.player.getY() + 0.3, mc.player.getZ());
+                positionCheck = true;
+            }
             if (mc.player.fallDistance == 0 && positionCheck) positionCheck = false;
         }
         else if (Objects.equals(mode.getMode(), "dev")) {
