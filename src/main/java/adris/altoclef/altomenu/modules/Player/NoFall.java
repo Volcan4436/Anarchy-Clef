@@ -47,7 +47,7 @@ public class NoFall extends Mod {
         }
         else if (Objects.equals(mode.getMode(), "Position")) {
             if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3 && !positionCheck) {
-                mc.player.updatePosition(mc.player.getX(), mc.player.getY() + 0.3, mc.player.getZ());
+                mc.player.updatePosition(mc.player.getX(), mc.player.getY() + 1, mc.player.getZ());
                 positionCheck = true;
             }
             if (mc.player.fallDistance == 0 && positionCheck) positionCheck = false;

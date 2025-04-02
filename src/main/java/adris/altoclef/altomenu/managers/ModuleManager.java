@@ -5,6 +5,7 @@ import adris.altoclef.altomenu.modules.Baritone.ChatBot;
 import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;
 import adris.altoclef.altomenu.modules.Movement.*;
 import adris.altoclef.altomenu.modules.Player.AntiHunger;
+import adris.altoclef.altomenu.modules.Player.NoFall;
 import adris.altoclef.altomenu.modules.Render.Fullbright;
 import adris.altoclef.altomenu.modules.Render.RenderTags;
 import adris.altoclef.altomenu.modules.Utility.Stealer;
@@ -97,6 +98,7 @@ public class ModuleManager {
 
         //Player
         addModule(new AntiHunger());
+        addModule(new NoFall());
 
         //Render
         addModule(new Fullbright());
