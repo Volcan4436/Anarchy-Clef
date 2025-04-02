@@ -8,6 +8,7 @@ import net.minecraft.block.Blocks;
 //todo
 // Add Bypass for UpdatedNoCheatPlus, Solid Mode (Collision) and DepthStriderSpoof (With EnchantLevel Option)
 // Add Legit Mode (Hold Jump Button to keep above water)
+// Add BucketNoSlow (Use WaterBucks to Remove 1 Block Deep Water to stop water slowdown)
 public class Jesus extends Mod {
 
     boolean isInsideWater = false;

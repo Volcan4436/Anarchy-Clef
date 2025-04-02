@@ -23,6 +23,8 @@ public class NoFall extends Mod {
 
     ModeSetting mode = new ModeSetting("Mode", "Velocity", "Velocity", "Jump", "Position", "dev");
     boolean velocityCheck = false; //we need a cleaner implementation
+    boolean positionCheck = false; //we need a cleaner implementation
+    boolean jumpCheck = false; //we need a cleaner implementation
 
     @EventHandler
     public boolean onShitTick() {
@@ -39,10 +41,12 @@ public class NoFall extends Mod {
             }
         }
         else if (Objects.equals(mode.getMode(), "Jump")) {
-            if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3) mc.player.jump();
+            if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3 && !jumpCheck) mc.player.jump();
+            if (mc.player.fallDistance == 0 && jumpCheck) jumpCheck = false;
         }
         else if (Objects.equals(mode.getMode(), "Position")) {
-            if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3) mc.player.updatePosition(mc.player.getX(), mc.player.getY() + 0.3, mc.player.getZ());
+            if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3 && !positionCheck) mc.player.updatePosition(mc.player.getX(), mc.player.getY() + 0.3, mc.player.getZ());
+            if (mc.player.fallDistance == 0 && positionCheck) positionCheck = false;
         }
         else if (Objects.equals(mode.getMode(), "dev")) {
             System.out.println("This is For Debug Purposes");
