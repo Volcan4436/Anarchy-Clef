@@ -13,10 +13,10 @@ public class Flight extends Mod {
     public Flight() {
         super("Flight", "Fly", Mod.Category.MOVEMENT);
     }
+
     ModeSetting mode = new ModeSetting("Mode", "Creative", "Creative", "Position");
     NumberSetting updateposY = new NumberSetting("Update Vertical", 0.1, 10, 1, 0.1);
     NumberSetting updateposH = new NumberSetting("Update Horizontal", 0.1, 10, 1, 0.1);
-
 
     @EventHandler
     public boolean onShitTick() {

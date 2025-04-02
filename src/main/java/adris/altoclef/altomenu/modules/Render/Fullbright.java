@@ -10,7 +10,7 @@ import adris.altoclef.altomenu.Mod;
 public class Fullbright extends Mod {
     public static Fullbright Instance;
     public Fullbright() {
-        super("Fullbright", "Full bright bull shit.", Mod.Category.DEVELOPMENT);
+        super("Fullbright", "Full bright bull shit.", Mod.Category.RENDER);
         Instance = this;
     }
     @Override

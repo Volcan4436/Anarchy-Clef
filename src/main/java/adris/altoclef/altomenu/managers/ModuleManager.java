@@ -4,6 +4,7 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.Baritone.ChatBot;
 import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;
 import adris.altoclef.altomenu.modules.Movement.*;
+import adris.altoclef.altomenu.modules.Player.AntiHunger;
 import adris.altoclef.altomenu.modules.Render.Fullbright;
 import adris.altoclef.altomenu.modules.Render.RenderTags;
 import adris.altoclef.altomenu.modules.Utility.Stealer;
@@ -75,7 +76,14 @@ public class ModuleManager {
     private void addModules() {
         //Baritone
         addModule(new ChatBot());
-        
+
+        //Combat
+
+        //Development
+
+        //Exploit
+        addModule(new UnlockRecipes());
+
         //Movement
         addModule(new AdvancedFly());
         addModule(new AutoJump());
@@ -87,15 +95,18 @@ public class ModuleManager {
         addModule(new Sprint());
         addModule(new Step());
 
-        //Exploit
-        addModule(new UnlockRecipes());
+        //Player
+        addModule(new AntiHunger());
 
         //Render
         addModule(new Fullbright());
         addModule(new RenderTags());
         addModule(new Jesus());
 
-        //Util-Dev
+
+        //Utility
         addModule(new Stealer());
+
+        //World
     }
 }

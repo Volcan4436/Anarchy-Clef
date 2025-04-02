@@ -4,10 +4,11 @@ import adris.altoclef.altomenu.Mod;
 
 //todo Render through walls
 //todo Hide Real Tags
+//todo Recode this to not use a Mixin
 public class RenderTags extends Mod {
     public static RenderTags Instance;
     public RenderTags() {
-        super("RenderTags", "Tag Renderer for entitys.", Mod.Category.DEVELOPMENT);
+        super("RenderTags", "Tag Renderer for entitys.", Mod.Category.RENDER);
         Instance = this;
     }
     @Override
