@@ -107,6 +107,16 @@ public class ClickGUI extends Screen {
                 frame.updatePositionNoMouse(frame.x, frame.y - 15);
             }
         }
+        if (key == GLFW.GLFW_KEY_RIGHT) {
+            for (Frame frame : frames) {
+                frame.updatePositionNoMouse(frame.x + 15, frame.y);
+            }
+        }
+        if (key == GLFW.GLFW_KEY_LEFT) {
+            for (Frame frame : frames) {
+                frame.updatePositionNoMouse(frame.x - 15, frame.y);
+            }
+        }
 
     }
 }
