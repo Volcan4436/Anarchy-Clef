@@ -7,7 +7,10 @@ import adris.altoclef.altomenu.modules.Movement.*;
 import adris.altoclef.altomenu.modules.Player.AntiHunger;
 import adris.altoclef.altomenu.modules.Player.NoFall;
 import adris.altoclef.altomenu.modules.Render.Fullbright;
+import adris.altoclef.altomenu.modules.Render.Radar;
 import adris.altoclef.altomenu.modules.Render.RenderTags;
+import adris.altoclef.altomenu.modules.Render.crosshairRGH;
+import adris.altoclef.altomenu.modules.Utility.PickPlus;
 import adris.altoclef.altomenu.modules.Utility.Stealer;
 
 import java.util.ArrayList;
@@ -84,6 +87,7 @@ public class ModuleManager {
 
         //Exploit
         addModule(new UnlockRecipes());
+        addModule(new PickPlus());
 
         //Movement
         addModule(new AdvancedFly());
@@ -104,6 +108,8 @@ public class ModuleManager {
         addModule(new Fullbright());
         addModule(new RenderTags());
         addModule(new Jesus());
+        addModule(new Radar());
+        addModule(new crosshairRGH());
 
 
         //Utility

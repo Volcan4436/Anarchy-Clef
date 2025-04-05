@@ -1,14 +1,10 @@
 package adris.altoclef.altomenu.modules.Baritone;
 
 import adris.altoclef.altomenu.Mod;
-import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerTickManager;
 import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.Mixin;
 
 //Todo
 // - Add Player Whitelist

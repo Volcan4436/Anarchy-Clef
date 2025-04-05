@@ -1,5 +1,7 @@
 package adris.altoclef;
 
+import adris.altoclef.altomenu.config.Config;
+import adris.altoclef.altomenu.config.configloader;
 import adris.altoclef.butler.Butler;
 import adris.altoclef.chains.*;
 import adris.altoclef.altomenu.*;
@@ -38,6 +40,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
@@ -71,6 +74,8 @@ public class AltoClef implements ModInitializer {
     private EntityTracker _entityTracker;
     private BlockTracker _blockTracker;
     private SimpleChunkTracker _chunkTracker;
+    private static final String name = "AltoClefCONFIG";
+    public static final String commandPrefix = "$";
     private MiscBlockTracker _miscBlockTracker;
     // Renderers
     private CommandStatusOverlay _commandStatusOverlay;
@@ -80,6 +85,7 @@ public class AltoClef implements ModInitializer {
     private MessageSender _messageSender;
     private InputControls _inputControls;
     private SlotHandler _slotHandler;
+    public static Config selectedConfig;
     // Butler
     private Butler _butler;
     protected static MinecraftClient mc = MinecraftClient.getInstance();
@@ -99,12 +105,30 @@ public class AltoClef implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        loadDefaultConfig();
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // As such, nothing will be loaded here but basic initialization.
         EventBus.subscribe(TitleScreenEntryEvent.class, evt -> onInitializeLoad());
     }
-
+    public static String getName() {
+        return name;
+    }
+    private void loadDefaultConfig() {
+        configloader configLoader = new configloader();
+        try {
+            configloader.loadConfigs(); // Load available configs from file
+            // Check if the default config already exists
+            Config defaultConfig = configLoader.getConfigByName("default");
+            if (defaultConfig == null) {
+                // If not, create a new default config and save it
+                Config newDefaultConfig = new Config("default", "Default Configuration");
+                configloader.saveNewConfig("default");
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception appropriately
+        }
+    }
     public void onInitializeLoad() {
         // This code should be run after Minecraft loads everything else in.
         // This is the actual start point, controlled by a mixin.
@@ -517,6 +541,7 @@ public class AltoClef implements ModInitializer {
         if (mc.player != null) {
             for (Mod module : ModuleManager.INSTANCE.getEnabledModules()) {
                 module.onShitTick();
+                module.onCockAndBallTorture();
             }
         }
     }

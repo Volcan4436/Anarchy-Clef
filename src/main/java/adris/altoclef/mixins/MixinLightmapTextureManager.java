@@ -1,6 +1,7 @@
 package adris.altoclef.mixins;
 
 import adris.altoclef.altomenu.modules.Render.Fullbright;
+import adris.altoclef.altomenu.modules.Render.Radar;
 import net.minecraft.client.render.LightmapTextureManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -2,6 +2,7 @@ package adris.altoclef.altomenu.modules.Movement;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.ModeSetting;
+import adris.altoclef.altomenu.sqdpkg.testbin;
 import adris.altoclef.eventbus.EventHandler;
 import net.minecraft.block.Blocks;
 
@@ -19,7 +20,7 @@ public class Jesus extends Mod {
     }
 
     //ModeSetting
-    ModeSetting mode = new ModeSetting("Mode", "Trampoline", "Trampoline", "dev");
+    ModeSetting mode = new ModeSetting("Mode", "Trampoline", "Trampoline", "Bypass");
 
     @Override
     public void onDisable() {
@@ -31,8 +32,6 @@ public class Jesus extends Mod {
         super.onEnable();
     }
 
-
-
     @EventHandler
     public boolean onShitTick() {
         //Check State
@@ -43,6 +42,11 @@ public class Jesus extends Mod {
         if (mode.getMode() == "Trampoline") {
             if (isInsideWater) {
                 mc.player.setVelocity(mc.player.getVelocity().x, 0.75, mc.player.getVelocity().z);
+            }
+        }
+        else if (mode.getMode() == "Bypass") {
+            if (isAboveWater) {
+                mc.player.setVelocity(mc.player.getVelocity().x, 0.1, mc.player.getVelocity().z);
             }
         }
 

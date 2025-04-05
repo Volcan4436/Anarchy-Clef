@@ -70,7 +70,9 @@ public class Mod {
     public void onEnable() {
 
     }
-
+    public boolean onBoolEnable() {
+        return false;
+    }
     public void onDisable() {
 
     }
@@ -126,16 +128,19 @@ public class Mod {
     public boolean onShitTick() {
         return false;
     }
+    public boolean onCockAndBallTorture() {
+       // if (mc.player.CockandBallTorture()) return true;
+        return false;
+    }
 
 
     public void onTick() {
     }
-
+    public static void onStaticTick() {
+    }
     public static boolean nullCheck(){
         return MinecraftClient.getInstance().world == null || MinecraftClient.getInstance().player == null;
     }
-
-
     public int onIntTick() {
 
         return intset;

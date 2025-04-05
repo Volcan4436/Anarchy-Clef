@@ -23,7 +23,9 @@
     "ChatReadMixin",
     "ClientBlockBreakMixin",
     "ClientOpenScreenMixin",
+    "ClientPlayNetworkHandlerMixin",
     "ClientTickMixin",
+    "CrosshairWaveMixin",
     "EntityTextMixin",
     "EntryMixin",
     "KeyboardMixin",
@@ -31,6 +33,7 @@
     "MixinLightmapTextureManager",
     "MixinLocalPlayer",
     "PlayerCollidesWithEntityMixin",
+    "RadarMixin",
     "WorldRenderMixin"
   ],
   "injectors": {
