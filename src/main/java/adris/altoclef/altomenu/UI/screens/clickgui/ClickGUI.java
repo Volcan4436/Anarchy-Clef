@@ -4,6 +4,7 @@ import adris.altoclef.altomenu.Mod;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ import static adris.altoclef.altomenu.UI.screens.clickgui.ModuleButton.mc;
 public class ClickGUI extends Screen {
 
     private final List<Frame> frames;
+
+    boolean pressed = false;
+
 
     public ClickGUI() {
         super(Text.literal("ClickGUI"));
@@ -85,7 +89,24 @@ public class ClickGUI extends Screen {
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
+
     public static void open() {
         mc.setScreen(INSTANCE);
+    }
+
+
+    public void onKeypress(int key, int action) {
+
+        if (key == GLFW.GLFW_KEY_DOWN) {
+            for (Frame frame : frames) {
+                frame.updatePositionNoMouse(frame.x, frame.y + 15);
+            }
+        }
+        if (key == GLFW.GLFW_KEY_UP) {
+            for (Frame frame : frames) {
+                frame.updatePositionNoMouse(frame.x, frame.y - 15);
+            }
+        }
+
     }
 }

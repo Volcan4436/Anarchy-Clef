@@ -7,6 +7,11 @@ import adris.altoclef.eventbus.EventHandler;
 
 public class AntiHunger extends Mod {
 
+    //todo:
+    // Add Sprint Spoof (Packet & Legit) (Legit cancels Sprint Press Client Side) (Packet cancels Sprint Packet on Send)
+    // Add Ground Spoof (Packet) (Send onGround Packet Every So Many Ticks)
+    // Attempt to find a way to lower hunger usage when spamming jump button under a block that doesn't require Constant Packet Spoof (@ChiefWarCry can you attempt it)
+
     public AntiHunger() {
         super("AntiHunger", "Prevents hunger from decreasing.", Mod.Category.PLAYER);
     }

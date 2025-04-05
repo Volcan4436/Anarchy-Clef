@@ -12,7 +12,7 @@ public class NoFall extends Mod {
 
     //todo:
     // modes: Vanilla, Clutch (Attempts to Decrease Damage by Placing Blocks below you), PacketAbuse, NCP, Matrix (Decrease + Full), GroundSpoof, NoGround, Collision
-    // Add 1.8 Fix (Makes our modes work on 1.8)
+    // Add 1.8 Fix (Makes our modes work on 1.8) (Essentially GroundSpoofing)
     // Add Boat Clutch (And AutoBreak option using an Axe)
     // Support WaterBucket (Use the Bot's Clutch Feature)
     // Hook into Baritone (Allow Baritone to Toggle this Module as a FailSafe if there is no Bucket and SafeMode isn't on)

@@ -41,7 +41,7 @@ public class AdvancedFly extends Mod {
     @EventHandler
     public boolean onShitTick() {
         assert mc.player != null;
-        ticks++;
+        ticks++; //Keeps track of Ticks
 
         //Fly
         if (flyMethod.getMode() == "Position") {
@@ -103,6 +103,9 @@ public class AdvancedFly extends Mod {
         }
 
         //AntiKick
+        // todo:
+        //  - Add DelayOption
+        //  - Add GroundSpoofOption
         if (antiKick.getMode() == "Glide") {
             if (!mc.player.isOnGround() && ticks >= 20) {
                 mc.player.setVelocity(mc.player.getVelocity().x, -0.3, mc.player.getVelocity().z);
@@ -120,10 +123,14 @@ public class AdvancedFly extends Mod {
         }
 
         //Spoof Fly
+        // todo:
+        //  - Add Flight Speed Option
         if (!mc.player.isCreative() && spoofCanFly.isEnabled() && !mc.player.getAbilities().allowFlying) mc.player.getAbilities().allowFlying = true;
         else if (!spoofCanFly.isEnabled() && !mc.player.isCreative()) mc.player.getAbilities().allowFlying = false;
 
         //Yaw & Pitch
+        // todo:
+        //  - Add ServerSide Spoofer Option
         if (forceRotation.isEnabled()) {
             mc.player.setYaw(forceYaw.getValuefloat());
             mc.player.setPitch(forcePitch.getValuefloat());

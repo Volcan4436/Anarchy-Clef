@@ -5,6 +5,7 @@ import adris.altoclef.altomenu.UI.screens.clickgui.setting.Component;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class Frame {
 
     private final List<ModuleButton> buttons;
 
-    protected MinecraftClient mc = MinecraftClient.getInstance();
+    protected static MinecraftClient mc = MinecraftClient.getInstance();
     public Frame(Mod.Category category, int x, int y, int width, int height) {
         this.category = category;
         this.x = x;
@@ -97,6 +98,11 @@ public class Frame {
         }
     }
 
+    public void updatePositionNoMouse(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public void updateButtons() {
         int offset = height;
 
@@ -111,5 +117,4 @@ public class Frame {
             }
         }
     }
-
 }

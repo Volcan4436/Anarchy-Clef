@@ -498,14 +498,14 @@ public class AltoClef implements ModInitializer {
 
     // Cheat Menu Stuff
 
-/*    public void onKeypress(int key, int action) {
+    public void onKeypress(int key, int action) {
         if (action == GLFW.GLFW_PRESS) {
             for (Mod module : ModuleManager.INSTANCE.getModules()) {
                 if (key == module.getKey()) module.toggle();
             }
             if (key == GLFW.GLFW_KEY_INSERT) mc.setScreen(ClickGUI.INSTANCE);
         }
-    }*/
+    }
 
     public void openClickGUI() {
         assert mc.currentScreen != null;
