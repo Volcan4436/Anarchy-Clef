@@ -22,7 +22,7 @@ public class AutoJump extends Mod {
         if (mc.player == null) return true;
         if (inputFix.isEnabled() && mc.player.isOnGround()) mc.options.jumpKey.setPressed(false);
         if (CMoveUtil.isMoving() && CMoveUtil.isOnGround() && onMove.isEnabled()) mc.player.jump();
-        else if (CMoveUtil.isOnGround()) mc.player.jump();
+        else if (CMoveUtil.isOnGround() && !onMove.isEnabled()) mc.player.jump();
         return false;
     }
 }

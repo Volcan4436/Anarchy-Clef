@@ -26,6 +26,7 @@ public class NoFall extends Mod {
     boolean positionCheck = false; //we need a cleaner implementation
     boolean jumpCheck = false; //we need a cleaner implementation
 
+    //TODO ASAP: Fix these to work at any fall distance @ChiefWarCry
     @EventHandler
     public boolean onShitTick() {
         if (mc.world == null || mc.player == null) return true;

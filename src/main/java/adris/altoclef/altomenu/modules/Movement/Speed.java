@@ -6,7 +6,7 @@ import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.eventbus.EventHandler;
 
 //todo
-// Add Modes: PhysicsCalc, onGround, Strict, NCPStrict, Grim (Entity + YawSpoof), Matrix7
+// Add Modes: PhysicsCalc, onGround, Strict, NCPStrict, Grim (Entity + YawSpoof), Matrix7, 5b5tFast, 5b5tStrict
 // Add SetBack Toggle
 // Add LowHop (Similar to Future Client)
 // Create AdvancedSpeed Module

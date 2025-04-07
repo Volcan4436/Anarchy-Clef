@@ -6,10 +6,7 @@ import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;
 import adris.altoclef.altomenu.modules.Movement.*;
 import adris.altoclef.altomenu.modules.Player.AntiHunger;
 import adris.altoclef.altomenu.modules.Player.NoFall;
-import adris.altoclef.altomenu.modules.Render.Fullbright;
-import adris.altoclef.altomenu.modules.Render.Radar;
-import adris.altoclef.altomenu.modules.Render.RenderTags;
-import adris.altoclef.altomenu.modules.Render.crosshairRGH;
+import adris.altoclef.altomenu.modules.Render.*;
 import adris.altoclef.altomenu.modules.Utility.PickPlus;
 import adris.altoclef.altomenu.modules.Utility.Stealer;
 
@@ -110,6 +107,7 @@ public class ModuleManager {
         addModule(new Jesus());
         addModule(new Radar());
         addModule(new crosshairRGH());
+        addModule(new ESP());
 
 
         //Utility

@@ -8,6 +8,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,6 +29,14 @@ public class EntityTextMixin {
         if (entity instanceof ItemEntity || entity == client.player) {
             return; // Skip items and player
         }
+
+        String entityName = entity.getType().getName().getString();
+
+        if (entity instanceof ItemEntity) {
+            Item item = ((ItemEntity) entity).getStack().getItem();
+            entityName = item.getName().getString();
+        }
+
 
         double distanceSq = client.player.squaredDistanceTo(entity);
         if (distanceSq > 400) {

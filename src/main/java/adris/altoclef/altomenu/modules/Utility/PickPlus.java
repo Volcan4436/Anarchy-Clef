@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class PickPlus extends Mod {
 
     public PickPlus() {
-        super("Exploit", "Leploit", Mod.Category.DEVELOPMENT);
+        super("PacketMine", "Leploit", Mod.Category.DEVELOPMENT);
     }
 
     ModeSetting mode = new ModeSetting("Mode", "DefaultMode", "Mode1", "Mode2", "Mode3");

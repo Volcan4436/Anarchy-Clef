@@ -527,7 +527,7 @@ public class AltoClef implements ModInitializer {
             for (Mod module : ModuleManager.INSTANCE.getModules()) {
                 if (key == module.getKey()) module.toggle();
             }
-            if (key == GLFW.GLFW_KEY_INSERT) mc.setScreen(ClickGUI.INSTANCE);
+            if (key == GLFW.GLFW_KEY_INSERT) mc.setScreenAndRender(ClickGUI.INSTANCE);
         }
     }
 

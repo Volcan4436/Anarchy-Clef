@@ -7,14 +7,18 @@ import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
 
-//We Will Need a scrollable ClickGUI for this at some point
-// as well as the ability to change Settings of a Module with commands
+// We Will Need the ability to change Settings of a Module with commands at some point
 //todo:
 // add ElytraPacket Spammer (Can Allow us to mess with older Anticheats)
+// add BlockPhase Methods (MightBeUseful For CrystalPvP movement setup)
 // add Position Shifter (Shift our position in a really small area as we move to mess with Anticheats)
 // add Stutter (Stutter our movement to mess with Anticheats)
 // add GroundSpoof Spammer (Can help with FallDamage and might cause Disablers)
 // add Blink
+// add Elytra Packet Method (Similar to Meteor)
+// add LongJump Style Methods
+// add Position Abuse (Shifts your Position randomly to mess with Anticheats)
+// add Standard Disabler Methods (KeepAlive, Transaction, PingSpoof, Blink, IncreaseYPositionSpam, GroundSpoof, AutoVoid *ForBedwarsServers*)
 // add SlowFall Potion Effect Spoofer
 // Add Strict Mode that uses a yawStep to slow your rotations that might help with bypassing
 // Add Option to Start Fly Under a Block (For Legacy Anticheat Support)
@@ -31,6 +35,9 @@ public class AdvancedFly extends Mod {
     BooleanSetting spoofCanFly = new BooleanSetting("Ability", false);
     ModeSetting antiKick = new ModeSetting("Anti-Kick", "None", "None", "Glide", "Position", "Jump");
     BooleanSetting strafe = new BooleanSetting("Strafe", false);
+    BooleanSetting damageBoost = new BooleanSetting("Damage-Boost", false);
+    NumberSetting boostAmount = new NumberSetting("Boost-Amount", 0, 20, 2, 0.1);
+    NumberSetting boostTicks = new NumberSetting("Boost-Ticks", 1, 20, 5, 1);
     ModeSetting flyMethod = new ModeSetting("Fly-Method", "Position", "Position", "Velocity", "None", "Dev");
     NumberSetting vertical = new NumberSetting("Vertical", 0.1, 10, 1, 0.1);
     NumberSetting horizontal = new NumberSetting("Horizontal", 0.1, 10, 1, 0.1);
@@ -134,6 +141,22 @@ public class AdvancedFly extends Mod {
         if (forceRotation.isEnabled()) {
             mc.player.setYaw(forceYaw.getValuefloat());
             mc.player.setPitch(forcePitch.getValuefloat());
+        }
+
+        //DamageBoost
+        // todo:
+        //  - Add Setback Detection
+        //  - Add BoostMethod (Position, Velocity, PacketAbuse)
+        if (damageBoost.isEnabled() && mc.player.hurtTime < boostTicks.getValueInt()) {
+            float yaw = mc.player.getYaw();
+            double radians = Math.toRadians(yaw);
+            double power = boostAmount.getValuefloat();
+
+            // Calculate velocity components based on yaw
+            double xVelocity = -Math.sin(radians) * power;
+            double zVelocity = Math.cos(radians) * power;
+
+            mc.player.setVelocity(xVelocity, mc.player.getVelocity().y, zVelocity);
         }
 
         return false;
