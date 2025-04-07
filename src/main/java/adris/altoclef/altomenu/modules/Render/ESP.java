@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
@@ -22,6 +23,7 @@ public class ESP extends Mod {
     public ESP() {
         super("ESP", "ESP", Mod.Category.RENDER);
     }
+
 
     public BooleanSetting players = new BooleanSetting("Players", true);
     public BooleanSetting monsters = new BooleanSetting("Monsters", true);
@@ -83,6 +85,9 @@ public class ESP extends Mod {
         }
         super.onWorldRender(matrices);
     }
+
+
+
     void renderOutline(Entity e, Color color, MatrixStack stack) {
         float red = color.getRed() / 255f;
         float green = color.getGreen() / 255f;
@@ -248,7 +253,7 @@ public class ESP extends Mod {
         stack.pop();
     }
 
-    // Render a Line to all entities from the player
+    //Render a Line to all entities from the player
     void renderLine(Entity entity, Color color, MatrixStack stack) {
         float red = color.getRed() / 255f;
         float green = color.getGreen() / 255f;
@@ -258,19 +263,44 @@ public class ESP extends Mod {
         Vec3d playerPos = mc.player.getPos();
         Vec3d entityPos = entity.getPos();
 
+        Vec3d playerVec = new Vec3d(playerPos.getX() + 0.5, playerPos.getY() + 0.5, playerPos.getZ() + 0.5);
+        Vec3d entityVec = new Vec3d(entityPos.getX() + 0.5, entityPos.getY() + 0.5, entityPos.getZ() + 0.5);
+
+        Camera c = mc.gameRenderer.getCamera();
+        Vec3d camPos = c.getPos();
+
+        Vec3d start = playerVec.subtract(camPos);
+        Vec3d end = entityVec.subtract(camPos);
+
+        float startX = (float) start.x;
+        float startY = (float) start.y;
+        float startZ = (float) start.z;
+
+        float endX = (float) end.x;
+        float endY = (float) end.y;
+        float endZ = (float) end.z;
+
+// Interpolation factor (0 = start, 1 = end)
+        float interpFactor = 0.5f; // adjust this value to change the interpolation speed
+
+        float interpX = startX + (endX - startX) * interpFactor;
+        float interpY = startY + (endY - startY) * interpFactor;
+        float interpZ = startZ + (endZ - startZ) * interpFactor;
+
         stack.push();
+
         Matrix4f matrix = stack.peek().getPositionMatrix();
         BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         GL11.glDepthFunc(GL11.GL_ALWAYS);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 0.7f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.defaultBlendFunc();
-        RenderSystem.enableBlend();   // debug lines
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES,
-                VertexFormats.POSITION_COLOR);
-        buffer.vertex(matrix, (float) playerPos.x, (float) playerPos.y, (float) playerPos.z).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, (float) entityPos.x, (float) entityPos.y, (float) entityPos.z).color(red, green, blue, alpha).next();
+        RenderSystem.enableBlend();
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+
+        buffer.vertex(matrix, interpX, interpY, interpZ).color(red, green, blue, alpha).next();
+        buffer.vertex(matrix, endX, endY, endZ).color(red, green, blue, alpha).next();
+
         BufferRenderer.drawWithGlobalProgram(buffer.end());
         GL11.glDepthFunc(GL11.GL_LEQUAL);
         RenderSystem.disableBlend();
