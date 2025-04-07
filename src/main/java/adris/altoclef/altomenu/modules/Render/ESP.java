@@ -1,6 +1,7 @@
 package adris.altoclef.altomenu.modules.Render;
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.eventbus.EventHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -24,12 +25,15 @@ public class ESP extends Mod {
         super("ESP", "ESP", Mod.Category.RENDER);
     }
 
-
     public BooleanSetting players = new BooleanSetting("Players", true);
     public BooleanSetting monsters = new BooleanSetting("Monsters", true);
     public BooleanSetting passives = new BooleanSetting("Passives", true);
     public BooleanSetting invisibles = new BooleanSetting("Invisibles", true);
     public BooleanSetting tracers = new BooleanSetting("Tracers", true);
+
+    public static ESP getInstance() {
+        return (ESP) ModuleManager.INSTANCE.getModuleByName("ESP");
+    }
 
 
     @EventHandler
@@ -51,6 +55,8 @@ public class ESP extends Mod {
         if (passives.isEnabled() && (entity instanceof PassiveEntity || entity instanceof Entity)) return true;
         return invisibles.isEnabled() && entity.isInvisible();
     }
+
+
     @Override
     public void onWorldRender(MatrixStack matrices) {
         if (this.isEnabled()) {
@@ -58,7 +64,7 @@ public class ESP extends Mod {
             for (PlayerEntity entity : mc.world.getPlayers()) {
                 if (!(entity instanceof ClientPlayerEntity) && entity instanceof PlayerEntity) {
                     renderOutline(entity, new Color(255, 255, 255), matrices);
-                    renderLine(entity, new Color(255, 255, 255), matrices);
+                    if (tracers.isEnabled()) renderLine(entity, new Color(255, 255, 255), matrices);
 
                     renderHealthBG(entity, new Color(0, 0, 0, 255), matrices);
                     if (entity.getHealth() > 13) renderHealth(entity, new Color(0, 255, 0), matrices);
@@ -72,22 +78,19 @@ public class ESP extends Mod {
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof Monster) {
                     renderOutline(entity, new Color(255, 0, 0), matrices);
-                    renderLine(entity, new Color(255, 0, 0), matrices);
+                    if (tracers.isEnabled()) renderLine(entity, new Color(255, 0, 0), matrices);
                 }
             }
             // do the same for passives
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof PassiveEntity) {
                     renderOutline(entity, new Color(0, 255, 0), matrices);
-                    renderLine(entity, new Color(0, 255, 0), matrices);
+                    if (tracers.isEnabled()) renderLine(entity, new Color(0, 255, 0), matrices);
                 }
             }
         }
         super.onWorldRender(matrices);
     }
-
-
-
     void renderOutline(Entity e, Color color, MatrixStack stack) {
         float red = color.getRed() / 255f;
         float green = color.getGreen() / 255f;
@@ -260,11 +263,12 @@ public class ESP extends Mod {
         float blue = color.getBlue() / 255f;
         float alpha = color.getAlpha() / 255f;
 
+        //get player position and entity position
         Vec3d playerPos = mc.player.getPos();
         Vec3d entityPos = entity.getPos();
 
-        Vec3d playerVec = new Vec3d(playerPos.getX() + 0.5, playerPos.getY() + 0.5, playerPos.getZ() + 0.5);
-        Vec3d entityVec = new Vec3d(entityPos.getX() + 0.5, entityPos.getY() + 0.5, entityPos.getZ() + 0.5);
+        Vec3d playerVec = new Vec3d(playerPos.getX(), playerPos.getY(), playerPos.getZ());
+        Vec3d entityVec = new Vec3d(entityPos.getX(), entityPos.getY(), entityPos.getZ());
 
         Camera c = mc.gameRenderer.getCamera();
         Vec3d camPos = c.getPos();
@@ -280,13 +284,6 @@ public class ESP extends Mod {
         float endY = (float) end.y;
         float endZ = (float) end.z;
 
-// Interpolation factor (0 = start, 1 = end)
-        float interpFactor = 0.5f; // adjust this value to change the interpolation speed
-
-        float interpX = startX + (endX - startX) * interpFactor;
-        float interpY = startY + (endY - startY) * interpFactor;
-        float interpZ = startZ + (endZ - startZ) * interpFactor;
-
         stack.push();
 
         Matrix4f matrix = stack.peek().getPositionMatrix();
@@ -298,7 +295,7 @@ public class ESP extends Mod {
         RenderSystem.enableBlend();
         buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 
-        buffer.vertex(matrix, interpX, interpY, interpZ).color(red, green, blue, alpha).next();
+        buffer.vertex(matrix, startX, startY, startZ).color(red, green, blue, alpha).next();
         buffer.vertex(matrix, endX, endY, endZ).color(red, green, blue, alpha).next();
 
         BufferRenderer.drawWithGlobalProgram(buffer.end());

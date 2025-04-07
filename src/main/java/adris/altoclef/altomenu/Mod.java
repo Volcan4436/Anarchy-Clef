@@ -36,6 +36,10 @@ public class Mod {
     public void onWorldRender(MatrixStack matrices) {
     }
 
+    public void onRender(MatrixStack matrices) {
+
+    }
+
     public Mod(String name, String description, Category category) {
         this.name = name;
         this.displayName = name;
