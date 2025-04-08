@@ -4,10 +4,7 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.eventbus.EventHandler;
-import adris.altoclef.util.math.InterpUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,7 +12,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.stat.StatHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
@@ -66,7 +62,7 @@ public class ESP extends Mod {
             for (PlayerEntity entity : mc.world.getPlayers()) {
                 if (!(entity instanceof ClientPlayerEntity) && entity instanceof PlayerEntity) {
                     renderOutline(entity, new Color(255, 255, 255), matrices);
-                    if (tracers.isEnabled() && players.isEnabled()) renderLine(entity, new Color(255, 255, 255), matrices);
+                    if (tracers.isEnabled()) renderLine(entity, new Color(255, 255, 255), matrices);
 
                     renderHealthBG(entity, new Color(0, 0, 0, 255), matrices);
                     if (entity.getHealth() > 13) renderHealth(entity, new Color(0, 255, 0), matrices);
@@ -80,60 +76,104 @@ public class ESP extends Mod {
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof Monster) {
                     renderOutline(entity, new Color(255, 0, 0), matrices);
-                    if (tracers.isEnabled() && monsters.isEnabled()) renderLine(entity, new Color(255, 0, 0), matrices);
+                    if (tracers.isEnabled()) renderLine(entity, new Color(255, 0, 0), matrices);
                 }
             }
             // do the same for passives
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof PassiveEntity) {
                     renderOutline(entity, new Color(0, 255, 0), matrices);
-                    if (tracers.isEnabled() && passives.isEnabled()) renderLine(entity, new Color(0, 255, 0), matrices);
+                    if (tracers.isEnabled()) renderLine(entity, new Color(0, 255, 0), matrices);
                 }
             }
         }
         super.onWorldRender(matrices);
     }
-    void renderOutline(Entity e, Color color, MatrixStack stack) {
+    void renderOutline(Entity entity, Color color, MatrixStack stack) {
+        // Disable depth test for through-block rendering
+        RenderSystem.disableDepthTest();
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+        // Convert color components
         float red = color.getRed() / 255f;
         float green = color.getGreen() / 255f;
         float blue = color.getBlue() / 255f;
         float alpha = color.getAlpha() / 255f;
-        Camera c = mc.gameRenderer.getCamera();
-        Vec3d camPos = c.getPos();
-        Vec3d start = e.getPos().subtract(camPos);
-        float x = (float) start.x;
-        float y = (float) start.y;
-        float z = (float) start.z;
 
-        double r = Math.toRadians(-c.getYaw() + 90);
-        float sin = (float) (Math.sin(r) * (e.getWidth() / 1.7));
-        float cos = (float) (Math.cos(r) * (e.getWidth() / 1.7));
+        // Get interpolated position
+        float tickDelta = mc.getTickDelta();
+        Vec3d entityPos = prevEntityPositions.getOrDefault(entity, entity.getPos())
+                .lerp(entity.getPos(), tickDelta);
+
+        // Get camera position
+        Camera camera = mc.gameRenderer.getCamera();
+        Vec3d camPos = camera.getPos();
+
+        // Calculate relative position (center of entity)
+        Vec3d center = entityPos.subtract(camPos).add(0, entity.getHeight()/2, 0);
+        float x = (float) center.x;
+        float y = (float) center.y;
+        float z = (float) center.z;
+
+        // Calculate rotation once
+        double rotation = Math.toRadians(-camera.getYaw() + 90);
+        float sin = (float) (Math.sin(rotation) * (entity.getWidth() / 1.7));
+        float cos = (float) (Math.cos(rotation) * (entity.getWidth() / 1.7));
+
+        // Setup rendering
         stack.push();
-
-        Matrix4f matrix = stack.peek().getPositionMatrix();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        GL11.glDepthFunc(GL11.GL_ALWAYS);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.defaultBlendFunc();
         RenderSystem.enableBlend();
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES,
-                VertexFormats.POSITION_COLOR);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
-        buffer.vertex(matrix, x + sin, y, z + cos).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, x - sin, y, z - cos).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, x - sin, y, z - cos).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, x - sin, y + e.getHeight(), z - cos).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, x - sin, y + e.getHeight(), z - cos).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, x + sin, y + e.getHeight(), z + cos).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, x + sin, y + e.getHeight(), z + cos).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, x + sin, y, z + cos).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, x + sin, y, z + cos).color(red, green, blue, alpha).next();
+        // Enhanced line rendering
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+        GL11.glLineWidth(1.8f);
+        GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
+        // Get matrix after all transformations
+        Matrix4f matrix = stack.peek().getPositionMatrix();
+
+        // Build buffer
+        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+
+        // Draw box outline (optimized to avoid duplicate vertices)
+        float halfHeight = entity.getHeight()/2;
+
+        // Bottom square
+        buffer.vertex(matrix, x + sin, y - halfHeight, z + cos).color(red, green, blue, alpha).next();
+        buffer.vertex(matrix, x - sin, y - halfHeight, z - cos).color(red, green, blue, alpha).next();
+
+        buffer.vertex(matrix, x - sin, y - halfHeight, z - cos).color(red, green, blue, alpha).next();
+        buffer.vertex(matrix, x - sin, y + halfHeight, z - cos).color(red, green, blue, alpha).next();
+
+        buffer.vertex(matrix, x - sin, y + halfHeight, z - cos).color(red, green, blue, alpha).next();
+        buffer.vertex(matrix, x + sin, y + halfHeight, z + cos).color(red, green, blue, alpha).next();
+
+        buffer.vertex(matrix, x + sin, y + halfHeight, z + cos).color(red, green, blue, alpha).next();
+        buffer.vertex(matrix, x + sin, y - halfHeight, z + cos).color(red, green, blue, alpha).next();
+
+        // Vertical lines
+        buffer.vertex(matrix, x + sin, y - halfHeight, z + cos).color(red, green, blue, alpha).next();
+        buffer.vertex(matrix, x + sin, y + halfHeight, z + cos).color(red, green, blue, alpha).next();
+
+        buffer.vertex(matrix, x - sin, y - halfHeight, z - cos).color(red, green, blue, alpha).next();
+        buffer.vertex(matrix, x - sin, y + halfHeight, z - cos).color(red, green, blue, alpha).next();
+
+        // Draw
         BufferRenderer.drawWithGlobalProgram(buffer.end());
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
+
+        // Restore GL state
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
         RenderSystem.disableBlend();
         stack.pop();
+
+        // Restore depth test
+        RenderSystem.enableDepthTest();
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
     }
     void renderHealthOutline(PlayerEntity e, Color color, MatrixStack stack) {
         float red = color.getRed() / 255f;
@@ -257,7 +297,6 @@ public class ESP extends Mod {
         RenderSystem.disableBlend();
         stack.pop();
     }
-
 
     //Render a Line to all entities from the player
     private Vec3d prevPlayerPos = Vec3d.ZERO;

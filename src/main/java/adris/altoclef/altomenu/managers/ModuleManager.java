@@ -2,12 +2,15 @@ package adris.altoclef.altomenu.managers;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.Baritone.ChatBot;
+import adris.altoclef.altomenu.modules.Combat.FakeEntity;
 import adris.altoclef.altomenu.modules.Combat.NewCrystalAura;
+import adris.altoclef.altomenu.modules.Combat.Surround;
 import adris.altoclef.altomenu.modules.Development.FakeRotation;
 import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;
 import adris.altoclef.altomenu.modules.Movement.*;
 import adris.altoclef.altomenu.modules.Player.AntiHunger;
 import adris.altoclef.altomenu.modules.Player.NoFall;
+import adris.altoclef.altomenu.modules.Player.NoSlow;
 import adris.altoclef.altomenu.modules.Player.Velocity;
 import adris.altoclef.altomenu.modules.Render.*;
 import adris.altoclef.altomenu.modules.Utility.PickPlus;
@@ -83,6 +86,7 @@ public class ModuleManager {
 
         //Combat
         addModule(new NewCrystalAura());
+        addModule(new Surround());
 
         //Development
         addModule(new FakeRotation());
@@ -106,6 +110,7 @@ public class ModuleManager {
         //Player
         addModule(new AntiHunger());
         addModule(new NoFall());
+        addModule(new NoSlow());
 
         //Render
         addModule(new Fullbright());
@@ -120,5 +125,6 @@ public class ModuleManager {
         addModule(new Stealer());
 
         //World
+        addModule(new FakeEntity());
     }
 }

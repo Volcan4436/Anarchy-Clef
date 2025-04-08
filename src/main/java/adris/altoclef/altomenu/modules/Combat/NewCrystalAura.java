@@ -21,7 +21,6 @@ import net.minecraft.world.World;
 
 public class NewCrystalAura extends Mod {
 
-    // Settings (same as before)
     BooleanSetting AntiDeath = new BooleanSetting("AntiDeath", true);
     BooleanSetting Rotate = new BooleanSetting("Rotate", false);
     BooleanSetting EveryEntity = new BooleanSetting("EveryEntity", true);
@@ -38,25 +37,21 @@ public class NewCrystalAura extends Mod {
     NumberSetting BreakDistance = new NumberSetting("BreakDistance", 1, 8, 5, 1);
     NumberSetting PlaceDistance = new NumberSetting("PlaceDistance", 1, 8, 5, 1);
 
-    // Optimization variables
     private int timer = 0;
     private boolean shouldPlace = true;
     private BlockPos lastPlacePos = null;
     private EndCrystalEntity lastCrystal = null;
-    private double rotation;
 
     public NewCrystalAura() {
         super("CrystalAura++", "Optimized Crystal Aura", Category.COMBAT);
-        // Add settings (same as before)
         addSettings(AntiDeath, Rotate, EveryEntity, PacketAttack, InstantBreak,
                 SwingTolerance, Outline, MultiPlace, MultiBreak, SmartTargeting,
                 Speed, EntityDistance, BreakDistance, PlaceDistance);
     }
 
-
     @Override
     public void onRender() {
-        // mc.player.setBodyYaw(rotation);
+        // Optional visual stuff
     }
 
     @Override
@@ -67,24 +62,22 @@ public class NewCrystalAura extends Mod {
         if (timer < Speed.getValue()) return false;
         timer = 0;
 
-        // Break crystals first if found
         EndCrystalEntity crystal = findOptimalCrystal();
         if (crystal != null) {
             breakCrystal(crystal);
-            shouldPlace = true; // Ready to place next tick
+            shouldPlace = true;
             return true;
         }
 
-        // Then try to place if conditions are met
         if (shouldPlace && hasCrystalInOffhand()) {
             BlockPos placePos = findOptimalPlacePos();
             if (placePos != null) {
                 placeCrystal(placePos);
-                shouldPlace = !MultiPlace.isEnabled(); // Only toggle if not multi-place
+                shouldPlace = !MultiPlace.isEnabled();
                 return true;
             }
         } else {
-            shouldPlace = true; // Reset if we couldn't place
+            shouldPlace = true;
         }
 
         return false;
@@ -101,7 +94,6 @@ public class NewCrystalAura extends Mod {
             double distSq = mc.player.squaredDistanceTo(entity);
             if (distSq > maxDistSq) continue;
 
-            // Score based on distance and if it's the same crystal as last time
             double score = distSq * (entity == lastCrystal ? 0.9 : 1.0);
             if (score < bestScore) {
                 bestScore = score;
@@ -138,7 +130,6 @@ public class NewCrystalAura extends Mod {
                     double distSq = targetPos.squaredDistanceTo(Vec3d.ofCenter(mutablePos));
                     if (distSq > maxDistSq) continue;
 
-                    // Score based on distance and if it's the same position as last time
                     double score = distSq * (mutablePos.equals(lastPlacePos) ? 0.9 : 1.0);
                     if (score < bestScore) {
                         bestScore = score;
@@ -176,7 +167,8 @@ public class NewCrystalAura extends Mod {
     }
 
     private void placeCrystal(BlockPos pos) {
-        Vec3d hitVec = Vec3d.ofCenter(pos).add(0, 1, 0);
+        // Hit vector must simulate a real player click (center of top of block)
+        Vec3d hitVec = Vec3d.ofCenter(pos).add(0, 0.5, 0);
         BlockHitResult hitResult = new BlockHitResult(hitVec, Direction.UP, pos, false);
 
         mc.player.networkHandler.sendPacket(
@@ -199,7 +191,6 @@ public class NewCrystalAura extends Mod {
         }
     }
 
-    // Helper methods (optimized versions)
     private Entity findClosestEntity(double maxDistance) {
         double maxDistSq = maxDistance * maxDistance;
         Entity closest = null;
@@ -242,7 +233,7 @@ public class NewCrystalAura extends Mod {
     private boolean isInDeathZone(BlockPos pos) {
         Vec3d playerPos = mc.player.getPos();
         Vec3d blockCenter = Vec3d.ofCenter(pos);
-        return playerPos.squaredDistanceTo(blockCenter) <= 9.0; // 3 blocks
+        return playerPos.squaredDistanceTo(blockCenter) <= 9.0;
     }
 
     private boolean hasCrystalInOffhand() {

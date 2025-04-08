@@ -23,6 +23,7 @@
     "ChatReadMixin",
     "ClientBlockBreakMixin",
     "ClientOpenScreenMixin",
+    "ClientPlayerMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientTickMixin",
     "CrosshairWaveMixin",
