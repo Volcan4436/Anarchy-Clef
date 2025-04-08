@@ -18,6 +18,8 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ESP extends Mod {
 
@@ -36,11 +38,7 @@ public class ESP extends Mod {
     }
 
 
-    @EventHandler
-    public boolean onShitTick() {
-        super.onTick();
-        return false;
-    }
+
     @Override
     public void onEnable() {
         super.onEnable();
@@ -257,51 +255,74 @@ public class ESP extends Mod {
     }
 
     //Render a Line to all entities from the player
+    private Vec3d prevPlayerPos = Vec3d.ZERO;
+    private Vec3d prevEntityPos = Vec3d.ZERO;
+    private Map<Entity, Vec3d> prevEntityPositions = new HashMap<>();
     void renderLine(Entity entity, Color color, MatrixStack stack) {
+        // Convert color components
         float red = color.getRed() / 255f;
         float green = color.getGreen() / 255f;
         float blue = color.getBlue() / 255f;
         float alpha = color.getAlpha() / 255f;
 
-        //get player position and entity position
-        Vec3d playerPos = mc.player.getPos();
-        Vec3d entityPos = entity.getPos();
+        // Get interpolated positions
+        float tickDelta = mc.getTickDelta();
+        Vec3d playerPos = prevPlayerPos.lerp(mc.player.getPos(), tickDelta);
+        Vec3d entityPos = prevEntityPositions.getOrDefault(entity, entity.getPos())
+                .lerp(entity.getPos(), tickDelta);
 
-        Vec3d playerVec = new Vec3d(playerPos.getX(), playerPos.getY(), playerPos.getZ());
-        Vec3d entityVec = new Vec3d(entityPos.getX(), entityPos.getY(), entityPos.getZ());
+        // Get camera position
+        Camera camera = mc.gameRenderer.getCamera();
+        Vec3d camPos = camera.getPos();
 
-        Camera c = mc.gameRenderer.getCamera();
-        Vec3d camPos = c.getPos();
-
-        Vec3d start = playerVec.subtract(camPos);
-        Vec3d end = entityVec.subtract(camPos);
-
-        float startX = (float) start.x;
-        float startY = (float) start.y;
-        float startZ = (float) start.z;
-
-        float endX = (float) end.x;
-        float endY = (float) end.y;
-        float endZ = (float) end.z;
-
+        // Calculate relative positions
+        Vec3d start = playerPos.subtract(camPos);
+        Vec3d end = entityPos.subtract(camPos);
+        // Setup rendering
         stack.push();
-
-        Matrix4f matrix = stack.peek().getPositionMatrix();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        GL11.glDepthFunc(GL11.GL_ALWAYS);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.defaultBlendFunc();
         RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glLineWidth(1.5f);
+
+        // Get matrix
+        Matrix4f matrix = stack.peek().getPositionMatrix();
+
+        // Build buffer
+        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
         buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 
-        buffer.vertex(matrix, startX, startY, startZ).color(red, green, blue, alpha).next();
-        buffer.vertex(matrix, endX, endY, endZ).color(red, green, blue, alpha).next();
+        // Add vertices
+        buffer.vertex(matrix, (float)start.x, (float)start.y, (float)start.z)
+                .color(red, green, blue, alpha)
+                .next();
+        buffer.vertex(matrix, (float)end.x, (float)end.y, (float)end.z)
+                .color(red, green, blue, alpha)
+                .next();
 
+        // Draw and cleanup
         BufferRenderer.drawWithGlobalProgram(buffer.end());
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
         RenderSystem.disableBlend();
         stack.pop();
+    }
+
+    // Add this method to update previous positions each tick
+    @EventHandler
+    public boolean onShitTick() {
+        prevPlayerPos = mc.player.getPos();
+
+        // Update all tracked entities
+        for (Entity entity : mc.world.getEntities()) {
+            if (shouldRenderEntity(entity)) {
+                prevEntityPositions.put(entity, entity.getPos());
+            }
+        }
+
+        // Clean up old entities
+        prevEntityPositions.keySet().removeIf(e -> !e.isAlive());
+        return false;
     }
 }
 

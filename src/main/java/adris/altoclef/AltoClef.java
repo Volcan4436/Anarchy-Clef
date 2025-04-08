@@ -1,5 +1,6 @@
 package adris.altoclef;
 
+import adris.altoclef.altomenu.command.ChatUtils;
 import adris.altoclef.altomenu.config.Config;
 import adris.altoclef.altomenu.config.configloader;
 import adris.altoclef.butler.Butler;
@@ -30,6 +31,7 @@ import baritone.altoclef.AltoClefSettings;
 import baritone.api.BaritoneAPI;
 import baritone.api.Settings;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -106,6 +108,9 @@ public class AltoClef implements ModInitializer {
     @Override
     public void onInitialize() {
         loadDefaultConfig();
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            loadConfig(); // This is your method
+        });
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // As such, nothing will be loaded here but basic initialization.
@@ -124,6 +129,18 @@ public class AltoClef implements ModInitializer {
                 // If not, create a new default config and save it
                 Config newDefaultConfig = new Config("default", "Default Configuration");
                 configloader.saveNewConfig("default");
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception appropriately
+        }
+    }
+    private void loadConfig() {
+        configloader configLoader = new configloader();
+        try {
+            configLoader.loadConfigs(); // Load available configs from file
+            Config config = configLoader.getConfigByName("default");
+            if (config != null) {
+                configLoader.loadConfig(config);
             }
         } catch (IOException e) {
             e.printStackTrace(); // Handle the exception appropriately
