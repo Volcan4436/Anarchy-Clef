@@ -36,7 +36,7 @@ public class Mod {
     public void onWorldRender(MatrixStack matrices) {
     }
 
-    public void onRender(MatrixStack matrices) {
+    public void onRender() {
 
     }
 

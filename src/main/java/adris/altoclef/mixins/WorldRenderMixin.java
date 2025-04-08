@@ -26,4 +26,14 @@ public class WorldRenderMixin {
             }
         }
     }
+
+    //onRender
+    @Inject(method = "render", at = @At(value = "RETURN"))
+    private void onRender(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
+        for (Mod m : ModuleManager.INSTANCE.getModules()) {
+            if (m.isEnabled()) {
+                m.onRender();
+            }
+        }
+    }
 }
