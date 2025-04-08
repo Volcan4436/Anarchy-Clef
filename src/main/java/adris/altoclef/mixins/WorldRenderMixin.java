@@ -2,6 +2,7 @@ package adris.altoclef.mixins;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.managers.ModuleManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,18 +24,6 @@ public class WorldRenderMixin {
             if (m.isEnabled()) {
                 m.onWorldRender(matrices);
             }
-        }
-    }
-
-    @Inject(method = "render", at = @At("HEAD"))
-    private void onRender(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
-        if (renderWorldMatrices != null) {
-            for (Mod m : ModuleManager.INSTANCE.getModules()) {
-                if (m.isEnabled()) {
-                    m.onRender(renderWorldMatrices);
-                }
-            }
-            renderWorldMatrices = null; // reset the field
         }
     }
 }

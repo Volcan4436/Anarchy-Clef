@@ -1,6 +1,7 @@
 package adris.altoclef.altomenu.UI.screens.clickgui;
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.util.math.InterpUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -38,9 +39,9 @@ public class ClickGUI extends Screen {
         int x = 20;
         for (adris.altoclef.altomenu.Mod.Category category : Mod.Category.values()) {
             frames.add(new Frame(category, x, 30, 100, 15));
-            x+=120;
+            x+=100;
         }
-    
+
         // Add the frames to the list of frames
 /*        frames.add(settingsFrame);
         frames.add(playerFrame);
@@ -91,27 +92,26 @@ public class ClickGUI extends Screen {
         mc.setScreen(INSTANCE);
     }
 
-
     public void onKeypress(int key, int action) {
 
         if (key == GLFW.GLFW_KEY_DOWN) {
             for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x, frame.y + 15);
+                frame.updatePositionNoMouse(frame.x, frame.y + 10);
             }
         }
         if (key == GLFW.GLFW_KEY_UP) {
             for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x, frame.y - 15);
+                frame.updatePositionNoMouse(frame.x, frame.y - 10);
             }
         }
         if (key == GLFW.GLFW_KEY_RIGHT) {
             for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x + 15, frame.y);
+                frame.updatePositionNoMouse(frame.x + 10, frame.y);
             }
         }
         if (key == GLFW.GLFW_KEY_LEFT) {
             for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x - 15, frame.y);
+                frame.updatePositionNoMouse(frame.x - 10, frame.y);
             }
         }
 

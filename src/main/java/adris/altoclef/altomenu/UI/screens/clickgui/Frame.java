@@ -27,7 +27,7 @@ public class Frame {
         this.width = width;
         this.height = height;
         this.dragging = false;
-        this.extended = false;
+        this.extended = true;
 
 
 

@@ -47,7 +47,7 @@ public class ModuleButton {
 
     public void render(DrawContext matrices, int mouseX, int mouseY, float delta) {
         matrices.fill(parent.x, parent.y + offset, parent.x + parent.width, parent.y + offset + parent.height, new Color(0, 0, 0, 160).getRGB());
-        if (isHovered(mouseX, mouseY)) matrices.fill(parent.x, parent.y + offset, parent.x + parent.width, parent.y + offset + parent.height, new Color(100, 0, 0, 160).getRGB());
+        if (isHovered(mouseX, mouseY)) matrices.fill(parent.x, parent.y + offset, parent.x + parent.width, parent.y + offset + parent.height, new Color(255, 0, 0, 160).getRGB());
         matrices.drawText(mc.textRenderer, module.getName(), parent.x + 2, parent.y + offset + 2, module.isEnabled() ? Color.RED.getRGB() : Color.WHITE.getRGB(), true);
 
         if (extended) {

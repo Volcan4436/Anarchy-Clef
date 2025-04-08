@@ -4,7 +4,10 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.eventbus.EventHandler;
+import adris.altoclef.util.math.InterpUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -12,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.stat.StatHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
@@ -38,7 +42,6 @@ public class ESP extends Mod {
     }
 
 
-
     @Override
     public void onEnable() {
         super.onEnable();
@@ -62,7 +65,7 @@ public class ESP extends Mod {
             for (PlayerEntity entity : mc.world.getPlayers()) {
                 if (!(entity instanceof ClientPlayerEntity) && entity instanceof PlayerEntity) {
                     renderOutline(entity, new Color(255, 255, 255), matrices);
-                    if (tracers.isEnabled()) renderLine(entity, new Color(255, 255, 255), matrices);
+                    if (tracers.isEnabled() && players.isEnabled()) renderLine(entity, new Color(255, 255, 255), matrices);
 
                     renderHealthBG(entity, new Color(0, 0, 0, 255), matrices);
                     if (entity.getHealth() > 13) renderHealth(entity, new Color(0, 255, 0), matrices);
@@ -76,14 +79,14 @@ public class ESP extends Mod {
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof Monster) {
                     renderOutline(entity, new Color(255, 0, 0), matrices);
-                    if (tracers.isEnabled()) renderLine(entity, new Color(255, 0, 0), matrices);
+                    if (tracers.isEnabled() && monsters.isEnabled()) renderLine(entity, new Color(255, 0, 0), matrices);
                 }
             }
             // do the same for passives
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof PassiveEntity) {
                     renderOutline(entity, new Color(0, 255, 0), matrices);
-                    if (tracers.isEnabled()) renderLine(entity, new Color(0, 255, 0), matrices);
+                    if (tracers.isEnabled() && passives.isEnabled()) renderLine(entity, new Color(0, 255, 0), matrices);
                 }
             }
         }
@@ -254,11 +257,15 @@ public class ESP extends Mod {
         stack.pop();
     }
 
+
     //Render a Line to all entities from the player
     private Vec3d prevPlayerPos = Vec3d.ZERO;
     private Vec3d prevEntityPos = Vec3d.ZERO;
     private Map<Entity, Vec3d> prevEntityPositions = new HashMap<>();
     void renderLine(Entity entity, Color color, MatrixStack stack) {
+        // Enable rendering through blocks
+        RenderSystem.disableDepthTest();
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         // Convert color components
         float red = color.getRed() / 255f;
         float green = color.getGreen() / 255f;
