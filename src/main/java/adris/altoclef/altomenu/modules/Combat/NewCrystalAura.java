@@ -43,6 +43,7 @@ public class NewCrystalAura extends Mod {
     private boolean shouldPlace = true;
     private BlockPos lastPlacePos = null;
     private EndCrystalEntity lastCrystal = null;
+    private double rotation;
 
     public NewCrystalAura() {
         super("CrystalAura++", "Optimized Crystal Aura", Category.COMBAT);
@@ -50,6 +51,12 @@ public class NewCrystalAura extends Mod {
         addSettings(AntiDeath, Rotate, EveryEntity, PacketAttack, InstantBreak,
                 SwingTolerance, Outline, MultiPlace, MultiBreak, SmartTargeting,
                 Speed, EntityDistance, BreakDistance, PlaceDistance);
+    }
+
+
+    @Override
+    public void onRender() {
+        // mc.player.setBodyYaw(rotation);
     }
 
     @Override
