@@ -4,19 +4,22 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.altomenu.command.Command;
 import adris.altoclef.altomenu.command.CommandManager;
 import adris.altoclef.altomenu.command.CommandSuggestEvent;
+import adris.altoclef.altomenu.managers.ChatHandler;
+import adris.altoclef.altomenu.modules.Baritone.ChatBot;
 import adris.altoclef.altomenu.modules.Player.Velocity;
 import adris.altoclef.altomenu.modules.Render.Fullbright;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.s2c.play.CommandSuggestionsS2CPacket;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
+import net.minecraft.network.packet.s2c.play.*;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
+    @Shadow public abstract void onChatMessage(ChatMessageS2CPacket packet);
+
     @Inject(method = "onExplosion", at = @At("HEAD"), cancellable = true)
     private void onExplosionPacket(ExplosionS2CPacket packet, CallbackInfo ci) {
         if (Velocity.Instance.isEnabled() && !Velocity.Instance.isNull()) {
@@ -55,5 +58,20 @@ public abstract class ClientPlayNetworkHandlerMixin {
                 }
             }
         }
+    }
+
+    @Inject(method = "onChatMessage", at = @At("HEAD"), cancellable = true)
+    public void onMessage(ChatMessageS2CPacket packet, CallbackInfo ci) {
+        ChatHandler chatHandler = new ChatHandler();
+        chatHandler.handleChatMessage(packet);
+        System.out.println(packet.body().content());
+    }
+
+    //onGameMessage
+    @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
+    public void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+        ChatHandler chatHandler = new ChatHandler();
+        chatHandler.handleGameMessage(packet);
+        System.out.println(packet.content().getString());
     }
 }

@@ -19,7 +19,7 @@ public class Speed extends Mod {
 
     @EventHandler
     public boolean onShitTick() {
-        if (mode.getMode() == "Legit") {
+        if (mode.getMode() == "Legit") { //todo: add Speed Equivalent (Similar to Rise 6)
             mc.options.jumpKey.setPressed(false);
             if (CMoveUtil.isMoving() && CMoveUtil.isOnGround()) {
                 mc.player.jump();

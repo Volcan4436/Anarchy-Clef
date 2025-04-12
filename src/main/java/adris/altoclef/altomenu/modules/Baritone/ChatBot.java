@@ -1,6 +1,7 @@
 package adris.altoclef.altomenu.modules.Baritone;
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
 import net.minecraft.client.MinecraftClient;
@@ -36,6 +37,7 @@ public class ChatBot extends Mod {
     }
 
     NumberSetting messageDelay = new NumberSetting("Message Delay", 1, 10, 1, 0.1);
+    BooleanSetting greentext = new BooleanSetting("GreenText", false);
 
     @Override
     public void onEnable() {
@@ -75,10 +77,7 @@ public class ChatBot extends Mod {
                 sendMessage("Current coordinates: " + "X: " + Math.round(mc.player.getX()) + " Y: " + Math.round(mc.player.getY()) + " Z: " + Math.round(mc.player.getZ()));
                 break;
             case "github":
-                sendMessage("https://github.com/Volcan4436/Anarchy-Clef");
-                break;
-            case "dox":
-                sendMessage("https://pastebin.com/CXv1qPqZj");
+                sendMessage("github.com/Volcan4436/Anarchy-Clef");
                 break;
             case "help":
                 // Handle the help command
@@ -92,10 +91,13 @@ public class ChatBot extends Mod {
         }
     }
 
+    String prefix = "";
+
     private void sendMessage(String s) {
         //Send a Chat Message
         assert MinecraftClient.getInstance().player != null;
-        MinecraftClient.getInstance().player.networkHandler.sendChatMessage(s);
+        if (greentext.isEnabled()) prefix = "> ";
+        else prefix = "";
+        MinecraftClient.getInstance().player.networkHandler.sendChatMessage(prefix + s);
     }
-
 }

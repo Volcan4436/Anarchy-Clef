@@ -20,8 +20,6 @@ public final class ChatReadMixin {
             at = @At("HEAD")
     )
     private void onChatMessage(SignedMessage message, GameProfile sender, MessageType.Parameters params, CallbackInfo ci) {
-        ChatHandler chatHandler = new ChatHandler();
-        chatHandler.handleChatMessage(message);
         ChatMessageEvent evt = new ChatMessageEvent(message, sender, params);
         EventBus.publish(evt);
     }

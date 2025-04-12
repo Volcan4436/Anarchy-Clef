@@ -115,7 +115,6 @@ public class ModuleManager {
         //Render
         addModule(new Fullbright());
         addModule(new RenderTags());
-        addModule(new Jesus());
         addModule(new Radar());
         addModule(new crosshairRGH());
         addModule(new ESP());
