@@ -36,7 +36,7 @@ public class NoFall extends Mod {
         Block getBlockBelowFailSafe = mc.world.getBlockState(mc.player.getBlockPos().down(2)).getBlock();
         if (Objects.equals(mode.getMode(), "Packet")) {
             if (mc.player.fallDistance != 0) {
-                Objects.requireNonNull(mc.getNetworkHandler()).sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), true));
+                Objects.requireNonNull(mc.getNetworkHandler()).sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
             }
         }
         if (Objects.equals(mode.getMode(), "Velocity")) {
