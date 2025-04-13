@@ -5,6 +5,8 @@ import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.eventbus.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 import java.util.Objects;
 
@@ -21,7 +23,7 @@ public class NoFall extends Mod {
         super("NoFall", "Decreased the amount of damage you take from falling", Mod.Category.PLAYER);
     }
 
-    ModeSetting mode = new ModeSetting("Mode", "Velocity", "Velocity", "Jump", "Position", "dev");
+    ModeSetting mode = new ModeSetting("Mode", "Packet", "Packet", "Velocity", "Jump", "Position", "dev");
     boolean velocityCheck = false; //we need a cleaner implementation
     boolean positionCheck = false; //we need a cleaner implementation
     boolean jumpCheck = false; //we need a cleaner implementation
@@ -32,6 +34,11 @@ public class NoFall extends Mod {
         if (mc.world == null || mc.player == null) return true;
         Block getBlockBelow = mc.world.getBlockState(mc.player.getBlockPos().down()).getBlock();
         Block getBlockBelowFailSafe = mc.world.getBlockState(mc.player.getBlockPos().down(2)).getBlock();
+        if (Objects.equals(mode.getMode(), "Packet")) {
+            if (mc.player.fallDistance != 0) {
+                Objects.requireNonNull(mc.getNetworkHandler()).sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), true));
+            }
+        }
         if (Objects.equals(mode.getMode(), "Velocity")) {
             if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3 && !velocityCheck) {
                 mc.player.setVelocity(mc.player.getVelocity().x, 0.1, mc.player.getVelocity().z);

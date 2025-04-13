@@ -4,6 +4,12 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.eventbus.EventHandler;
+import adris.altoclef.eventbus.events.PacketEvent;
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+
+import java.util.Objects;
 
 public class AntiHunger extends Mod {
 
@@ -16,13 +22,14 @@ public class AntiHunger extends Mod {
         super("AntiHunger", "Prevents hunger from decreasing.", Mod.Category.PLAYER);
     }
 
-    BooleanSetting spoof = new BooleanSetting("Spoof", true);
+    BooleanSetting spoofValue = new BooleanSetting("SpoofValue", true);
+    BooleanSetting packetSpoof = new BooleanSetting("Packet", true);
 
 
     @EventHandler
     public boolean onShitTick() {
         if (mc.player == null) return true;
-        else if (spoof.isEnabled() && mc.player.getHungerManager().getFoodLevel() != 20) {
+        if (spoofValue.isEnabled() && mc.player.getHungerManager().getFoodLevel() != 20) {
             mc.player.getHungerManager().setFoodLevel(20);
         }
 
