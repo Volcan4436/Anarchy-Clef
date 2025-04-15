@@ -1,11 +1,16 @@
 package adris.altoclef.ui;
 
+import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.managers.ModuleManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.realms.Ping;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
 
 import java.awt.*;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 //todo
@@ -63,5 +68,33 @@ public class HUD {
 
         context.drawText(mc.textRenderer, cvUpdateName, screenWidth % 2 + 3 + mainTextWidth, screenHeight - 10, 0xFFFFAA00, false);
 
+        renderArrayList(context, tickDelta);
+
+    }
+
+    public static void renderArrayList(DrawContext context, float tickDelta) {
+        int xOffset = -5;
+        int yOffset = 5;
+        int index = 0;
+        List<Mod> enabled = ModuleManager.INSTANCE.getEnabledModules();
+        int sWidth = mc.getWindow().getScaledWidth();
+        int sHeight = mc.getWindow().getScaledHeight();
+        int lastWidth;
+        int fHeight = mc.textRenderer.fontHeight;
+        int fromY = (fHeight - 1) * (index) + 1;
+        int toX = sWidth - 2;
+        int toY = (fHeight - 1) * (index) + fHeight;
+
+
+        enabled.sort(Comparator.comparingInt(m -> (int)mc.textRenderer.getWidth(((Mod)m).getDisplayName())).reversed());
+
+        for (Mod mod : enabled) {
+            context.fill((sWidth + 100) - mc.textRenderer.getWidth(mod.getDisplayName()) - 1, 46 + (index * mc.textRenderer.fontHeight), (sWidth - 4) - mc.textRenderer.getWidth(mod.getDisplayName()) - 2, 47 + (index * mc.textRenderer.fontHeight - 1) + mc.textRenderer.fontHeight, 0x80000000);
+
+            context.drawText(mc.textRenderer, mod.getDisplayName(), (sWidth - 4) - mc.textRenderer.getWidth(mod.getDisplayName()), 47 + (index * mc.textRenderer.fontHeight), Color.red.getRGB(), false);
+
+            context.fill((sWidth - 4) - mc.textRenderer.getWidth(mod.getDisplayName()) - 1, 46 + (index * mc.textRenderer.fontHeight), (sWidth - 4) - mc.textRenderer.getWidth(mod.getDisplayName()) - 2, 46 + (index * mc.textRenderer.fontHeight) + mc.textRenderer.fontHeight, Color.red.getRGB());
+            index++;
+        }
     }
 }
