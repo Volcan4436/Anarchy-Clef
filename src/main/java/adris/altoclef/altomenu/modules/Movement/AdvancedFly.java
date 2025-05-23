@@ -44,6 +44,7 @@ public class AdvancedFly extends Mod {
     BooleanSetting forceRotation = new BooleanSetting("Force-Rotation", false);
     NumberSetting forceYaw = new NumberSetting("Force Yaw", 0, 360, 0, 0.1);
     NumberSetting forcePitch = new NumberSetting("Force Pitch", -90, 90, 0, 0.1);
+    BooleanSetting gravity = new BooleanSetting("Gravity", true); //todo: create a GravityUtil
 
     @EventHandler
     public boolean onShitTick() {
@@ -157,6 +158,15 @@ public class AdvancedFly extends Mod {
             double zVelocity = Math.cos(radians) * power;
 
             mc.player.setVelocity(xVelocity, mc.player.getVelocity().y, zVelocity);
+        }
+
+        //Gravity (We really need to code a util to fix the problem of it not making sense when reading this code)
+        // Update player gravity to match current gravity setting
+        // setNoGravity (false = gravity enabled, true = gravity disabled)
+        if (gravity.isEnabled() && mc.player.hasNoGravity()) {
+            mc.player.setNoGravity(false); // enable gravity
+        } else if (!gravity.isEnabled() && !mc.player.hasNoGravity()) {
+            mc.player.setNoGravity(true); // disable gravity
         }
 
         return false;

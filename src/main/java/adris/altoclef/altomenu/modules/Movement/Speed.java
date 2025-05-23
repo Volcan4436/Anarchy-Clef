@@ -45,7 +45,6 @@ public class Speed extends Mod {
                 if (CMoveUtil.isMoving()) mc.player.jump();
             }
         }
-
         return false;
     }
 }

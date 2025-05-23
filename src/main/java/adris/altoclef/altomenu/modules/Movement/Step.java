@@ -1,6 +1,7 @@
 package adris.altoclef.altomenu.modules.Movement;
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
 
 // todo:
@@ -13,11 +14,14 @@ public class Step extends Mod {
         super("Step", "Step", Mod.Category.MOVEMENT);
     }
 
+    ModeSetting mode = new ModeSetting("Mode", "Vanilla", "Vanilla", "Dev");
+
     NumberSetting stepHeight = new NumberSetting("Height", 0.1, 10, 1, 0.1);
 
     @Override
     public boolean onShitTick() {
-        if (mc.player.getStepHeight() != stepHeight.getValuefloat()) mc.player.setStepHeight(stepHeight.getValuefloat());
+        if (mc.player.getStepHeight() != stepHeight.getValuefloat() && mode.getMode().equals("Vanilla")) mc.player.setStepHeight(stepHeight.getValuefloat());
+        else if (!mode.getMode().equals("Vanilla")) mc.player.setStepHeight(originalStepHeight);
         else return true;
         return false;
     }

@@ -2,7 +2,6 @@ package adris.altoclef.altomenu.modules.Movement;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.ModeSetting;
-import adris.altoclef.altomenu.sqdpkg.testbin;
 import adris.altoclef.eventbus.EventHandler;
 import net.minecraft.block.Blocks;
 
@@ -46,10 +45,9 @@ public class Jesus extends Mod {
         }
         else if (mode.getMode() == "Bypass") {
             if (isAboveWater) {
-                mc.player.setVelocity(mc.player.getVelocity().x, 0.1, mc.player.getVelocity().z);
+                mc.player.setPos(mc.player.getX(), mc.player.getY() + 0.1, mc.player.getZ());
             }
         }
-
         return false;
     }
 

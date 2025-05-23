@@ -3,8 +3,10 @@ package adris.altoclef.altomenu.modules.Baritone;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.ModeSetting;
 
+//todo: Implement
 public class SafeMode extends Mod {
-    //TODO Create List of Unsafe Modules depending on Mode (Server / AntiCheat) and Automatically Disable or Warn
+    //todo:Create List of Unsafe Modules depending on Mode (Server / AntiCheat) and Automatically Disable or Warn
+    //todo:Allow Community to create their own SafeModes
 
     public SafeMode() {
         super("SafeMode", "Disables Certain Features to reduce ban risk", Mod.Category.BARITONE);

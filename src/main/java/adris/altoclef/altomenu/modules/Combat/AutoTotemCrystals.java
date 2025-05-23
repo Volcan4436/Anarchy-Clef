@@ -14,6 +14,7 @@ public class AutoTotemCrystals extends Mod {
     private final NumberSetting healthThreshold = new NumberSetting("Switch Health", 1, 20, 14, 1);
     private int switchCooldown = 0;
 
+    //todo: Improve Name to make this shorter in the menu
     public AutoTotemCrystals() {
         super("AutoTotemCrystals", "Automatically switches between crystals and totems based on health", Category.COMBAT);
         this.addSetting(healthThreshold);

@@ -8,7 +8,6 @@
     "BlockModifiedByPlayerMixin",
     "ClientBlockBreakAccessor",
     "ClientConnectionAccessor",
-    "ClientConnectionMixin",
     "ClientInteractWithBlockMixin",
     "ClientPlayerInteractionAccessor",
     "ClientUIMixin",

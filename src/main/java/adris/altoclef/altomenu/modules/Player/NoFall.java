@@ -7,6 +7,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 
 import java.util.Objects;
 
@@ -23,7 +25,7 @@ public class NoFall extends Mod {
         super("NoFall", "Decreased the amount of damage you take from falling", Mod.Category.PLAYER);
     }
 
-    ModeSetting mode = new ModeSetting("Mode", "Packet", "Packet", "Velocity", "Jump", "Position", "dev");
+    ModeSetting mode = new ModeSetting("Mode", "Packet", "Packet", "Packet+", "Velocity", "Jump", "Position", "dev");
     boolean velocityCheck = false; //we need a cleaner implementation
     boolean positionCheck = false; //we need a cleaner implementation
     boolean jumpCheck = false; //we need a cleaner implementation
@@ -39,7 +41,12 @@ public class NoFall extends Mod {
                 Objects.requireNonNull(mc.getNetworkHandler()).sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
             }
         }
-        if (Objects.equals(mode.getMode(), "Velocity")) {
+        else if (Objects.equals(mode.getMode(), "Packet+")) {
+                Objects.requireNonNull(mc.getNetworkHandler())
+                        .sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+                mc.player.setPos(mc.player.getX(), mc.player.getY() + 0.01, mc.player.getZ());
+        }
+        else if (Objects.equals(mode.getMode(), "Velocity")) {
             if (getBlockBelow != Blocks.AIR && mc.player.fallDistance > 3 && !velocityCheck) {
                 mc.player.setVelocity(mc.player.getVelocity().x, 0.1, mc.player.getVelocity().z);
                 velocityCheck = true;

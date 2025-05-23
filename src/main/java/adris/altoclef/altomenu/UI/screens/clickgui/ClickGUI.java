@@ -5,6 +5,7 @@ import adris.altoclef.util.math.InterpUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -62,13 +63,36 @@ public class ClickGUI extends Screen {
     public static ClickGUI INSTANCE = new ClickGUI();
 
 
+    // Step 1: Declare the texture Identifier somewhere in your class
+    private static final Identifier CUSTOM_ICON = new Identifier("altoclef", "textures/gui/hibiki.png");
+
+
     @Override
-    public void render(DrawContext matrices, int mouseX, int mouseY, float delta) {//Draw a text that says "AltoMenu on Top" in the bottom right corner
+    public void render(DrawContext matrices, int mouseX, int mouseY, float delta) {
+        // 1. Draw everything else first
         matrices.drawCenteredTextWithShadow(this.textRenderer, "AltoMenu [Developed by Volcan & ChiefWarCry]", 125, this.height - 20, Color.RED.getRGB());
+
         for (Frame frame : frames) {
             frame.render(matrices, mouseX, mouseY, delta);
             frame.updatePosition(mouseX, mouseY);
-        }super.render(matrices, mouseX, mouseY, delta);
+        }
+
+        // 2. Then draw the image on top
+        int textureWidth = 750;
+        int textureHeight = 727;
+        float scale = 0.15f;
+
+        int drawWidth = (int) (textureWidth * scale);
+        int drawHeight = (int) (textureHeight * scale);
+
+        int x = this.width - drawWidth - 5;
+        int y = this.height - drawHeight - 5;
+
+        matrices.drawTexture(CUSTOM_ICON, x, y, drawWidth, drawHeight, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+
+
+        // 3. Do NOT call super.render if it might draw above your image
+        // super.render(matrices, mouseX, mouseY, delta);
     }
 
     @Override
@@ -93,7 +117,6 @@ public class ClickGUI extends Screen {
     }
 
     public void onKeypress(int key, int action) {
-
         if (key == GLFW.GLFW_KEY_DOWN) {
             for (Frame frame : frames) {
                 frame.updatePositionNoMouse(frame.x, frame.y + 10);
@@ -114,6 +137,5 @@ public class ClickGUI extends Screen {
                 frame.updatePositionNoMouse(frame.x - 10, frame.y);
             }
         }
-
     }
 }

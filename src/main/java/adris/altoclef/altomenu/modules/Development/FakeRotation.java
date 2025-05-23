@@ -17,7 +17,8 @@ public class FakeRotation extends Mod {
     @Override
     public void onRender() {
         if (mc.player != null) {
-            mc.player.setBodyYaw(yaw.getValuefloat());
+            mc.player.setBodyYaw(yaw.getValuefloat()); //Currently Works as Intended
         }
+        //todo: add option to set pitch silently (Currently changes your actual camera)
     }
 }
