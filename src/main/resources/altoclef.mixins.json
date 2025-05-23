@@ -29,6 +29,8 @@
     "CrosshairWaveMixin",
     "EntityTextMixin",
     "EntryMixin",
+    "GameRendererMixin",
+    "HeldItemRendererMixin",
     "KeyboardMixin",
     "LoadChunkMixin",
     "MixinLightmapTextureManager",

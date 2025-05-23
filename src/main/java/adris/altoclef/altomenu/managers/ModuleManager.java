@@ -118,6 +118,9 @@ public class ModuleManager {
         addModule(new Radar());
         addModule(new crosshairRGH());
         addModule(new ESP());
+        addModule(new NoBob());
+        addModule(new OldSwing());
+        addModule(new NoSwing());
 
 
         //Utility
