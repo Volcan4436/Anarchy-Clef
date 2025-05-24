@@ -7,6 +7,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.realms.Ping;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
+import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.Comparator;
@@ -30,13 +31,13 @@ import java.util.Objects;
 // add BPS Counter
 // add Latest Death Position to HUD
 public class HUD {
-
+    private static final Identifier CUSTOM_ICON = new Identifier("altoclef", "textures/gui/kisaragi.png");
     protected static MinecraftClient mc = MinecraftClient.getInstance();
 
     //Client WaterMark
     // Update this text whenever we do a major update
-    public static String clientVersion = "AnarchyClef - b0.1.0 ";
-    public static String cvUpdateName = "Stealer Update";
+    public static String clientVersion = "AnarchyClef - b0.2.0 ";
+    public static String cvUpdateName = "Visual Update";
 
     //HUD
     public static void render(DrawContext context, float tickDelta) {
@@ -69,6 +70,19 @@ public class HUD {
         context.drawText(mc.textRenderer, cvUpdateName, screenWidth % 2 + 3 + mainTextWidth, screenHeight - 10, 0xFFFFAA00, false);
 
         renderArrayList(context, tickDelta);
+
+
+        int textureWidth = 305;
+        int textureHeight = 581;
+        float scale = 0.2f;
+
+        int drawWidth = (int) (textureWidth * scale);
+        int drawHeight = (int) (textureHeight * scale);
+
+        int x = 5;
+        int y = 10;
+
+        context.drawTexture(CUSTOM_ICON, x, y, drawWidth, drawHeight, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
 
     }
 
