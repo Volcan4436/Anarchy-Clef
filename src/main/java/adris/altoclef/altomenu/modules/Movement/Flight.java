@@ -1,9 +1,13 @@
 package adris.altoclef.altomenu.modules.Movement;
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.cheatUtils.CMoveUtil;
+import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.MathHelper;
 
 //todo:
 // Add Modes: Glide, Velocity, Fireball (For Minigame Servers), AirWalk (Collision Spoof), TNT (For Minigame Servers), Damage (Boost on Damage Client or Spoofed)

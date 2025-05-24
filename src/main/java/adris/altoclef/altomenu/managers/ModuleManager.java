@@ -121,6 +121,7 @@ public class ModuleManager {
         addModule(new NoBob());
         addModule(new OldSwing());
         addModule(new NoSwing());
+        addModule(new ViewModel());
 
 
         //Utility

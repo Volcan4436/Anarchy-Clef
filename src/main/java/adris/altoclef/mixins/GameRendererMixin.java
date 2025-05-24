@@ -2,6 +2,7 @@ package adris.altoclef.mixins;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.altomenu.managers.ModuleManager;
+import adris.altoclef.altomenu.modules.Movement.Flight;
 import adris.altoclef.altomenu.modules.Player.NoSlow;
 import adris.altoclef.altomenu.modules.Render.NoBob;
 import net.minecraft.client.render.GameRenderer;
