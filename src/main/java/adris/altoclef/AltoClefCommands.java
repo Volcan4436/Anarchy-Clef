@@ -2,6 +2,7 @@ package adris.altoclef;
 
 import adris.altoclef.commands.*;
 import adris.altoclef.commandsystem.CommandException;
+import adris.altoclef.tasks.Anarchy.FightBotTask;
 
 /**
  * Initializes altoclef's built in commands.
