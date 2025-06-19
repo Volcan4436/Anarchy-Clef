@@ -29,6 +29,7 @@ import static adris.altoclef.altomenu.UI.screens.clickgui.ModuleButton.mc;
 public class ClickGUI extends Screen {
 
     private final List<Frame> frames;
+    private ScriptFrame scriptFrame;
 
     boolean pressed = false;
 
@@ -39,8 +40,13 @@ public class ClickGUI extends Screen {
         frames = new ArrayList<>();
         int x = 20;
         for (adris.altoclef.altomenu.Mod.Category category : Mod.Category.values()) {
-            frames.add(new Frame(category, x, 30, 100, 15));
-            x+=100;
+            if (category == Mod.Category.SCRIPTS) {
+                // Create special script frame for Scripts category
+                scriptFrame = new ScriptFrame(x, 30, 120, 15);
+            } else {
+                frames.add(new Frame(category, x, 30, 100, 15));
+            }
+            x += (category == Mod.Category.SCRIPTS) ? 120 : 100;
         }
 
         // Add the frames to the list of frames
@@ -76,6 +82,12 @@ public class ClickGUI extends Screen {
             frame.render(matrices, mouseX, mouseY, delta);
             frame.updatePosition(mouseX, mouseY);
         }
+        
+        // Render script frame if it exists
+        if (scriptFrame != null) {
+            scriptFrame.render(matrices, mouseX, mouseY, delta);
+            scriptFrame.updatePosition(mouseX, mouseY);
+        }
 
         // 2. Then draw the image on top
         int textureWidth = 750;
@@ -100,6 +112,12 @@ public class ClickGUI extends Screen {
         for (Frame frame : frames) {
             frame.mouseClicked(mouseX, mouseY, button);
         }
+        
+        // Handle script frame clicks
+        if (scriptFrame != null) {
+            scriptFrame.mouseClicked(mouseX, mouseY, button);
+        }
+        
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -108,6 +126,12 @@ public class ClickGUI extends Screen {
         for (Frame frame : frames) {
             frame.mouseReleased(mouseX, mouseY, button);
         }
+        
+        // Handle script frame mouse release
+        if (scriptFrame != null) {
+            scriptFrame.mouseReleased(mouseX, mouseY, button);
+        }
+        
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
@@ -115,27 +139,76 @@ public class ClickGUI extends Screen {
     public static void open() {
         mc.setScreen(INSTANCE);
     }
+    
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        onKeypress(keyCode, 1);
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+    
+    @Override
+    public boolean charTyped(char chr, int modifiers) {
+        // Handle script frame character input
+        if (scriptFrame != null) {
+            scriptFrame.handleCharTyped(chr);
+        }
+        return super.charTyped(chr, modifiers);
+    }
 
     public void onKeypress(int key, int action) {
+        // Handle script frame keyboard input first (for new script dialog)
+        if (scriptFrame != null) {
+            // Convert key to character if possible
+            char character = (char) key;
+            scriptFrame.handleKeyPressed(key, character);
+        }
+        
         if (key == GLFW.GLFW_KEY_DOWN) {
             for (Frame frame : frames) {
                 frame.updatePositionNoMouse(frame.x, frame.y + 10);
+            }
+            if (scriptFrame != null) {
+                scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y + 10);
             }
         }
         if (key == GLFW.GLFW_KEY_UP) {
             for (Frame frame : frames) {
                 frame.updatePositionNoMouse(frame.x, frame.y - 10);
             }
+            if (scriptFrame != null) {
+                scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y - 10);
+            }
         }
         if (key == GLFW.GLFW_KEY_RIGHT) {
             for (Frame frame : frames) {
                 frame.updatePositionNoMouse(frame.x + 10, frame.y);
+            }
+            if (scriptFrame != null) {
+                scriptFrame.updatePositionNoMouse(scriptFrame.x + 10, scriptFrame.y);
             }
         }
         if (key == GLFW.GLFW_KEY_LEFT) {
             for (Frame frame : frames) {
                 frame.updatePositionNoMouse(frame.x - 10, frame.y);
             }
+            if (scriptFrame != null) {
+                scriptFrame.updatePositionNoMouse(scriptFrame.x - 10, scriptFrame.y);
+            }
+        }
+    }
+    
+    /**
+     * Refreshes all module lists in all frames
+     * Call this when modules are dynamically added/removed
+     */
+    public void refreshModules() {
+        for (Frame frame : frames) {
+            frame.refreshModules();
+        }
+        
+        // Refresh script frame if it exists
+        if (scriptFrame != null) {
+            scriptFrame.refreshScripts();
         }
     }
 }

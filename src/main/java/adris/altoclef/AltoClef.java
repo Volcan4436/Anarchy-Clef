@@ -9,6 +9,7 @@ import adris.altoclef.altomenu.*;
 import adris.altoclef.altomenu.UI.screens.clickgui.ClickGUI;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.commandsystem.CommandExecutor;
+import adris.altoclef.scripting.LuaScriptEngine;
 import adris.altoclef.control.InputControls;
 import adris.altoclef.control.PlayerExtraController;
 import adris.altoclef.control.SlotHandler;
@@ -55,6 +56,12 @@ import java.util.function.Consumer;
 public class AltoClef implements ModInitializer {
 
     public static final AltoClef INSTANCE = new AltoClef();
+    
+    public AltoClef() {
+        System.err.println("🏗️ AltoClef instance created: " + this.hashCode());
+        System.err.println("🏗️ Stack trace:");
+        Thread.dumpStack();
+    }
     // Static access to altoclef
     private static final Queue<Consumer<AltoClef>> _postInitQueue = new ArrayDeque<>();
 
@@ -89,6 +96,28 @@ public class AltoClef implements ModInitializer {
     public static Config selectedConfig;
     // Butler
     private Butler _butler;
+    
+    // Lua Scripting System  
+    private volatile LuaScriptEngine _scriptEngine;
+    private volatile boolean _wasInitialized = false;
+    
+    /**
+     * Track when script engine is set to help debug null issues
+     */
+    public void setScriptEngine(LuaScriptEngine engine) {
+        System.err.println("🔧 SCRIPT ENGINE FIELD CHANGE:");
+        System.err.println("  From: " + (_scriptEngine != null ? "INITIALIZED" : "NULL"));
+        System.err.println("  To: " + (engine != null ? "INITIALIZED" : "NULL"));
+        System.err.println("  Instance: " + this.hashCode());
+        System.err.println("  Stack trace:");
+        Thread.dumpStack();
+        this._scriptEngine = engine;
+        if (engine != null) {
+            _wasInitialized = true;
+            System.err.println("🔧 Marking instance as initialized");
+        }
+    }
+    
     protected static MinecraftClient mc = MinecraftClient.getInstance();
 
 
@@ -110,6 +139,56 @@ public class AltoClef implements ModInitializer {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             loadConfig(); // This is your method
         });
+        
+        // Initialize Lua scripting system EARLY on the correct Fabric instance
+        System.out.println("=== SCRIPT ENGINE INITIALIZATION DEBUG START ===");
+        System.out.println("Attempting to initialize LuaScriptEngine on Fabric instance: " + this.hashCode());
+        
+        // Check if LuaJ is available on classpath
+        try {
+            Class.forName("org.luaj.vm2.Globals");
+            System.out.println("✅ LuaJ dependency is available on classpath");
+        } catch (ClassNotFoundException e) {
+            System.err.println("❌ CRITICAL: LuaJ dependency not found on classpath!");
+            System.err.println("This indicates a build/dependency issue");
+            setScriptEngine(null);
+            System.out.println("=== SCRIPT ENGINE INITIALIZATION DEBUG END ===");
+            return;
+        }
+        
+        try {
+            System.out.println("Creating new LuaScriptEngine instance...");
+            LuaScriptEngine scriptEngine = new LuaScriptEngine(this);
+            setScriptEngine(scriptEngine);
+            
+            // CRITICAL: Also set on static INSTANCE if this is a different instance
+            if (this != INSTANCE) {
+                System.out.println("🔄 Setting script engine on static INSTANCE as well");
+                INSTANCE.setScriptEngine(scriptEngine);
+            }
+            
+            System.out.println("✅ LuaScriptEngine created successfully!");
+            System.out.println("✅ Script engine initialization COMPLETE");
+        } catch (Exception e) {
+            System.err.println("❌ SCRIPT ENGINE INITIALIZATION FAILED!");
+            System.err.println("Exception: " + e.getClass().getSimpleName());
+            System.err.println("Message: " + e.getMessage());
+            System.err.println("Stack trace:");
+            e.printStackTrace();
+            setScriptEngine(null);
+            
+            // Also clear on static INSTANCE
+            if (this != INSTANCE) {
+                INSTANCE.setScriptEngine(null);
+            }
+            
+            System.err.println("Script engine set to NULL due to initialization failure");
+        }
+        
+        System.out.println("Script engine final state: " + (_scriptEngine != null ? "INITIALIZED" : "NULL"));
+        System.out.println("=== SCRIPT ENGINE INITIALIZATION DEBUG END ===");
+        System.out.println();
+        
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // As such, nothing will be loaded here but basic initialization.
@@ -184,6 +263,15 @@ public class AltoClef implements ModInitializer {
 
         _butler = new Butler(this);
 
+        // Script engine should already be initialized from onInitialize()
+        if (_scriptEngine != null) {
+            System.out.println("✅ Script engine available in onInitializeLoad: " + this.hashCode());
+            log("Lua scripting system ready");
+        } else {
+            System.err.println("❌ Script engine not available in onInitializeLoad: " + this.hashCode());
+            logWarning("Script engine not initialized - scripts will not work");
+        }
+
         initializeCommands();
 
         // Load settings
@@ -254,6 +342,16 @@ public class AltoClef implements ModInitializer {
 
         _butler.tick();
         _messageSender.tick();
+
+        // Tick Lua scripts
+        if (_scriptEngine != null && _scriptEngine.isEnabled()) {
+            try {
+                _scriptEngine.tickAllScripts();
+            } catch (Exception e) {
+                logWarning("Error ticking Lua scripts: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
 
         _inputControls.onTickPost();
     }
@@ -459,6 +557,26 @@ public class AltoClef implements ModInitializer {
      */
     public InputControls getInputControls() {
         return _inputControls;
+    }
+
+    /**
+     * Lua scripting engine for custom scripts
+     */
+    public LuaScriptEngine getScriptEngine() {
+        if (_scriptEngine == null) {
+            System.err.println("🚨 WARNING: getScriptEngine() called but _scriptEngine is NULL!");
+            System.err.println("🚨 AltoClef instance: " + this.hashCode());
+            System.err.println("🚨 INSTANCE reference: " + INSTANCE.hashCode());
+            System.err.println("🚨 Are they the same? " + (this == INSTANCE));
+            System.err.println("🚨 Was previously initialized? " + _wasInitialized);
+            if (_wasInitialized) {
+                System.err.println("🚨 CRITICAL: Field was initialized but is now NULL - this indicates DIRECT field access!");
+                System.err.println("🚨 This means something set _scriptEngine = null directly, bypassing setScriptEngine()");
+            }
+            System.err.println("Stack trace of null access:");
+            Thread.dumpStack();
+        }
+        return _scriptEngine;
     }
 
     /**

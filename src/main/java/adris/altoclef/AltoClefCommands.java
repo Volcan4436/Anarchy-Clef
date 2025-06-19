@@ -2,7 +2,6 @@ package adris.altoclef;
 
 import adris.altoclef.commands.*;
 import adris.altoclef.commandsystem.CommandException;
-import adris.altoclef.tasks.Anarchy.FightBotTask;
 
 /**
  * Initializes altoclef's built in commands.
@@ -65,7 +64,10 @@ public class AltoClefCommands {
                 new SelfCareCommand(),
                 new CheatMenuCommand(),
                 new AnarchyCommand(),
-                new BindCommand()
+                new BindCommand(),
+                new ScriptCommand(),
+                new LuaDebugCommand(),
+                new HungerCommand()
                 //new TestMoveInventoryCommand(),
                 //    new TestSwapInventoryCommand()
         );

@@ -178,7 +178,8 @@ public class Mod {
         WORLD("World"),
         RENDER("Render"),
         EXPLOIT("Exploit"),
-        DEVELOPMENT("Development");
+        DEVELOPMENT("Development"),
+        SCRIPTS("Scripts");
 
         public final String name;
 

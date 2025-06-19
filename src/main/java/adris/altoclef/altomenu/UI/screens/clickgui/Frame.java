@@ -117,4 +117,18 @@ public class Frame {
             }
         }
     }
+    
+    /**
+     * Refreshes the module list for this frame category
+     * Call this when modules are dynamically added/removed
+     */
+    public void refreshModules() {
+        buttons.clear();
+        
+        int offset = height;
+        for (Mod mod : ModuleManager.INSTANCE.getModulesInCategory(category)) {
+            buttons.add(new ModuleButton(mod, this, offset));
+            offset += height;
+        }
+    }
 }

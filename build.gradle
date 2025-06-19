@@ -12,7 +12,15 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+    // Ensure Maven Central is first and properly configured
     mavenCentral()
+    
+    // Add Maven Central explicitly for better dependency resolution
+    maven {
+        name = "Maven Central"
+        url = "https://repo1.maven.org/maven2/"
+    }
+    
     maven {
         name = "MarvionKiritoRepo"
         url = "https://marvionkirito.github.io/maven/"
@@ -43,11 +51,21 @@ dependencies {
     // Nether pathfinder
     implementation 'dev.babbaj:nether-pathfinder:1.5'
 
+    // Lua scripting support - LuaJ for Java-based Lua interpreter
+    implementation 'org.luaj:luaj-jse:3.0.1'
+    
+    // Optional: Enhanced text editor for script editing (for future UI development)
+    implementation 'com.fifesoft:rsyntaxtextarea:3.6.0'
+
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
     shadow('com.fasterxml.jackson.core:jackson-core:2.16.1')
     shadow('com.fasterxml.jackson.core:jackson-annotations:2.16.1')
     shadow('com.fasterxml.jackson.core:jackson-databind:2.16.1')
+    
+    // Include Lua dependencies in the shadow JAR
+    shadow('org.luaj:luaj-jse:3.0.1')
+    shadow('com.fifesoft:rsyntaxtextarea:3.6.0')
 
     // Thank you georgeagostino for fixing my garbage
     if (getProject().hasProperty("altoclef.development")) {
