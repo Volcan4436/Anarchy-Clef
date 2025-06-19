@@ -1,5 +1,4 @@
 package adris.altoclef;
-
 import adris.altoclef.commands.*;
 import adris.altoclef.commandsystem.CommandException;
 

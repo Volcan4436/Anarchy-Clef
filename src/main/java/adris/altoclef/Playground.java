@@ -1,6 +1,7 @@
 package adris.altoclef;
 
 import adris.altoclef.butler.WhisperChecker;
+import adris.altoclef.tasks.Anarchy.FightBotTask;
 import adris.altoclef.tasks.CraftGenericManuallyTask;
 import adris.altoclef.tasks.construction.PlaceBlockNearbyTask;
 import adris.altoclef.tasks.construction.PlaceSignTask;
@@ -300,6 +301,9 @@ public class Playground {
                 break;
             case "terminate":
                 mod.runUserTask(new TerminatorTask(mod.getPlayer().getBlockPos(), 900));
+                break;
+            case "fightbot":
+                mod.runUserTask(new FightBotTask(mod.getPlayer().getBlockPos(), 900));
                 break;
             case "replace":
                 // Creates a mini valley of crafting tables.

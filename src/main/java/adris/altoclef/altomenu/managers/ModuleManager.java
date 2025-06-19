@@ -106,7 +106,8 @@ public class ModuleManager {
         addModule(new Sprint());
         addModule(new Step());
         addModule(new Velocity());
-
+        addModule(new WaterSpeed());
+        
         //Player
         addModule(new AntiHunger());
         addModule(new NoFall());
