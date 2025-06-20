@@ -3,6 +3,8 @@ package adris.altoclef.scripting.api;
 import adris.altoclef.AltoClef;
 import adris.altoclef.scripting.persistence.ScriptPersistenceManager;
 import adris.altoclef.util.helpers.WorldHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -66,8 +68,17 @@ public class LuaUtilsAPI extends LuaTable {
         // World utilities
         set("World", createWorldUtils());
         
+        // Control utilities
+        set("Control", createControlUtils());
+        
+        // Chat & command utilities
+        set("Chat", createChatUtils());
+        
         // Inventory utilities
         set("Inventory", createInventoryUtils());
+        
+        // Entity utilities
+        set("Entity", createEntityUtils());
         
         // Debug utilities
         set("Debug", createDebugUtils());
@@ -908,6 +919,186 @@ public class LuaUtilsAPI extends LuaTable {
             }
         });
         
+        // ===== INPUT CONTROLS =====
+        
+        // Attack/punch (left click)
+        playerUtils.set("attack", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    mod.getInputControls().tryPress(baritone.api.utils.input.Input.CLICK_LEFT);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.attack: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Use/interact (right click)
+        playerUtils.set("use", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    mod.getInputControls().tryPress(baritone.api.utils.input.Input.CLICK_RIGHT);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.use: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Sneak control
+        playerUtils.set("sneak", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    if (args.narg() >= 1) {
+                        // Set specific sneak state
+                        boolean state = args.arg(1).toboolean();
+                        if (state) {
+                            mod.getInputControls().hold(baritone.api.utils.input.Input.SNEAK);
+                        } else {
+                            mod.getInputControls().release(baritone.api.utils.input.Input.SNEAK);
+                        }
+                    } else {
+                        // Just trigger a sneak press
+                        mod.getInputControls().tryPress(baritone.api.utils.input.Input.SNEAK);
+                    }
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.sneak: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Sprint control
+        playerUtils.set("sprint", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    if (args.narg() >= 1) {
+                        // Set specific sprint state
+                        boolean state = args.arg(1).toboolean();
+                        if (state) {
+                            mod.getInputControls().hold(baritone.api.utils.input.Input.SPRINT);
+                        } else {
+                            mod.getInputControls().release(baritone.api.utils.input.Input.SPRINT);
+                        }
+                    } else {
+                        // Just trigger a sprint press
+                        mod.getInputControls().tryPress(baritone.api.utils.input.Input.SPRINT);
+                    }
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.sprint: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Hotbar slot selection
+        playerUtils.set("selectHotbarSlot", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue slot) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    int slotNum = slot.toint();
+                    if (slotNum >= 1 && slotNum <= 9) {
+                        mod.getPlayer().getInventory().selectedSlot = slotNum - 1; // Convert to 0-based
+                        return LuaValue.TRUE;
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.selectHotbarSlot: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Get current hotbar slot
+        playerUtils.set("getSelectedHotbarSlot", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.valueOf(0);
+                try {
+                    return LuaValue.valueOf(mod.getPlayer().getInventory().selectedSlot + 1); // Convert to 1-based
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.getSelectedHotbarSlot: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        // ===== PLAYER STATUS & EFFECTS =====
+        
+        // Experience system
+        playerUtils.set("getXP", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.valueOf(0);
+                try {
+                    return LuaValue.valueOf(mod.getPlayer().totalExperience);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.getXP: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        playerUtils.set("getLevel", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.valueOf(0);
+                try {
+                    return LuaValue.valueOf(mod.getPlayer().experienceLevel);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.getLevel: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        // Gamemode detection
+        playerUtils.set("getGameMode", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.valueOf("UNKNOWN");
+                try {
+                    if (mod.getPlayer().isCreative()) {
+                        return LuaValue.valueOf("CREATIVE");
+                    } else if (mod.getPlayer().isSpectator()) {
+                        return LuaValue.valueOf("SPECTATOR");
+                    } else {
+                        return LuaValue.valueOf("SURVIVAL");
+                    }
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.getGameMode: " + e.getMessage());
+                    return LuaValue.valueOf("UNKNOWN");
+                }
+            }
+        });
+        
+        // Player abilities
+        playerUtils.set("canFly", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    return LuaValue.valueOf(mod.getPlayer().getAbilities().allowFlying);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Player.canFly: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
         return playerUtils;
     }
     
@@ -916,6 +1107,112 @@ public class LuaUtilsAPI extends LuaTable {
      */
     private LuaTable createWorldUtils() {
         LuaTable worldUtils = new LuaTable();
+        
+        // ===== WORLD INFORMATION =====
+        
+        // Time and weather
+        worldUtils.set("getWorldTime", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getWorld() == null) return LuaValue.valueOf(0);
+                try {
+                    return LuaValue.valueOf(mod.getWorld().getTime());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getWorldTime: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        worldUtils.set("getTimeOfDay", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getWorld() == null) return LuaValue.valueOf(0);
+                try {
+                    return LuaValue.valueOf(mod.getWorld().getTimeOfDay());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getTimeOfDay: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        worldUtils.set("isDay", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getWorld() == null) return LuaValue.FALSE;
+                try {
+                    return LuaValue.valueOf(mod.getWorld().isDay());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isDay: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        worldUtils.set("isNight", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getWorld() == null) return LuaValue.FALSE;
+                try {
+                    return LuaValue.valueOf(mod.getWorld().isNight());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isNight: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        worldUtils.set("isRaining", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getWorld() == null) return LuaValue.FALSE;
+                try {
+                    return LuaValue.valueOf(mod.getWorld().isRaining());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isRaining: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        worldUtils.set("isThundering", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getWorld() == null) return LuaValue.FALSE;
+                try {
+                    return LuaValue.valueOf(mod.getWorld().isThundering());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isThundering: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        worldUtils.set("canSleep", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(WorldHelper.canSleep());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.canSleep: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Dimension information
+        worldUtils.set("getCurrentDimension", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(WorldHelper.getCurrentDimension().toString());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getCurrentDimension: " + e.getMessage());
+                    return LuaValue.valueOf("UNKNOWN");
+                }
+            }
+        });
         
         worldUtils.set("getDimensionName", new OneArgFunction() {
             @Override
@@ -928,27 +1225,405 @@ public class LuaUtilsAPI extends LuaTable {
             }
         });
         
-        worldUtils.set("isNight", new OneArgFunction() {
+        worldUtils.set("isInOverworld", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
-                if (mod.getWorld() == null) return LuaValue.FALSE;
-                return LuaValue.valueOf(mod.getWorld().isNight());
+                try {
+                    return LuaValue.valueOf(WorldHelper.getCurrentDimension() == adris.altoclef.util.Dimension.OVERWORLD);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isInOverworld: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
             }
         });
         
-        worldUtils.set("isDay", new OneArgFunction() {
+        worldUtils.set("isInNether", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
-                if (mod.getWorld() == null) return LuaValue.FALSE;
-                return LuaValue.valueOf(mod.getWorld().isDay());
+                try {
+                    return LuaValue.valueOf(WorldHelper.getCurrentDimension() == adris.altoclef.util.Dimension.NETHER);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isInNether: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
             }
         });
         
-        worldUtils.set("getTimeOfDay", new OneArgFunction() {
+        worldUtils.set("isInEnd", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(WorldHelper.getCurrentDimension() == adris.altoclef.util.Dimension.END);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isInEnd: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Biome information
+        worldUtils.set("getCurrentBiome", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null || mod.getWorld() == null) return LuaValue.valueOf("UNKNOWN");
+                try {
+                    BlockPos playerPos = mod.getPlayer().getBlockPos();
+                    var biome = mod.getWorld().getBiome(playerPos);
+                    // Get the biome's registry key if available
+                    var biomeKey = biome.getKey();
+                    if (biomeKey.isPresent()) {
+                        return LuaValue.valueOf(biomeKey.get().getValue().toString());
+                    }
+                    return LuaValue.valueOf("UNKNOWN");
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getCurrentBiome: " + e.getMessage());
+                    return LuaValue.valueOf("UNKNOWN");
+                }
+            }
+        });
+        
+        worldUtils.set("getBiomeAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.valueOf("UNKNOWN");
+                try {
+                    if (args.narg() < 3) return LuaValue.valueOf("UNKNOWN");
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    var biome = mod.getWorld().getBiome(pos);
+                    var biomeKey = biome.getKey();
+                    if (biomeKey.isPresent()) {
+                        return LuaValue.valueOf(biomeKey.get().getValue().toString());
+                    }
+                    return LuaValue.valueOf("UNKNOWN");
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getBiomeAt: " + e.getMessage());
+                    return LuaValue.valueOf("UNKNOWN");
+                }
+            }
+        });
+        
+        worldUtils.set("isInOcean", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null || mod.getWorld() == null) return LuaValue.FALSE;
+                try {
+                    BlockPos playerPos = mod.getPlayer().getBlockPos();
+                    var biome = mod.getWorld().getBiome(playerPos);
+                    return LuaValue.valueOf(WorldHelper.isOcean(biome));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isInOcean: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // ===== BLOCK INFORMATION =====
+        
+        // Block state queries
+        worldUtils.set("getBlockAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.valueOf("air");
+                try {
+                    if (args.narg() < 3) return LuaValue.valueOf("air");
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    Block block = mod.getWorld().getBlockState(pos).getBlock();
+                    return LuaValue.valueOf(Registries.BLOCK.getId(block).toString());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getBlockAt: " + e.getMessage());
+                    return LuaValue.valueOf("air");
+                }
+            }
+        });
+        
+        worldUtils.set("isBlockAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.FALSE;
+                try {
+                    if (args.narg() < 4) return LuaValue.FALSE;
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    String blockName = args.arg(4).tojstring();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    Block currentBlock = mod.getWorld().getBlockState(pos).getBlock();
+                    
+                    // Parse block name
+                    String trimmedName = blockName.toLowerCase();
+                    if (!trimmedName.contains(":")) {
+                        trimmedName = "minecraft:" + trimmedName;
+                    }
+                    
+                    Identifier blockId = new Identifier(trimmedName);
+                    if (Registries.BLOCK.containsId(blockId)) {
+                        Block targetBlock = Registries.BLOCK.get(blockId);
+                        return LuaValue.valueOf(currentBlock == targetBlock);
+                    }
+                    
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isBlockAt: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        worldUtils.set("isAirAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.TRUE;
+                try {
+                    if (args.narg() < 3) return LuaValue.TRUE;
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    return LuaValue.valueOf(WorldHelper.isAir(mod, pos));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isAirAt: " + e.getMessage());
+                    return LuaValue.TRUE;
+                }
+            }
+        });
+        
+        worldUtils.set("isSolidAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.FALSE;
+                try {
+                    if (args.narg() < 3) return LuaValue.FALSE;
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    return LuaValue.valueOf(WorldHelper.isSolid(mod, pos));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isSolidAt: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Light levels
+        worldUtils.set("getLightLevelAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
                 if (mod.getWorld() == null) return LuaValue.valueOf(0);
-                return LuaValue.valueOf(mod.getWorld().getTimeOfDay());
+                try {
+                    if (args.narg() < 3) return LuaValue.valueOf(0);
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    int lightLevel = mod.getWorld().getLightLevel(pos);
+                    return LuaValue.valueOf(lightLevel);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getLightLevelAt: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        worldUtils.set("getBlockLightAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.valueOf(0);
+                try {
+                    if (args.narg() < 3) return LuaValue.valueOf(0);
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    int blockLight = mod.getWorld().getLightLevel(net.minecraft.world.LightType.BLOCK, pos);
+                    return LuaValue.valueOf(blockLight);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getBlockLightAt: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        worldUtils.set("getSkyLightAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.valueOf(0);
+                try {
+                    if (args.narg() < 3) return LuaValue.valueOf(0);
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    int skyLight = mod.getWorld().getLightLevel(net.minecraft.world.LightType.SKY, pos);
+                    return LuaValue.valueOf(skyLight);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getSkyLightAt: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        // Block properties
+        worldUtils.set("getBlockHardnessAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.valueOf(-1);
+                try {
+                    if (args.narg() < 3) return LuaValue.valueOf(-1);
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    BlockState state = mod.getWorld().getBlockState(pos);
+                    float hardness = state.getHardness(mod.getWorld(), pos);
+                    return LuaValue.valueOf(hardness);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getBlockHardnessAt: " + e.getMessage());
+                    return LuaValue.valueOf(-1);
+                }
+            }
+        });
+        
+        // Special block detection
+        worldUtils.set("isChestAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.FALSE;
+                try {
+                    if (args.narg() < 3) return LuaValue.FALSE;
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    return LuaValue.valueOf(WorldHelper.isChest(mod, pos));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isChestAt: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        worldUtils.set("isInteractableAt", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getWorld() == null) return LuaValue.FALSE;
+                try {
+                    if (args.narg() < 3) return LuaValue.FALSE;
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    return LuaValue.valueOf(WorldHelper.isInteractableBlock(mod, pos));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.isInteractableAt: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // ===== WORLD INTERACTION =====
+        
+        // Position validation
+        worldUtils.set("canReach", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    if (args.narg() < 3) return LuaValue.FALSE;
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    return LuaValue.valueOf(WorldHelper.canReach(mod, pos));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.canReach: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        worldUtils.set("canBreak", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    if (args.narg() < 3) return LuaValue.FALSE;
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();  
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    return LuaValue.valueOf(WorldHelper.canBreak(mod, pos));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.canBreak: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        worldUtils.set("canPlace", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    if (args.narg() < 3) return LuaValue.FALSE;
+                    
+                    int x = args.arg(1).toint();
+                    int y = args.arg(2).toint();
+                    int z = args.arg(3).toint();
+                    
+                    BlockPos pos = new BlockPos(x, y, z);
+                    return LuaValue.valueOf(WorldHelper.canPlace(mod, pos));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.canPlace: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Ground height calculation
+        worldUtils.set("getGroundHeight", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    if (args.narg() < 2) return LuaValue.valueOf(-1);
+                    
+                    int x = args.arg(1).toint();
+                    int z = args.arg(2).toint();
+                    
+                    return LuaValue.valueOf(WorldHelper.getGroundHeight(mod, x, z));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.World.getGroundHeight: " + e.getMessage());
+                    return LuaValue.valueOf(-1);
+                }
             }
         });
         
@@ -956,12 +1631,819 @@ public class LuaUtilsAPI extends LuaTable {
     }
     
     /**
+     * Creates control utility functions
+     */
+    private LuaTable createControlUtils() {
+        LuaTable controlUtils = new LuaTable();
+        
+        // Drop item (Q key functionality)
+        controlUtils.set("dropItem", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    // Execute on main thread to avoid issues
+                    net.minecraft.client.MinecraftClient.getInstance().execute(() -> {
+                        try {
+                            net.minecraft.client.MinecraftClient.getInstance().options.dropKey.setPressed(true);
+                            net.minecraft.client.option.KeyBinding.onKeyPressed(net.minecraft.client.MinecraftClient.getInstance().options.dropKey.getDefaultKey());
+                            net.minecraft.client.MinecraftClient.getInstance().options.dropKey.setPressed(false);
+                        } catch (Exception e) {
+                            mod.logWarning("Error executing drop on main thread: " + e.getMessage());
+                        }
+                    });
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.dropItem: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Open inventory (E key functionality)
+        controlUtils.set("openInventory", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    // Execute on main thread to avoid issues
+                    net.minecraft.client.MinecraftClient.getInstance().execute(() -> {
+                        try {
+                            net.minecraft.client.MinecraftClient.getInstance().options.inventoryKey.setPressed(true);
+                            net.minecraft.client.option.KeyBinding.onKeyPressed(net.minecraft.client.MinecraftClient.getInstance().options.inventoryKey.getDefaultKey());
+                            net.minecraft.client.MinecraftClient.getInstance().options.inventoryKey.setPressed(false);
+                        } catch (Exception e) {
+                            mod.logWarning("Error executing inventory open on main thread: " + e.getMessage());
+                        }
+                    });
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.openInventory: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Open chat (T key functionality)
+        controlUtils.set("openChat", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    // Execute on main thread to avoid issues
+                    net.minecraft.client.MinecraftClient.getInstance().execute(() -> {
+                        try {
+                            net.minecraft.client.MinecraftClient.getInstance().options.chatKey.setPressed(true);
+                            net.minecraft.client.option.KeyBinding.onKeyPressed(net.minecraft.client.MinecraftClient.getInstance().options.chatKey.getDefaultKey());
+                            net.minecraft.client.MinecraftClient.getInstance().options.chatKey.setPressed(false);
+                        } catch (Exception e) {
+                            mod.logWarning("Error executing chat open on main thread: " + e.getMessage());
+                        }
+                    });
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.openChat: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Advanced look control
+        controlUtils.set("lookAt", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue yaw, LuaValue pitch) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    float yawValue = (float) yaw.todouble();
+                    float pitchValue = (float) pitch.todouble();
+                    
+                    mod.getInputControls().forceLook(yawValue, pitchValue);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.lookAt: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Force camera/look direction instantly
+        controlUtils.set("setLook", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue yaw, LuaValue pitch) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    float yawValue = (float) yaw.todouble();
+                    float pitchValue = (float) pitch.todouble();
+                    
+                    mod.getInputControls().forceLook(yawValue, pitchValue);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.setLook: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Check if breaking a block
+        controlUtils.set("isBreakingBlock", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(mod.getControllerExtras().isBreakingBlock());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.isBreakingBlock: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Get block breaking position
+        controlUtils.set("getBreakingBlockPos", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    net.minecraft.util.math.BlockPos pos = mod.getControllerExtras().getBreakingBlockPos();
+                    if (pos != null) {
+                        org.luaj.vm2.LuaTable result = new org.luaj.vm2.LuaTable();
+                        result.set("x", LuaValue.valueOf(pos.getX()));
+                        result.set("y", LuaValue.valueOf(pos.getY()));
+                        result.set("z", LuaValue.valueOf(pos.getZ()));
+                        return result;
+                    }
+                    return LuaValue.NIL;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.getBreakingBlockPos: " + e.getMessage());
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        
+        // Get block breaking progress (0.0 to 1.0)
+        controlUtils.set("getBreakingProgress", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(mod.getControllerExtras().getBreakingBlockProgress());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.getBreakingProgress: " + e.getMessage());
+                    return LuaValue.valueOf(0.0);
+                }
+            }
+        });
+        
+        // Hold a key down
+        controlUtils.set("holdKey", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue key) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    String keyName = key.tojstring().toLowerCase();
+                    baritone.api.utils.input.Input input = switch (keyName) {
+                        case "sneak" -> baritone.api.utils.input.Input.SNEAK;
+                        case "sprint" -> baritone.api.utils.input.Input.SPRINT;
+                        case "jump" -> baritone.api.utils.input.Input.JUMP;
+                        case "attack", "left_click" -> baritone.api.utils.input.Input.CLICK_LEFT;
+                        case "use", "right_click" -> baritone.api.utils.input.Input.CLICK_RIGHT;
+                        case "forward", "w" -> baritone.api.utils.input.Input.MOVE_FORWARD;
+                        case "back", "s" -> baritone.api.utils.input.Input.MOVE_BACK;
+                        case "left", "a" -> baritone.api.utils.input.Input.MOVE_LEFT;
+                        case "right", "d" -> baritone.api.utils.input.Input.MOVE_RIGHT;
+                        default -> null;
+                    };
+                    
+                    if (input != null) {
+                        mod.getInputControls().hold(input);
+                        return LuaValue.TRUE;
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.holdKey: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Release a held key
+        controlUtils.set("releaseKey", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue key) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    String keyName = key.tojstring().toLowerCase();
+                    baritone.api.utils.input.Input input = switch (keyName) {
+                        case "sneak" -> baritone.api.utils.input.Input.SNEAK;
+                        case "sprint" -> baritone.api.utils.input.Input.SPRINT;
+                        case "jump" -> baritone.api.utils.input.Input.JUMP;
+                        case "attack", "left_click" -> baritone.api.utils.input.Input.CLICK_LEFT;
+                        case "use", "right_click" -> baritone.api.utils.input.Input.CLICK_RIGHT;
+                        case "forward", "w" -> baritone.api.utils.input.Input.MOVE_FORWARD;
+                        case "back", "s" -> baritone.api.utils.input.Input.MOVE_BACK;
+                        case "left", "a" -> baritone.api.utils.input.Input.MOVE_LEFT;
+                        case "right", "d" -> baritone.api.utils.input.Input.MOVE_RIGHT;
+                        default -> null;
+                    };
+                    
+                    if (input != null) {
+                        mod.getInputControls().release(input);
+                        return LuaValue.TRUE;
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.releaseKey: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Press a key once (single press)
+        controlUtils.set("pressKey", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue key) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    String keyName = key.tojstring().toLowerCase();
+                    baritone.api.utils.input.Input input = switch (keyName) {
+                        case "sneak" -> baritone.api.utils.input.Input.SNEAK;
+                        case "sprint" -> baritone.api.utils.input.Input.SPRINT;
+                        case "jump" -> baritone.api.utils.input.Input.JUMP;
+                        case "attack", "left_click" -> baritone.api.utils.input.Input.CLICK_LEFT;
+                        case "use", "right_click" -> baritone.api.utils.input.Input.CLICK_RIGHT;
+                        case "forward", "w" -> baritone.api.utils.input.Input.MOVE_FORWARD;
+                        case "back", "s" -> baritone.api.utils.input.Input.MOVE_BACK;
+                        case "left", "a" -> baritone.api.utils.input.Input.MOVE_LEFT;
+                        case "right", "d" -> baritone.api.utils.input.Input.MOVE_RIGHT;
+                        default -> null;
+                    };
+                    
+                    if (input != null) {
+                        mod.getInputControls().tryPress(input);
+                        return LuaValue.TRUE;
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.pressKey: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Check if key is held down
+        controlUtils.set("isHoldingKey", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue key) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    String keyName = key.tojstring().toLowerCase();
+                    baritone.api.utils.input.Input input = switch (keyName) {
+                        case "sneak" -> baritone.api.utils.input.Input.SNEAK;
+                        case "sprint" -> baritone.api.utils.input.Input.SPRINT;
+                        case "jump" -> baritone.api.utils.input.Input.JUMP;
+                        case "attack", "left_click" -> baritone.api.utils.input.Input.CLICK_LEFT;
+                        case "use", "right_click" -> baritone.api.utils.input.Input.CLICK_RIGHT;
+                        case "forward", "w" -> baritone.api.utils.input.Input.MOVE_FORWARD;
+                        case "back", "s" -> baritone.api.utils.input.Input.MOVE_BACK;
+                        case "left", "a" -> baritone.api.utils.input.Input.MOVE_LEFT;
+                        case "right", "d" -> baritone.api.utils.input.Input.MOVE_RIGHT;
+                        default -> null;
+                    };
+                    
+                    if (input != null) {
+                        return LuaValue.valueOf(mod.getInputControls().isHeldDown(input));
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Control.isHoldingKey: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        return controlUtils;
+    }
+    
+    /**
+     * Creates chat and command utility functions
+     */
+    private LuaTable createChatUtils() {
+        LuaTable chatUtils = new LuaTable();
+        
+        // Send whisper message to specific player
+        chatUtils.set("whisper", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue username, LuaValue message) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    String user = username.tojstring();
+                    String msg = message.tojstring();
+                    mod.getMessageSender().enqueueWhisper(user, msg, adris.altoclef.ui.MessagePriority.OPTIONAL);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Chat.whisper: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Send priority message
+        chatUtils.set("chatPriority", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue message, LuaValue priority) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    String msg = message.tojstring();
+                    String priorityStr = priority.tojstring().toUpperCase();
+                    
+                    adris.altoclef.ui.MessagePriority msgPriority = switch (priorityStr) {
+                        case "LOW" -> adris.altoclef.ui.MessagePriority.OPTIONAL;
+                        case "NORMAL", "INFO" -> adris.altoclef.ui.MessagePriority.OPTIONAL;
+                        case "IMPORTANT" -> adris.altoclef.ui.MessagePriority.TIMELY;
+                        case "TIMELY" -> adris.altoclef.ui.MessagePriority.TIMELY;
+                        case "WARNING" -> adris.altoclef.ui.MessagePriority.ASAP;
+                        case "UNAUTHORIZED" -> adris.altoclef.ui.MessagePriority.UNAUTHORIZED;
+                        default -> adris.altoclef.ui.MessagePriority.OPTIONAL;
+                    };
+                    
+                    mod.getMessageSender().enqueueChat(msg, msgPriority);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Chat.chatPriority: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Send whisper with priority
+        chatUtils.set("whisperPriority", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue username, LuaValue message, LuaValue priority) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    String user = username.tojstring();
+                    String msg = message.tojstring();
+                    String priorityStr = priority.tojstring().toUpperCase();
+                    
+                    adris.altoclef.ui.MessagePriority msgPriority = switch (priorityStr) {
+                        case "LOW" -> adris.altoclef.ui.MessagePriority.OPTIONAL;
+                        case "NORMAL", "INFO" -> adris.altoclef.ui.MessagePriority.OPTIONAL;
+                        case "IMPORTANT" -> adris.altoclef.ui.MessagePriority.TIMELY;
+                        case "TIMELY" -> adris.altoclef.ui.MessagePriority.TIMELY;
+                        case "WARNING" -> adris.altoclef.ui.MessagePriority.ASAP;
+                        case "UNAUTHORIZED" -> adris.altoclef.ui.MessagePriority.UNAUTHORIZED;
+                        default -> adris.altoclef.ui.MessagePriority.OPTIONAL;
+                    };
+                    
+                    mod.getMessageSender().enqueueWhisper(user, msg, msgPriority);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Chat.whisperPriority: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Check if user is authorized for butler commands
+        chatUtils.set("isUserAuthorized", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue username) {
+                try {
+                    String user = username.tojstring();
+                    return LuaValue.valueOf(mod.getButler().isUserAuthorized(user));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Chat.isUserAuthorized: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Get current butler user (if any)
+        chatUtils.set("getCurrentUser", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    String currentUser = mod.getButler().getCurrentUser();
+                    return currentUser != null ? LuaValue.valueOf(currentUser) : LuaValue.NIL;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Chat.getCurrentUser: " + e.getMessage());
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        
+        // Check if butler has a current user
+        chatUtils.set("hasCurrentUser", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(mod.getButler().hasCurrentUser());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Chat.hasCurrentUser: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        return chatUtils;
+    }
+    
+    /**
      * Creates inventory utility functions
      */
     private LuaTable createInventoryUtils() {
-        LuaTable invUtils = new LuaTable();
+        LuaTable inventoryUtils = new LuaTable();
         
-        invUtils.set("getTotalItemCount", new OneArgFunction() {
+        // ===== ITEM COUNTING & DETECTION =====
+        
+        inventoryUtils.set("getItemCount", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        return LuaValue.valueOf(mod.getItemStorage().getItemCount(item));
+                    }
+                    return LuaValue.valueOf(0);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getItemCount: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("getItemCountInventory", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        return LuaValue.valueOf(mod.getItemStorage().getItemCountInventoryOnly(item));
+                    }
+                    return LuaValue.valueOf(0);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getItemCountInventory: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("hasItem", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        return LuaValue.valueOf(mod.getItemStorage().hasItem(item));
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.hasItem: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("hasItemInventory", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        return LuaValue.valueOf(mod.getItemStorage().hasItemInventoryOnly(item));
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.hasItemInventory: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // ===== EQUIPMENT MANAGEMENT =====
+        
+        inventoryUtils.set("isEquipped", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.isEquipped(mod, item));
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.isEquipped: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("equipItem", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        return LuaValue.valueOf(mod.getSlotHandler().forceEquipItem(item));
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.equipItem: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("equipItemToOffhand", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        mod.getSlotHandler().forceEquipItemToOffhand(item);
+                        return LuaValue.TRUE;
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.equipItemToOffhand: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("isArmorEquipped", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.isArmorEquipped(mod, item));
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.isArmorEquipped: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // ===== INVENTORY STATE =====
+        
+        inventoryUtils.set("getTotalSlots", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.valueOf(0);
+                try {
+                    return LuaValue.valueOf(mod.getPlayer().getInventory().main.size());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getTotalSlots: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("hasEmptySlot", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(mod.getItemStorage().hasEmptyInventorySlot());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.hasEmptySlot: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("getFoodCount", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.calculateInventoryFoodScore(mod));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getFoodCount: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("getBuildingMaterialCount", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.getBuildingMaterialCount(mod));
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getBuildingMaterialCount: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        // ===== SCREEN & CONTAINER DETECTION =====
+        
+        inventoryUtils.set("isInventoryOpen", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.isPlayerInventoryOpen());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.isInventoryOpen: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("isCraftingTableOpen", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.isBigCraftingOpen());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.isCraftingTableOpen: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("isFurnaceOpen", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.isFurnaceOpen());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.isFurnaceOpen: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("isSmokerOpen", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.isSmokerOpen());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.isSmokerOpen: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("isBlastFurnaceOpen", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.isBlastFurnaceOpen());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.isBlastFurnaceOpen: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        inventoryUtils.set("closeScreen", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    // Execute on main thread to avoid render thread issues
+                    net.minecraft.client.MinecraftClient.getInstance().execute(() -> {
+                        try {
+                            adris.altoclef.util.helpers.StorageHelper.closeScreen();
+                        } catch (Exception e) {
+                            mod.logWarning("Error closing screen on main thread: " + e.getMessage());
+                        }
+                    });
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.closeScreen: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // ===== FURNACE OPERATIONS =====
+        
+        inventoryUtils.set("getFurnaceFuel", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.getFurnaceFuel());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getFurnaceFuel: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("getFurnaceCookProgress", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.getFurnaceCookPercent());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getFurnaceCookProgress: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("getSmokerFuel", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.getSmokerFuel());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getSmokerFuel: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("getSmokerCookProgress", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.getSmokerCookPercent());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getSmokerCookProgress: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("getBlastFurnaceFuel", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.getBlastFurnaceFuel());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getBlastFurnaceFuel: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("getBlastFurnaceCookProgress", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    return LuaValue.valueOf(adris.altoclef.util.helpers.StorageHelper.getBlastFurnaceCookPercent());
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getBlastFurnaceCookProgress: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        // ===== CONTAINER INFORMATION =====
+        
+        inventoryUtils.set("getContainerItemCount", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        return LuaValue.valueOf(mod.getItemStorage().getItemCountContainer(item));
+                    }
+                    return LuaValue.valueOf(0);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.getContainerItemCount: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        inventoryUtils.set("hasItemInContainer", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemName) {
+                try {
+                    Item item = parseItemName(itemName.tojstring());
+                    if (item != null) {
+                        return LuaValue.valueOf(mod.getItemStorage().hasItemContainer(item));
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.hasItemInContainer: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // ===== UTILITY FUNCTIONS =====
+        
+        inventoryUtils.set("refreshInventory", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                try {
+                    mod.getSlotHandler().refreshInventory();
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Inventory.refreshInventory: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // ===== LEGACY FUNCTIONS (for backward compatibility) =====
+        
+        inventoryUtils.set("getTotalItemCount", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
                 if (mod.getItemStorage() == null) return LuaValue.valueOf(0);
@@ -974,7 +2456,7 @@ public class LuaUtilsAPI extends LuaTable {
             }
         });
         
-        invUtils.set("getUniqueItemCount", new OneArgFunction() {
+        inventoryUtils.set("getUniqueItemCount", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
                 if (mod.getItemStorage() == null) return LuaValue.valueOf(0);
@@ -989,7 +2471,292 @@ public class LuaUtilsAPI extends LuaTable {
             }
         });
         
-        return invUtils;
+        return inventoryUtils;
+    }
+    
+    /**
+     * Creates entity utility functions
+     */
+    private LuaTable createEntityUtils() {
+        LuaTable entityUtils = new LuaTable();
+        
+        // Get nearby entities with range
+        entityUtils.set("getNearbyEntities", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    // Handle both Entity.getNearbyEntities() and Entity:getNearbyEntities() syntax
+                    int offset = args.narg() >= 2 && args.arg(1).istable() ? 1 : 0;
+                    double range = args.narg() > offset ? args.arg(1 + offset).todouble() : 20.0;
+                    
+                    if (mod.getPlayer() == null) return new LuaTable();
+                    
+                    LuaTable entities = new LuaTable();
+                    int index = 1;
+                    
+                    for (net.minecraft.entity.Entity entity : mod.getEntityTracker().getCloseEntities()) {
+                        double distance = entity.distanceTo(mod.getPlayer());
+                        if (distance <= range) {
+                            LuaTable entityInfo = createSimpleEntityTable(entity, distance);
+                            entities.set(index++, entityInfo);
+                        }
+                    }
+                    
+                    return entities;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Entity.getNearbyEntities: " + e.getMessage());
+                    return new LuaTable();
+                }
+            }
+        });
+        
+        // Get closest entity
+        entityUtils.set("getClosestEntity", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    if (mod.getPlayer() == null) return LuaValue.NIL;
+                    
+                    java.util.List<net.minecraft.entity.Entity> closeEntities = mod.getEntityTracker().getCloseEntities();
+                    if (closeEntities.isEmpty()) return LuaValue.NIL;
+                    
+                    net.minecraft.entity.Entity closest = null;
+                    double minDistance = Double.MAX_VALUE;
+                    
+                    for (net.minecraft.entity.Entity entity : closeEntities) {
+                        double distance = entity.distanceTo(mod.getPlayer());
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            closest = entity;
+                        }
+                    }
+                    
+                    if (closest != null) {
+                        return createSimpleEntityTable(closest, minDistance);
+                    }
+                    
+                    return LuaValue.NIL;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Entity.getClosestEntity: " + e.getMessage());
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        
+        // Get entities of specific type
+        entityUtils.set("getEntitiesOfType", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    // Handle both Entity.getEntitiesOfType() and Entity:getEntitiesOfType() syntax
+                    int offset = args.narg() >= 2 && args.arg(1).istable() ? 1 : 0;
+                    if (args.narg() < 1 + offset) return new LuaTable();
+                    
+                    String entityType = args.arg(1 + offset).tojstring().toLowerCase();
+                    
+                    if (mod.getPlayer() == null) return new LuaTable();
+                    
+                    LuaTable entities = new LuaTable();
+                    int index = 1;
+                    
+                    // Use simple entity filtering based on type string
+                    for (net.minecraft.entity.Entity entity : mod.getEntityTracker().getCloseEntities()) {
+                        String entityTypeName = entity.getType().toString().toLowerCase();
+                        if (entityTypeName.contains(entityType) || entityType.equals("all") || entityType.equals("entity")) {
+                            double distance = entity.distanceTo(mod.getPlayer());
+                            LuaTable entityInfo = createSimpleEntityTable(entity, distance);
+                            entities.set(index++, entityInfo);
+                        }
+                    }
+                    
+                    return entities;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Entity.getEntitiesOfType: " + e.getMessage());
+                    return new LuaTable();
+                }
+            }
+        });
+        
+        // Get nearby players
+        entityUtils.set("getPlayersNearby", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    // Handle both Entity.getPlayersNearby() and Entity:getPlayersNearby() syntax
+                    int offset = args.narg() >= 2 && args.arg(1).istable() ? 1 : 0;
+                    double range = args.narg() > offset ? args.arg(1 + offset).todouble() : 50.0;
+                    
+                    if (mod.getPlayer() == null) return new LuaTable();
+                    
+                    LuaTable players = new LuaTable();
+                    int index = 1;
+                    
+                    java.util.List<net.minecraft.entity.player.PlayerEntity> playerEntities = mod.getEntityTracker().getTrackedEntities(net.minecraft.entity.player.PlayerEntity.class);
+                    for (net.minecraft.entity.player.PlayerEntity player : playerEntities) {
+                        double distance = player.distanceTo(mod.getPlayer());
+                        if (distance <= range) {
+                            LuaTable playerInfo = createSimpleEntityTable(player, distance);
+                            // Add player-specific info
+                            playerInfo.set("username", LuaValue.valueOf(player.getName().getString()));
+                            playerInfo.set("uuid", LuaValue.valueOf(player.getUuid().toString()));
+                            players.set(index++, playerInfo);
+                        }
+                    }
+                    
+                    return players;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Entity.getPlayersNearby: " + e.getMessage());
+                    return new LuaTable();
+                }
+            }
+        });
+        
+        // Get hostile entities
+        entityUtils.set("getHostileEntities", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    if (mod.getPlayer() == null) return new LuaTable();
+                    
+                    LuaTable hostiles = new LuaTable();
+                    int index = 1;
+                    
+                    java.util.List<net.minecraft.entity.Entity> hostileEntities = mod.getEntityTracker().getHostiles();
+                    for (net.minecraft.entity.Entity entity : hostileEntities) {
+                        double distance = entity.distanceTo(mod.getPlayer());
+                        LuaTable entityInfo = createSimpleEntityTable(entity, distance);
+                        entityInfo.set("isHostile", LuaValue.TRUE);
+                        hostiles.set(index++, entityInfo);
+                    }
+                    
+                    return hostiles;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Entity.getHostileEntities: " + e.getMessage());
+                    return new LuaTable();
+                }
+            }
+        });
+        
+        // Get dropped items
+        entityUtils.set("getDroppedItems", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    // Handle both Entity.getDroppedItems() and Entity:getDroppedItems() syntax
+                    int offset = args.narg() >= 2 && args.arg(1).istable() ? 1 : 0;
+                    double range = args.narg() > offset ? args.arg(1 + offset).todouble() : 20.0;
+                    
+                    if (mod.getPlayer() == null) return new LuaTable();
+                    
+                    LuaTable items = new LuaTable();
+                    int index = 1;
+                    
+                    java.util.List<net.minecraft.entity.ItemEntity> droppedItems = mod.getEntityTracker().getDroppedItems();
+                    for (net.minecraft.entity.ItemEntity itemEntity : droppedItems) {
+                        double distance = itemEntity.distanceTo(mod.getPlayer());
+                        if (distance <= range) {
+                            LuaTable itemInfo = createSimpleEntityTable(itemEntity, distance);
+                            itemInfo.set("itemName", LuaValue.valueOf(itemEntity.getStack().getItem().toString()));
+                            itemInfo.set("count", LuaValue.valueOf(itemEntity.getStack().getCount()));
+                            items.set(index++, itemInfo);
+                        }
+                    }
+                    
+                    return items;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Entity.getDroppedItems: " + e.getMessage());
+                    return new LuaTable();
+                }
+            }
+        });
+        
+        // Count entities of type
+        entityUtils.set("countEntitiesOfType", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                try {
+                    // Handle both Entity.countEntitiesOfType() and Entity:countEntitiesOfType() syntax
+                    int offset = args.narg() >= 2 && args.arg(1).istable() ? 1 : 0;
+                    if (args.narg() < 1 + offset) return LuaValue.valueOf(0);
+                    
+                    String entityType = args.arg(1 + offset).tojstring().toLowerCase();
+                    
+                    int count = 0;
+                    for (net.minecraft.entity.Entity entity : mod.getEntityTracker().getCloseEntities()) {
+                        String entityTypeName = entity.getType().toString().toLowerCase();
+                        if (entityTypeName.contains(entityType) || entityType.equals("all") || entityType.equals("entity")) {
+                            count++;
+                        }
+                    }
+                    
+                    return LuaValue.valueOf(count);
+                } catch (Exception e) {
+                    mod.logWarning("Error in Utils.Entity.countEntitiesOfType: " + e.getMessage());
+                    return LuaValue.valueOf(0);
+                }
+            }
+        });
+        
+        return entityUtils;
+    }
+    
+    /**
+     * Creates a simple entity table for Utils API (simplified version)
+     */
+    private LuaTable createSimpleEntityTable(net.minecraft.entity.Entity entity, double distance) {
+        LuaTable entityTable = new LuaTable();
+        
+        try {
+            // Basic entity information
+            entityTable.set("name", LuaValue.valueOf(entity.getName().getString()));
+            entityTable.set("type", LuaValue.valueOf(entity.getType().toString()));
+            entityTable.set("distance", LuaValue.valueOf(distance));
+            entityTable.set("id", LuaValue.valueOf(entity.getId()));
+            
+            // Position
+            net.minecraft.util.math.Vec3d pos = entity.getPos();
+            LuaTable position = new LuaTable();
+            position.set("x", LuaValue.valueOf(pos.x));
+            position.set("y", LuaValue.valueOf(pos.y));
+            position.set("z", LuaValue.valueOf(pos.z));
+            entityTable.set("position", position);
+            
+            // Basic state
+            entityTable.set("isAlive", LuaValue.valueOf(entity.isAlive()));
+            
+            // Type flags
+            entityTable.set("isPlayer", LuaValue.valueOf(entity instanceof net.minecraft.entity.player.PlayerEntity));
+            entityTable.set("isLiving", LuaValue.valueOf(entity instanceof net.minecraft.entity.LivingEntity));
+            entityTable.set("isItem", LuaValue.valueOf(entity instanceof net.minecraft.entity.ItemEntity));
+            
+        } catch (Exception e) {
+            mod.logWarning("Error creating simple entity table: " + e.getMessage());
+        }
+        
+        return entityTable;
+    }
+    
+    /**
+     * Helper method to parse item names - copied from main API for consistency
+     */
+    private Item parseItemName(String itemName) {
+        try {
+            String trimmedName = itemName.toLowerCase().trim();
+            if (!trimmedName.contains(":")) {
+                trimmedName = "minecraft:" + trimmedName;
+            }
+            
+            Identifier itemId = new Identifier(trimmedName);
+            if (Registries.ITEM.containsId(itemId)) {
+                return Registries.ITEM.get(itemId);
+            }
+            
+            mod.logWarning("Unknown item: " + itemName);
+            return null;
+        } catch (Exception e) {
+            mod.logWarning("Error parsing item name '" + itemName + "': " + e.getMessage());
+            return null;
+        }
     }
     
     /**
