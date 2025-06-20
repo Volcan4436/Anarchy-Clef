@@ -28,4 +28,8 @@ public class ChatMessageEvent {
     public MessageType messageType() {
         return messageType.type();
     }
+    
+    public String senderUUID() {
+        return sender.getId().toString();
+    }
 }

@@ -842,6 +842,72 @@ public class LuaUtilsAPI extends LuaTable {
             }
         });
         
+        // Jump functionality
+        playerUtils.set("isJumping", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                // Check if player is currently jumping (not on ground and has positive Y velocity)
+                return LuaValue.valueOf(!mod.getPlayer().isOnGround() && mod.getPlayer().getVelocity().y > 0);
+            }
+        });
+        
+        playerUtils.set("jump", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    // Use AltoClef's input controls to trigger a jump
+                    mod.getInputControls().tryPress(baritone.api.utils.input.Input.JUMP);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Player.jump: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Velocity functionality
+        playerUtils.set("getVelocity", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.NIL;
+                try {
+                    Vec3d velocity = mod.getPlayer().getVelocity();
+                    LuaTable result = new LuaTable();
+                    result.set("x", LuaValue.valueOf(velocity.x));
+                    result.set("y", LuaValue.valueOf(velocity.y));
+                    result.set("z", LuaValue.valueOf(velocity.z));
+                    return result;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Player.getVelocity: " + e.getMessage());
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        
+        playerUtils.set("setVelocity", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    // Handle both Player.setVelocity() and Player:setVelocity() syntax
+                    int offset = args.narg() == 4 ? 1 : 0;
+                    if (args.narg() < 3 + offset) return LuaValue.FALSE;
+                    
+                    double x = args.arg(1 + offset).todouble();
+                    double y = args.arg(2 + offset).todouble();
+                    double z = args.arg(3 + offset).todouble();
+                    
+                    mod.getPlayer().setVelocity(x, y, z);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in Player.setVelocity: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
         return playerUtils;
     }
     

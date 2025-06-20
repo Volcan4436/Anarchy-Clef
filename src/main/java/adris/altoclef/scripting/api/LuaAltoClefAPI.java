@@ -3,13 +3,22 @@ package adris.altoclef.scripting.api;
 import adris.altoclef.AltoClef;
 import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.helpers.ItemHelper;
+import adris.altoclef.commandsystem.Command;
+import adris.altoclef.commandsystem.CommandException;
+import adris.altoclef.commandsystem.ArgParser;
+import adris.altoclef.ui.MessagePriority;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.OneArgFunction;
+import org.luaj.vm2.lib.VarArgFunction;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Main API interface between Lua scripts and AltoClef functionality
@@ -20,9 +29,24 @@ import org.luaj.vm2.lib.OneArgFunction;
  */
 public class LuaAltoClefAPI extends LuaTable {
     private final AltoClef mod;
+    private final String scriptName;
+    
+    // Event handlers for chat and commands
+    private LuaValue onChatHandler = LuaValue.NIL;
+    private LuaValue onCommandHandler = LuaValue.NIL;
+    
+    // Registered commands from this script
+    private final Map<String, LuaScriptCommand> registeredCommands = new ConcurrentHashMap<>();
     
     public LuaAltoClefAPI(AltoClef mod) {
         this.mod = mod;
+        this.scriptName = "unknown";
+        initializeAPI();
+    }
+    
+    public LuaAltoClefAPI(AltoClef mod, String scriptName) {
+        this.mod = mod;
+        this.scriptName = scriptName;
         initializeAPI();
     }
     
@@ -233,6 +257,72 @@ public class LuaAltoClefAPI extends LuaTable {
             }
         });
         
+        // Jump functionality - direct API access
+        set("isJumping", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue modName, LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                // Check if player is currently jumping (not on ground and has positive Y velocity)
+                return LuaValue.valueOf(!mod.getPlayer().isOnGround() && mod.getPlayer().getVelocity().y > 0);
+            }
+        });
+        
+        set("jump", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue modName, LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    // Use AltoClef's input controls to trigger a jump
+                    mod.getInputControls().tryPress(baritone.api.utils.input.Input.JUMP);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in AltoClef.jump: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Velocity functionality - direct API access
+        set("getVelocity", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue modName, LuaValue self) {
+                if (mod.getPlayer() == null) return LuaValue.NIL;
+                try {
+                    Vec3d velocity = mod.getPlayer().getVelocity();
+                    LuaTable result = new LuaTable();
+                    result.set("x", LuaValue.valueOf(velocity.x));
+                    result.set("y", LuaValue.valueOf(velocity.y));
+                    result.set("z", LuaValue.valueOf(velocity.z));
+                    return result;
+                } catch (Exception e) {
+                    mod.logWarning("Error in AltoClef.getVelocity: " + e.getMessage());
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        
+        set("setVelocity", new org.luaj.vm2.lib.VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (mod.getPlayer() == null) return LuaValue.FALSE;
+                try {
+                    // Handle both AltoClef.setVelocity() and AltoClef:setVelocity() syntax
+                    int offset = args.narg() == 4 ? 1 : 0;
+                    if (args.narg() < 3 + offset) return LuaValue.FALSE;
+                    
+                    double x = args.arg(1 + offset).todouble();
+                    double y = args.arg(2 + offset).todouble();
+                    double z = args.arg(3 + offset).todouble();
+                    
+                    mod.getPlayer().setVelocity(x, y, z);
+                    return LuaValue.TRUE;
+                } catch (Exception e) {
+                    mod.logWarning("Error in AltoClef.setVelocity: " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
         set("runCommand", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue command) {
@@ -305,6 +395,9 @@ public class LuaAltoClefAPI extends LuaTable {
         
         // Task System API - Phase 2
         set("TaskSystem", new LuaTaskSystemAPI(mod));
+        
+        // Chat and Command System APIs
+        initializeChatAndCommandAPIs();
         
         // Note: Utils API is now created per-script in LuaScriptEngine 
         // to support persistence with script-specific context
@@ -454,5 +547,186 @@ public class LuaAltoClefAPI extends LuaTable {
             mod.logWarning("Script item parsing error for '" + itemName + "': " + e.getMessage());
             return null;
         }
+    }
+    
+    /**
+     * Initializes chat and command functionality
+     */
+    private void initializeChatAndCommandAPIs() {
+        // Chat sending functionality
+        set("chat", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue message) {
+                try {
+                    if (MinecraftClient.getInstance().player != null) {
+                        String msg = message.tojstring();
+                        MinecraftClient.getInstance().player.networkHandler.sendChatMessage(msg);
+                        return LuaValue.TRUE;
+                    }
+                    return LuaValue.FALSE;
+                } catch (Exception e) {
+                    mod.logWarning("Error sending chat message from script '" + scriptName + "': " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Set chat event handler
+        set("onchat", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue handler) {
+                if (handler.isfunction()) {
+                    onChatHandler = handler;
+                    mod.log("Chat handler registered for script: " + scriptName);
+                    return LuaValue.TRUE;
+                } else {
+                    onChatHandler = LuaValue.NIL;
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Set command event handler
+        set("oncommand", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue handler) {
+                if (handler.isfunction()) {
+                    onCommandHandler = handler;
+                    mod.log("Command handler registered for script: " + scriptName);
+                    return LuaValue.TRUE;
+                } else {
+                    onCommandHandler = LuaValue.NIL;
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+        
+        // Create custom command
+        set("createcommand", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                if (args.narg() < 3) {
+                    mod.logWarning("createcommand requires 3 arguments: name, description, handler");
+                    return LuaValue.FALSE;
+                }
+                
+                try {
+                    String cmdName = args.arg(1).tojstring();
+                    String cmdDescription = args.arg(2).tojstring();
+                    LuaValue cmdHandler = args.arg(3);
+                    
+                    if (!cmdHandler.isfunction()) {
+                        mod.logWarning("Command handler must be a function");
+                        return LuaValue.FALSE;
+                    }
+                    
+                    // Create and register the command
+                    LuaScriptCommand luaCommand = new LuaScriptCommand(cmdName, cmdDescription, cmdHandler, scriptName);
+                    AltoClef.getCommandExecutor().registerNewCommand(luaCommand);
+                    registeredCommands.put(cmdName, luaCommand);
+                    
+                    mod.log("Registered command '@" + cmdName + "' from script: " + scriptName);
+                    return LuaValue.TRUE;
+                    
+                } catch (Exception e) {
+                    mod.logWarning("Error creating command in script '" + scriptName + "': " + e.getMessage());
+                    return LuaValue.FALSE;
+                }
+            }
+        });
+    }
+    
+    /**
+     * Custom command created by Lua scripts
+     */
+    private class LuaScriptCommand extends Command {
+        private final LuaValue luaHandler;
+        private final String scriptName;
+        
+        public LuaScriptCommand(String name, String description, LuaValue handler, String scriptName) {
+            super(name, description); // No args for now, we'll parse them manually
+            this.luaHandler = handler;
+            this.scriptName = scriptName;
+        }
+        
+        @Override
+        protected void call(AltoClef mod, ArgParser parser) throws CommandException {
+            try {
+                if (!luaHandler.isnil()) {
+                    // Create arguments table for Lua
+                    LuaTable args = new LuaTable();
+                    String[] argUnits = parser.getArgUnits();
+                    if (argUnits != null && argUnits.length > 0) {
+                        for (int i = 0; i < argUnits.length; i++) {
+                            args.set(i + 1, LuaValue.valueOf(argUnits[i]));
+                        }
+                    }
+                    
+                    // Call the Lua handler with arguments
+                    luaHandler.call(args);
+                } else {
+                    mod.log("Command handler is nil for script: " + scriptName);
+                }
+            } catch (Exception e) {
+                throw new CommandException("Error executing Lua command '" + getName() + "': " + e.getMessage());
+            }
+            finish();
+        }
+    }
+    
+    /**
+     * Handle chat events from the event bus
+     */
+    public void handleChatEvent(String message, String sender, String senderUUID, boolean isSelf) {
+        if (!onChatHandler.isnil()) {
+            try {
+                // Create chat info table
+                LuaTable chatInfo = new LuaTable();
+                chatInfo.set("message", LuaValue.valueOf(message));
+                chatInfo.set("sender", LuaValue.valueOf(sender));
+                chatInfo.set("senderUUID", LuaValue.valueOf(senderUUID));
+                chatInfo.set("isSelf", LuaValue.valueOf(isSelf));
+                chatInfo.set("timestamp", LuaValue.valueOf(System.currentTimeMillis()));
+                
+                // Call the Lua handler
+                onChatHandler.call(chatInfo);
+            } catch (Exception e) {
+                mod.logWarning("Error in Lua chat handler for script '" + scriptName + "': " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Handle command events
+     */
+    public void handleCommandEvent(String command, String args) {
+        if (!onCommandHandler.isnil()) {
+            try {
+                // Create command info table
+                LuaTable cmdInfo = new LuaTable();
+                cmdInfo.set("command", LuaValue.valueOf(command));
+                cmdInfo.set("args", LuaValue.valueOf(args != null ? args : ""));
+                cmdInfo.set("timestamp", LuaValue.valueOf(System.currentTimeMillis()));
+                
+                // Call the Lua handler
+                onCommandHandler.call(cmdInfo);
+            } catch (Exception e) {
+                mod.logWarning("Error in Lua command handler for script '" + scriptName + "': " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Cleanup when script is unloaded
+     */
+    public void cleanup() {
+        // Unregister any commands created by this script
+        for (String commandName : registeredCommands.keySet()) {
+            // Note: We'd need access to CommandExecutor to properly unregister
+            // For now, we'll just clear our local tracking
+        }
+        registeredCommands.clear();
+        onChatHandler = LuaValue.NIL;
+        onCommandHandler = LuaValue.NIL;
     }
 } 

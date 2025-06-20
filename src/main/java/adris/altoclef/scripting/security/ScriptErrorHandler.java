@@ -106,27 +106,41 @@ public class ScriptErrorHandler {
     }
     
     /**
-     * Logs detailed error information
+     * Logs detailed error information with comprehensive debugging info
      */
     private void logDetailedError(String scriptName, String context, Throwable error, int errorCount) {
         String timestamp = LocalDateTime.now().format(TIME_FORMAT);
         String errorType = error.getClass().getSimpleName();
         String message = error.getMessage() != null ? error.getMessage() : "No message";
         
-        // Log main error
+        // Enhanced main error log with more context
         String mainLog = String.format(
-            "[%s] Script Error #%d in '%s' (%s): %s - %s", 
-            timestamp, errorCount, scriptName, context, errorType, message
+            "╔══════════════════════════════════════════════════════════════════════════════\n" +
+            "║ 🔥 LUA SCRIPT ERROR #%d - %s\n" +
+            "║ Script: '%s'\n" +
+            "║ Context: %s\n" +
+            "║ Error Type: %s\n" +
+            "║ Message: %s\n" +
+            "╚══════════════════════════════════════════════════════════════════════════════", 
+            errorCount, timestamp, scriptName, context, errorType, message
         );
         mod.logWarning(mainLog, MessagePriority.TIMELY);
         
-        // Log stack trace for Lua errors (filtered for readability)
+        // Enhanced Lua error handling with line numbers and function context
         if (error instanceof LuaError) {
-            String stackTrace = getFilteredStackTrace(error);
-            if (!stackTrace.isEmpty()) {
-                mod.log("[Script] Stack trace: " + stackTrace);
-            }
+            logEnhancedLuaError(scriptName, (LuaError) error);
         }
+        
+        // Log full Java stack trace for non-Lua errors (but formatted nicely)
+        if (!(error instanceof LuaError)) {
+            logEnhancedJavaError(scriptName, error);
+        }
+        
+        // Log system state for debugging
+        logSystemState(scriptName, context);
+        
+        // Separator for readability
+        mod.log("════════════════════════════════════════════════════════════════════════════════");
     }
     
     /**
@@ -156,6 +170,130 @@ public class ScriptErrorHandler {
     }
     
     /**
+     * Logs enhanced Lua error information with line numbers and context
+     */
+    private void logEnhancedLuaError(String scriptName, LuaError luaError) {
+        mod.log("┌─ 🔍 LUA ERROR DETAILS:");
+        
+        // Extract line number and function information from Lua error
+        String errorMessage = luaError.getMessage();
+        String lineInfo = extractLineInfo(errorMessage);
+        String functionInfo = extractFunctionInfo(errorMessage);
+        
+        if (!lineInfo.isEmpty()) {
+            mod.log("│ 📍 Location: " + lineInfo);
+        }
+        
+        if (!functionInfo.isEmpty()) {
+            mod.log("│ 🎯 Function: " + functionInfo);
+        }
+        
+        // Get detailed Lua stack trace
+        String detailedTrace = getEnhancedLuaStackTrace(luaError);
+        if (!detailedTrace.isEmpty()) {
+            mod.log("│ 📚 Lua Stack Trace:");
+            String[] traceLines = detailedTrace.split("\n");
+            for (String line : traceLines) {
+                if (!line.trim().isEmpty()) {
+                    mod.log("│   " + line.trim());
+                }
+            }
+        }
+        
+        // Try to extract variable context from error
+        String variableContext = extractVariableContext(errorMessage);
+        if (!variableContext.isEmpty()) {
+            mod.log("│ 📊 Variable Context: " + variableContext);
+        }
+        
+        mod.log("└─ End Lua Error Details");
+    }
+    
+    /**
+     * Logs enhanced Java error information
+     */
+    private void logEnhancedJavaError(String scriptName, Throwable error) {
+        mod.log("┌─ ☕ JAVA ERROR DETAILS:");
+        
+        // Get the filtered stack trace
+        String filteredTrace = getFilteredStackTrace(error);
+        if (!filteredTrace.isEmpty()) {
+            mod.log("│ 📚 Java Stack Trace:");
+            String[] traceLines = filteredTrace.split("\\|");
+            for (String line : traceLines) {
+                if (!line.trim().isEmpty()) {
+                    mod.log("│   " + line.trim());
+                }
+            }
+        }
+        
+        // Show cause chain if present
+        Throwable cause = error.getCause();
+        int causeLevel = 1;
+        while (cause != null && causeLevel <= 3) {
+            mod.log("│ 🔗 Caused by (#" + causeLevel + "): " + cause.getClass().getSimpleName() + 
+                   " - " + (cause.getMessage() != null ? cause.getMessage() : "No message"));
+            cause = cause.getCause();
+            causeLevel++;
+        }
+        
+        mod.log("└─ End Java Error Details");
+    }
+    
+    /**
+     * Logs current system state for debugging context
+     */
+    private void logSystemState(String scriptName, String context) {
+        mod.log("┌─ 🖥️ SYSTEM STATE:");
+        
+        try {
+            // Player state
+            if (mod.getPlayer() != null) {
+                mod.log("│ 🏃 Player: " +
+                       "Health=" + String.format("%.1f", mod.getPlayer().getHealth()) +
+                       ", Hunger=" + mod.getPlayer().getHungerManager().getFoodLevel() +
+                       ", InGame=" + AltoClef.inGame());
+                
+                mod.log("│ 📍 Position: " +
+                       String.format("(%.1f, %.1f, %.1f)", 
+                                   mod.getPlayer().getX(), 
+                                   mod.getPlayer().getY(), 
+                                   mod.getPlayer().getZ()));
+            } else {
+                mod.log("│ 🏃 Player: NULL");
+            }
+            
+            // Memory usage
+            Runtime runtime = Runtime.getRuntime();
+            long maxMemory = runtime.maxMemory() / 1024 / 1024; // MB
+            long totalMemory = runtime.totalMemory() / 1024 / 1024; // MB
+            long freeMemory = runtime.freeMemory() / 1024 / 1024; // MB
+            long usedMemory = totalMemory - freeMemory;
+            
+            mod.log("│ 💾 Memory: " +
+                   "Used=" + usedMemory + "MB" +
+                   ", Free=" + freeMemory + "MB" +
+                   ", Max=" + maxMemory + "MB");
+            
+            // Script engine state
+            if (mod.getScriptEngine() != null) {
+                int loadedScripts = mod.getScriptEngine().getLoadedScriptCount();
+                mod.log("│ 📜 Scripts: " + loadedScripts + " loaded");
+            }
+            
+            // Thread information
+            Thread currentThread = Thread.currentThread();
+            mod.log("│ 🧵 Thread: " + currentThread.getName() + 
+                   " (Priority: " + currentThread.getPriority() + ")");
+            
+        } catch (Exception e) {
+            mod.log("│ ❌ Error getting system state: " + e.getMessage());
+        }
+        
+        mod.log("└─ End System State");
+    }
+    
+    /**
      * Gets filtered stack trace that's useful for script debugging
      */
     private String getFilteredStackTrace(Throwable error) {
@@ -181,6 +319,121 @@ public class ScriptErrorHandler {
         }
         
         return filtered.toString();
+    }
+    
+    /**
+     * Gets enhanced Lua stack trace with better formatting
+     */
+    private String getEnhancedLuaStackTrace(LuaError luaError) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        luaError.printStackTrace(pw);
+        String fullTrace = sw.toString();
+        
+        StringBuilder enhanced = new StringBuilder();
+        String[] lines = fullTrace.split("\n");
+        
+        for (String line : lines) {
+            // Format Lua-specific stack trace lines
+            if (line.contains("luaj") || line.contains("LuaError") || line.contains(".lua:")) {
+                // Clean up the line for better readability
+                String cleaned = line.trim()
+                    .replace("org.luaj.vm2.", "")
+                    .replace("adris.altoclef.scripting.", "");
+                
+                enhanced.append(cleaned).append("\n");
+            }
+        }
+        
+        return enhanced.toString();
+    }
+    
+    /**
+     * Extracts line number information from Lua error message
+     */
+    private String extractLineInfo(String errorMessage) {
+        // Look for patterns like "script_name:line_number:" or "line line_number"
+        if (errorMessage.contains(":")) {
+            String[] parts = errorMessage.split(":");
+            for (int i = 0; i < parts.length - 1; i++) {
+                try {
+                    Integer.parseInt(parts[i + 1].trim().split("\\s+")[0]);
+                    return parts[i] + ":" + parts[i + 1].trim().split("\\s+")[0];
+                } catch (NumberFormatException e) {
+                    // Continue searching
+                }
+            }
+        }
+        
+        // Look for "line X" pattern
+        if (errorMessage.toLowerCase().contains("line ")) {
+            String[] words = errorMessage.split("\\s+");
+            for (int i = 0; i < words.length - 1; i++) {
+                if (words[i].toLowerCase().equals("line")) {
+                    try {
+                        Integer.parseInt(words[i + 1]);
+                        return "Line " + words[i + 1];
+                    } catch (NumberFormatException e) {
+                        // Continue searching
+                    }
+                }
+            }
+        }
+        
+        return "";
+    }
+    
+    /**
+     * Extracts function information from Lua error message
+     */
+    private String extractFunctionInfo(String errorMessage) {
+        // Look for function names in common error patterns
+        if (errorMessage.contains("in function")) {
+            String[] parts = errorMessage.split("in function");
+            if (parts.length > 1) {
+                String funcPart = parts[1].trim();
+                // Extract function name (remove quotes and extra text)
+                funcPart = funcPart.replaceAll("['\"<>]", "").split("\\s+")[0];
+                return funcPart;
+            }
+        }
+        
+        // Look for "attempt to call" errors
+        if (errorMessage.contains("attempt to call")) {
+            String[] parts = errorMessage.split("attempt to call");
+            if (parts.length > 1) {
+                String callPart = parts[1].trim();
+                return "attempted to call: " + callPart.split("\\s+")[0];
+            }
+        }
+        
+        return "";
+    }
+    
+    /**
+     * Extracts variable context from Lua error message
+     */
+    private String extractVariableContext(String errorMessage) {
+        // Look for variable names in common error patterns
+        if (errorMessage.contains("nil value")) {
+            return "variable is nil";
+        }
+        
+        if (errorMessage.contains("attempt to index")) {
+            String[] parts = errorMessage.split("attempt to index");
+            if (parts.length > 1) {
+                return "indexing issue: " + parts[1].trim();
+            }
+        }
+        
+        if (errorMessage.contains("attempt to perform")) {
+            String[] parts = errorMessage.split("attempt to perform");
+            if (parts.length > 1) {
+                return "operation issue: " + parts[1].trim();
+            }
+        }
+        
+        return "";
     }
     
     /**

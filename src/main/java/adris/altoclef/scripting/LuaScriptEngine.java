@@ -12,6 +12,11 @@ import adris.altoclef.scripting.script.LuaScript;
 import adris.altoclef.scripting.script.ScriptMetadata;
 import adris.altoclef.scripting.security.ScriptSandbox;
 import adris.altoclef.scripting.security.ScriptErrorHandler;
+import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.Subscription;
+import adris.altoclef.eventbus.events.ChatMessageEvent;
+import adris.altoclef.eventbus.events.SendChatEvent;
+import net.minecraft.client.MinecraftClient;
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.ZeroArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
@@ -36,6 +41,10 @@ public class LuaScriptEngine {
     private final ScriptPersistenceManager persistenceManager;
     private final DependencyManager dependencyManager;
     private boolean enabled = true;
+    
+    // Event subscriptions
+    private Subscription<ChatMessageEvent> chatEventSubscription;
+    private Subscription<SendChatEvent> sendChatEventSubscription;
     
     public LuaScriptEngine(AltoClef mod) {
         System.out.println("🔧 LuaScriptEngine constructor started");
@@ -73,6 +82,17 @@ public class LuaScriptEngine {
             // Apply security sandbox restrictions
             sandbox.applySecurityRestrictions(globals);
             System.out.println("✅ Security sandbox applied");
+            
+            System.out.println("Registering event listeners...");
+            // Register event listeners for chat and commands
+            try {
+                registerEventListeners();
+                System.out.println("✅ Event listeners registered");
+            } catch (Exception e) {
+                System.err.println("❌ Event listener registration failed, but continuing initialization");
+                System.err.println("Event listener error: " + e.getMessage());
+                e.printStackTrace();
+            }
             
             System.out.println("ALTO CLEF: Lua scripting engine initialized successfully");
             System.out.println("✅ LuaScriptEngine constructor completed successfully");
@@ -121,6 +141,98 @@ public class LuaScriptEngine {
         } catch (Exception e) {
             System.err.println("ALTO CLEF: Failed to register Lua APIs: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Registers event listeners for chat and command events
+     */
+    private void registerEventListeners() {
+        try {
+            // Listen for chat messages
+            chatEventSubscription = EventBus.subscribe(ChatMessageEvent.class, this::handleChatEvent);
+            
+            // Listen for command execution - we'll need to hook into the command system differently
+            // For now, we'll listen for SendChatEvent to catch @commands
+            sendChatEventSubscription = EventBus.subscribe(SendChatEvent.class, this::handleSendChatEvent);
+            
+            System.out.println("ALTO CLEF: Registered Lua script engine event listeners");
+        } catch (Exception e) {
+            System.err.println("ALTO CLEF: Failed to register event listeners: " + e.getMessage());
+            e.printStackTrace();
+            // Don't throw the exception, just log it - event registration failure shouldn't stop script engine
+        }
+    }
+    
+    /**
+     * Handle incoming chat messages and dispatch to script handlers
+     */
+    private void handleChatEvent(ChatMessageEvent event) {
+        if (!enabled) return;
+        
+        try {
+            String message = event.messageContent();
+            String sender = event.senderName();
+            String senderUUID = event.senderUUID();
+            boolean isSelf = false;
+            
+            // Check if message is from self (current player)
+            if (MinecraftClient.getInstance().player != null) {
+                isSelf = senderUUID.equals(MinecraftClient.getInstance().player.getUuid().toString());
+            }
+            
+            // Dispatch to all scripts with chat handlers
+            for (LuaScript script : loadedScripts.values()) {
+                if (script.isEnabled()) {
+                    try {
+                        // Get the script's AltoClef API instance
+                        LuaValue altoClefAPI = script.getGlobal("AltoClef");
+                        if (altoClefAPI instanceof LuaAltoClefAPI) {
+                            ((LuaAltoClefAPI) altoClefAPI).handleChatEvent(message, sender, senderUUID, isSelf);
+                        }
+                    } catch (Exception e) {
+                        mod.logWarning("Error dispatching chat event to script '" + script.getName() + "': " + e.getMessage());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            mod.logWarning("Error handling chat event: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Handle outgoing chat messages to detect commands
+     */
+    private void handleSendChatEvent(SendChatEvent event) {
+        if (!enabled) return;
+        
+        try {
+            String message = event.message;
+            
+            // Check if it's a command (starts with command prefix)
+            if (message.startsWith(mod.getModSettings().getCommandPrefix())) {
+                String commandLine = message.substring(mod.getModSettings().getCommandPrefix().length());
+                String[] parts = commandLine.split(" ", 2);
+                String command = parts[0];
+                String args = parts.length > 1 ? parts[1] : "";
+                
+                // Dispatch to all scripts with command handlers
+                for (LuaScript script : loadedScripts.values()) {
+                    if (script.isEnabled()) {
+                        try {
+                            // Get the script's AltoClef API instance
+                            LuaValue altoClefAPI = script.getGlobal("AltoClef");
+                            if (altoClefAPI instanceof LuaAltoClefAPI) {
+                                ((LuaAltoClefAPI) altoClefAPI).handleCommandEvent(command, args);
+                            }
+                        } catch (Exception e) {
+                            mod.logWarning("Error dispatching command event to script '" + script.getName() + "': " + e.getMessage());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            mod.logWarning("Error handling send chat event: " + e.getMessage());
         }
     }
     
@@ -258,36 +370,26 @@ public class LuaScriptEngine {
         // Create new isolated globals for each script
         Globals scriptGlobals = JsePlatform.standardGlobals();
         
-        // Copy our APIs to the script environment
-        LuaValue altoClefAPI = globals.get("AltoClef");
+        // Copy other APIs to the script environment
         LuaValue altoMenuAPI = globals.get("AltoMenu");
         LuaValue scriptEngineAPI = globals.get("ScriptEngine");
         
         scriptGlobals.set("AltoMenu", altoMenuAPI);
         scriptGlobals.set("ScriptEngine", scriptEngineAPI);
         
-        // Create a new AltoClef table for this script with Utils API
-        if (altoClefAPI instanceof LuaTable) {
-            LuaTable scriptAltoClef = new LuaTable();
-            
-            // Copy all existing AltoClef API functions
-            LuaValue k = LuaValue.NIL;
-            while (true) {
-                Varargs n = altoClefAPI.next(k);
-                if ((k = n.arg1()).isnil()) break;
-                LuaValue v = n.arg(2);
-                scriptAltoClef.set(k, v);
-            }
-            
-            // Add script-specific Utils API with persistence support
-            LuaUtilsAPI utilsAPI = new LuaUtilsAPI(mod, persistenceManager, scriptName);
-            scriptAltoClef.set("Utils", utilsAPI);
-            
-            scriptGlobals.set("AltoClef", scriptAltoClef);
-        } else {
-            // Fallback if something goes wrong
-            scriptGlobals.set("AltoClef", altoClefAPI);
-        }
+        // Create script-specific Utils API with persistence support
+        LuaUtilsAPI utilsAPI = new LuaUtilsAPI(mod, persistenceManager, scriptName);
+        
+        // Create script-specific AltoClef API with chat and command event handling
+        LuaAltoClefAPI scriptAltoClefAPI = new LuaAltoClefAPI(mod, scriptName);
+        
+        // Add Utils API to AltoClef API
+        scriptAltoClefAPI.set("Utils", utilsAPI);
+        
+        scriptGlobals.set("AltoClef", scriptAltoClefAPI);
+        
+        // Also make Utils available as a global for easier access (Utils.Player.isJumping())
+        scriptGlobals.set("Utils", utilsAPI);
         
         // Apply sandbox restrictions to this script's environment
         sandbox.applySecurityRestrictions(scriptGlobals);
@@ -446,6 +548,16 @@ public class LuaScriptEngine {
      */
     public void shutdown() {
         mod.log("Shutting down Lua script engine...");
+        
+        // Unsubscribe from events
+        if (chatEventSubscription != null) {
+            EventBus.unsubscribe(chatEventSubscription);
+            chatEventSubscription = null;
+        }
+        if (sendChatEventSubscription != null) {
+            EventBus.unsubscribe(sendChatEventSubscription);
+            sendChatEventSubscription = null;
+        }
         
         // Unload all scripts
         for (String scriptName : loadedScripts.keySet()) {

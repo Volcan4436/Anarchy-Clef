@@ -631,7 +631,9 @@ public class AltoClef implements ModInitializer {
      */
     public void log(String message, MessagePriority priority) {
         Debug.logMessage(message);
-        _butler.onLog(message, priority);
+        if (_butler != null) {
+            _butler.onLog(message, priority);
+        }
     }
 
     public void logWarning(String message) {
@@ -643,7 +645,9 @@ public class AltoClef implements ModInitializer {
      */
     public void logWarning(String message, MessagePriority priority) {
         Debug.logWarning(message);
-        _butler.onLogWarning(message, priority);
+        if (_butler != null) {
+            _butler.onLogWarning(message, priority);
+        }
     }
 
     private void runEnqueuedPostInits() {

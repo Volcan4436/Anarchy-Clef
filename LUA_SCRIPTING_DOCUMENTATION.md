@@ -203,6 +203,28 @@ AltoClef.eatFood()                            -- Trigger eating food
 AltoClef.runCommand("food 20")                -- Get food to reach 20 hunger
 ```
 
+#### Jump & Velocity Control
+```lua
+-- Jump functionality
+local isJumping = AltoClef.isJumping()        -- Check if player is currently jumping
+AltoClef.jump()                               -- Make the player jump
+
+-- Velocity operations
+local velocity = AltoClef.getVelocity()       -- Get current velocity {x, y, z}
+local x = velocity.x                          -- Individual velocity components
+local y = velocity.y
+local z = velocity.z
+
+AltoClef.setVelocity(0.5, 1.0, -0.3)         -- Set velocity (x, y, z)
+AltoClef.setVelocity(0, 0, 0)                 -- Stop player movement
+
+-- Also available via Utils API:
+Utils.Player.isJumping()                      -- Alternative access
+Utils.Player.jump()                           -- Alternative access
+Utils.Player.getVelocity()                    -- Alternative access
+Utils.Player.setVelocity(x, y, z)             -- Alternative access
+```
+
 ### Inventory Management
 
 ```lua
@@ -510,6 +532,276 @@ function scanAndMine(radius, priority)
 end
 ```
 
+### 4. Player Movement Control
+
+```lua
+--[[
+@name Advanced Movement
+@description Demonstrates jump and velocity control for advanced movement
+@version 1.0.0
+@author Hearty  
+@category Movement
+@dependencies none
+]]--
+
+local JUMP_COOLDOWN = 500 -- milliseconds
+local lastJumpTime = 0
+local movementState = "idle"
+local targetVelocity = {x = 0, y = 0, z = 0}
+
+function onLoad()
+    AltoClef.log("Advanced Movement script loaded!")
+    AltoClef.log("Commands: jump, boost, stop, hover")
+end
+
+function onTick()
+    if not AltoClef.isInGame() then return end
+    
+    handleMovementControl()
+    handleJumpLogic()
+    monitorPlayerState()
+end
+
+function handleMovementControl()
+    -- Example: Boost player forward when sprinting
+    if movementState == "boost" then
+        local currentVel = AltoClef.getVelocity()
+        if currentVel then
+            -- Apply forward boost while maintaining Y velocity
+            AltoClef.setVelocity(targetVelocity.x, currentVel.y, targetVelocity.z)
+        end
+    elseif movementState == "hover" then
+        -- Hover mode: maintain Y position
+        local currentVel = AltoClef.getVelocity()
+        if currentVel and currentVel.y < -0.1 then
+            AltoClef.setVelocity(currentVel.x, 0.1, currentVel.z)
+        end
+    end
+end
+
+function handleJumpLogic()
+    local currentTime = os.clock() * 1000
+    
+    -- Auto-jump when moving and on ground
+    if movementState == "auto_jump" then
+        if currentTime - lastJumpTime > JUMP_COOLDOWN then
+            if not AltoClef.isJumping() then
+                AltoClef.jump()
+                lastJumpTime = currentTime
+                AltoClef.log("Auto-jump activated!")
+            end
+        end
+    end
+end
+
+function monitorPlayerState()
+    local velocity = AltoClef.getVelocity()
+    if velocity then
+        local speed = math.sqrt(velocity.x^2 + velocity.z^2)
+        
+        -- Log interesting states
+        if AltoClef.isJumping() and speed > 0.3 then
+            -- Player is jumping while moving fast
+            AltoClef.log(string.format("High-speed jump! Speed: %.2f", speed))
+        end
+        
+        -- Safety check: reset if moving too fast
+        if speed > 2.0 then
+            AltoClef.log("Speed limit exceeded, applying brakes...")
+            AltoClef.setVelocity(velocity.x * 0.5, velocity.y, velocity.z * 0.5)
+        end
+    end
+end
+
+-- Command handlers (would be triggered by chat commands or other events)
+function setBoostMode(forwardSpeed, sidewaysSpeed)
+    movementState = "boost"
+    targetVelocity.x = sidewaysSpeed or 0
+    targetVelocity.z = forwardSpeed or 0.8
+    AltoClef.log("Boost mode activated!")
+end
+
+function setHoverMode()
+    movementState = "hover"
+    AltoClef.log("Hover mode activated!")
+end
+
+function setAutoJumpMode()
+    movementState = "auto_jump"
+    AltoClef.log("Auto-jump mode activated!")
+end
+
+function stopMovement()
+    movementState = "idle"
+    AltoClef.setVelocity(0, AltoClef.getVelocity().y, 0)
+    AltoClef.log("Movement stopped!")
+end
+
+function emergencyStop()
+    movementState = "idle"
+    AltoClef.setVelocity(0, 0, 0)
+    AltoClef.log("Emergency stop - all movement halted!")
+end
+
+-- Example usage functions
+function performSuperJump()
+    AltoClef.jump()
+    -- Give a small upward boost after jumping
+    local currentVel = AltoClef.getVelocity()
+    if currentVel then
+        AltoClef.setVelocity(currentVel.x, currentVel.y + 0.2, currentVel.z)
+    end
+    AltoClef.log("Super jump executed!")
+end
+
+function performDashAttack(direction)
+    -- Quick dash in specified direction
+    local dashPower = 1.2
+    local x = direction == "forward" and 0 or (direction == "left" and -dashPower or dashPower)
+    local z = direction == "forward" and dashPower or 0
+    
+    AltoClef.setVelocity(x, 0.1, z)
+    AltoClef.log("Dash attack: " .. direction)
+end
+```
+
+---
+
+## 💬 Chat & Command System
+
+AltoClef's Lua scripts can interact with Minecraft's chat system and create custom commands:
+
+### Chat Functions
+
+**Send Chat Messages**
+```lua
+-- Send a message to chat
+AltoClef.chat("Hello everyone!")
+AltoClef.chat("My position: " .. AltoClef.getPlayerX() .. ", " .. AltoClef.getPlayerY() .. ", " .. AltoClef.getPlayerZ())
+```
+
+**Listen for Chat Events**
+```lua
+-- Set up a chat event handler
+AltoClef.onchat(function(chatInfo)
+    local message = chatInfo.message    -- The chat message content
+    local sender = chatInfo.sender      -- Username of sender
+    local senderUUID = chatInfo.senderUUID  -- UUID of sender
+    local isSelf = chatInfo.isSelf      -- true if message is from you
+    local timestamp = chatInfo.timestamp -- Message timestamp
+    
+    AltoClef.log("Chat from " .. sender .. ": " .. message)
+    
+    -- Auto-respond to messages
+    if not isSelf and string.lower(message):find("hello") then
+        AltoClef.chat("Hello there, " .. sender .. "!")
+    end
+end)
+```
+
+### Custom Commands
+
+**Create Custom Commands**
+```lua
+-- Create a simple command
+AltoClef.createcommand("greet", "Says hello", function(args)
+    AltoClef.chat("Hello World!")
+end)
+
+-- Create a command with arguments
+AltoClef.createcommand("goto", "Go to coordinates", function(args)
+    if args[1] and args[2] and args[3] then
+        local x, y, z = tonumber(args[1]), tonumber(args[2]), tonumber(args[3])
+        AltoClef.chat(string.format("Going to %d, %d, %d", x, y, z))
+        -- Add movement logic here
+    else
+        AltoClef.chat("Usage: @goto <x> <y> <z>")
+    end
+end)
+```
+
+**Listen for Command Events**
+```lua
+-- Set up a command event handler
+AltoClef.oncommand(function(cmdInfo)
+    local command = cmdInfo.command  -- Command name (without @)
+    local args = cmdInfo.args       -- Command arguments as string
+    local timestamp = cmdInfo.timestamp -- Command timestamp
+    
+    AltoClef.log("Command executed: @" .. command .. " " .. args)
+    
+    -- React to specific commands
+    if command == "status" then
+        AltoClef.chat("Script is running smoothly!")
+    end
+end)
+```
+
+### Complete Chat Example
+
+```lua
+--[[
+@name Chat Bot
+@description Interactive chat bot with custom commands
+@version 1.0.0
+@author Hearty
+@category Utility
+]]--
+
+local chatCount = 0
+local commandCount = 0
+
+function onLoad()
+    AltoClef.log("Chat Bot loaded!")
+    
+    -- Create custom commands
+    AltoClef.createcommand("stats", "Show chat statistics", function(args)
+        local msg = string.format("I've seen %d chats and %d commands!", chatCount, commandCount)
+        AltoClef.chat(msg)
+    end)
+    
+    AltoClef.createcommand("position", "Report current position", function(args)
+        local x, y, z = AltoClef.getPlayerX(), AltoClef.getPlayerY(), AltoClef.getPlayerZ()
+        AltoClef.chat(string.format("Current position: %.1f, %.1f, %.1f", x, y, z))
+    end)
+    
+    AltoClef.createcommand("health", "Report health status", function(args)
+        local health = AltoClef.getHealth()
+        local hunger = AltoClef.getHunger()
+        AltoClef.chat(string.format("Health: %.1f/20, Hunger: %d/20", health, hunger))
+    end)
+    
+    -- Listen for chat messages
+    AltoClef.onchat(function(chatInfo)
+        chatCount = chatCount + 1
+        
+        -- Don't respond to own messages
+        if chatInfo.isSelf then return end
+        
+        local msg = string.lower(chatInfo.message)
+        local sender = chatInfo.sender
+        
+        -- Auto-responses
+        if msg:find("hello") or msg:find("hi") then
+            AltoClef.chat("Hello there, " .. sender .. "!")
+        elseif msg:find("how are you") then
+            AltoClef.chat("I'm doing great, thanks for asking!")
+        elseif msg:find("what time") then
+            local gameTime = AltoClef.getGameTime()
+            AltoClef.chat("Game time: " .. gameTime)
+        elseif msg:find("help") then
+            AltoClef.chat("Try: @stats, @position, @health")
+        end
+    end)
+    
+    -- Listen for command execution
+    AltoClef.oncommand(function(cmdInfo)
+        commandCount = commandCount + 1
+        AltoClef.log("Command executed: @" .. cmdInfo.command .. " " .. cmdInfo.args)
+    end)
+end
+```
+
 ---
 
 ## 🔍 Debug Tools
@@ -523,7 +815,7 @@ The scripting system includes comprehensive debugging tools:
 @luadebug <type>
 ```
 
-**Available types:**
+**API Debug Types:**
 - `hunger` - Show hunger API information and current values
 - `position` - Show position API information and coordinates  
 - `inventory` - Show inventory API and item counts
@@ -533,6 +825,13 @@ The scripting system includes comprehensive debugging tools:
 - `items` - Show item API and common item names
 - `time` - Show time API and current time values
 - `world` - Show world API and world information
+- `player` - Show new jump and velocity control APIs
+
+**Script Debug Types:**
+- `errors` - Show recent script errors with detailed information
+- `scripts` - Show loaded scripts status and performance
+- `logs` - Show logging configuration and debugging tips
+- `performance` - Show script performance metrics and warnings
 - `help` - Show all available debug commands
 
 #### Quick Shortcuts
@@ -561,6 +860,65 @@ Example Usage:
     AltoClef.log('Low hunger!')
   end
 ```
+
+### Error Logging
+
+The Lua scripting system includes comprehensive error logging with detailed debugging information:
+
+#### Error Log Format
+
+When a script error occurs, you'll see enhanced error information:
+
+```
+╔══════════════════════════════════════════════════════════════════════════════
+║ 🔥 LUA SCRIPT ERROR #1 - 14:25:30
+║ Script: 'my_script'
+║ Context: Error in onTick
+║ Error Type: LuaError
+║ Message: attempt to index a nil value (global 'invalidVar')
+╚══════════════════════════════════════════════════════════════════════════════
+┌─ 🔍 LUA ERROR DETAILS:
+│ 📍 Location: my_script:15
+│ 🎯 Function: onTick
+│ 📚 Lua Stack Trace:
+│   LuaError: my_script:15: attempt to index a nil value
+│   at LuaFunction.call(LuaFunction.java:142)
+│ 📊 Variable Context: variable is nil
+└─ End Lua Error Details
+┌─ 🖥️ SYSTEM STATE:
+│ 🏃 Player: Health=20.0, Hunger=18, InGame=true
+│ 📍 Position: (123.5, 64.0, -456.2)
+│ 💾 Memory: Used=245MB, Free=123MB, Max=2048MB
+│ 📜 Scripts: 3 loaded
+│ 🧵 Thread: Client thread (Priority: 5)
+└─ End System State
+════════════════════════════════════════════════════════════════════════════════
+```
+
+#### Debug Commands for Error Analysis
+
+```bash
+# View recent script errors
+@luadebug errors
+
+# Check script status and performance
+@luadebug scripts
+
+# View logging configuration
+@luadebug logs
+
+# Check performance metrics
+@luadebug performance
+```
+
+#### Error Management Features
+
+- **Rate Limiting**: Prevents error spam - duplicate errors are summarized
+- **Auto-Disable**: Scripts are disabled after 10 errors to prevent infinite loops
+- **Line Numbers**: Lua errors show exact line numbers when possible
+- **Function Context**: Error messages include function names
+- **System State**: Each error logs current player/system state for context
+- **Performance Warnings**: Scripts taking >50ms per tick are flagged
 
 ### Script Debugging
 
@@ -684,19 +1042,30 @@ end
 #### 1. Script Not Running
 **Problem:** Script enabled but `onTick()` not called
 **Solution:**
-- Check script syntax errors in console
+- Use `@luadebug scripts` to check script status
+- Check enhanced error logs with `@luadebug errors`
+- Look for script errors in console (lines starting with 🔥)
 - Ensure `onTick()` function is properly defined
 - Verify script is actually enabled in UI
-- Check if there are initialization errors
 
 #### 2. API Functions Not Found
 **Problem:** `attempt to call field 'getHunger' (a nil value)`
 **Solution:**
 - Ensure you're using `AltoClef.getHunger()` not `getHunger()`
 - Check if you're in game (`AltoClef.isInGame()`)
-- Verify API availability with debug commands
+- Use `@luadebug hunger` to verify API availability
+- Check the enhanced error logs for exact error location
 
-#### 3. Performance Issues
+#### 3. Enhanced Debugging Workflow
+**New Feature:** Use the comprehensive debugging system
+**Steps:**
+1. **Check Error Summary**: `@luadebug errors` shows recent errors
+2. **Examine Full Logs**: Look in console for detailed error information
+3. **Performance Check**: `@luadebug performance` identifies slow scripts
+4. **Script Status**: `@luadebug scripts` shows which scripts are loaded/enabled
+5. **Player State**: `@luadebug player` shows current jump/velocity status
+
+#### 4. Performance Issues
 **Problem:** Game lagging when script is enabled
 **Solution:**
 - Add throttling to `onTick()` function
