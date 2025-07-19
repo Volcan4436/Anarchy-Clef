@@ -3,6 +3,7 @@ package adris.altoclef.ui;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.realms.Ping;
 import net.minecraft.client.util.math.MatrixStack;
@@ -39,9 +40,12 @@ public class HUD {
     public static String clientVersion = "AnarchyClef - b0.2.0 ";
     public static String cvUpdateName = "Visual Update";
 
+    private static float hueOffset = 0f;
+    private static final float RAINBOW_SPEED = 0.01f; // ~33s per full color cycle
+
     //HUD
     public static void render(DrawContext context, float tickDelta) {
-
+        hueOffset = (hueOffset + tickDelta * RAINBOW_SPEED) % 1.0f;
 
         //Scale alongside GUIScale Setting and Monitor Size
         int screenWidth = mc.getWindow().getScaledWidth();
@@ -86,29 +90,95 @@ public class HUD {
 
     }
 
-    public static void renderArrayList(DrawContext context, float tickDelta) {
-        int xOffset = -5;
-        int yOffset = 5;
-        int index = 0;
-        List<Mod> enabled = ModuleManager.INSTANCE.getEnabledModules();
-        int sWidth = mc.getWindow().getScaledWidth();
-        int sHeight = mc.getWindow().getScaledHeight();
-        int lastWidth;
-        int fHeight = mc.textRenderer.fontHeight;
-        int fromY = (fHeight - 1) * (index) + 1;
-        int toX = sWidth - 2;
-        int toY = (fHeight - 1) * (index) + fHeight;
+    private static void renderArrayList(DrawContext context, float tickDelta) {
+        TextRenderer tr = mc.textRenderer;
+        int sw = mc.getWindow().getScaledWidth();
+        int fh = tr.fontHeight;
 
+        List<Mod> mods = ModuleManager.INSTANCE.getEnabledModules();
+        mods.sort(Comparator.comparingInt(m -> tr.getWidth(m.getDisplayName())));
 
-        enabled.sort(Comparator.comparingInt(m -> (int)mc.textRenderer.getWidth(((Mod)m).getDisplayName())).reversed());
+        for (int i = 0; i < mods.size(); i++) {
+            String name = mods.get(i).getDisplayName();
+            int textWidth = tr.getWidth(name);
+            int y0 = 46 + i * fh;
+            int y1 = y0 + fh - 1;
+            int x0 = sw - textWidth - 2;
+            int x1 = sw - 2;
 
-        for (Mod mod : enabled) {
-            context.fill((sWidth + 100) - mc.textRenderer.getWidth(mod.getDisplayName()) - 1, 46 + (index * mc.textRenderer.fontHeight), (sWidth - 4) - mc.textRenderer.getWidth(mod.getDisplayName()) - 2, 47 + (index * mc.textRenderer.fontHeight - 1) + mc.textRenderer.fontHeight, 0x80000000);
+            // Calculate baseX (position of the first letter)
+            int baseX = sw - 4 - textWidth;
 
-            context.drawText(mc.textRenderer, mod.getDisplayName(), (sWidth - 4) - mc.textRenderer.getWidth(mod.getDisplayName()), 47 + (index * mc.textRenderer.fontHeight), Color.red.getRGB(), false);
+            // Draw background extending from just before first letter to just after vertical line
+            int backgroundX0 = baseX - 2;
+            int backgroundX1 = x1 + 1;
+            context.fill(backgroundX0, y0 - 1, backgroundX1, y1, 0x80000000);
 
-            context.fill((sWidth - 4) - mc.textRenderer.getWidth(mod.getDisplayName()) - 1, 46 + (index * mc.textRenderer.fontHeight), (sWidth - 4) - mc.textRenderer.getWidth(mod.getDisplayName()) - 2, 46 + (index * mc.textRenderer.fontHeight) + mc.textRenderer.fontHeight, Color.red.getRGB());
-            index++;
+            // Draw per-letter rainbow text
+            for (int j = 0; j < name.length(); j++) {
+                float letterHue = (hueOffset + (float) j / name.length()) % 1.0f;
+                int color = hsvToRgb(letterHue, 1f, 1f) | 0xFF000000;
+                String ch = name.substring(j, j + 1);
+                int charX = baseX + tr.getWidth(name.substring(0, j));
+                context.drawText(tr, ch, charX, y0, color, false);
+            }
+
+            // Draw rainbow right-hand line
+            float lineHue = (hueOffset + (float) i / mods.size()) % 1.0f;
+            int lineColor = hsvToRgb(lineHue, 1f, 1f) | 0xFF000000;
+            context.drawVerticalLine(x1, y0 - 1, y1, lineColor);
         }
+    }
+
+
+    // Converts HSV (0.0–1.0) to RGB packed int (0xRRGGBB)
+    private static int hsvToRgb(float h, float s, float v) {
+        int r, g, b;
+        int i = (int) (h * 6);
+        float f = h * 6 - i;
+        int p = (int) (v * (1 - s) * 255);
+        int q = (int) (v * (1 - f * s) * 255);
+        int t = (int) (v * (1 - (1 - f) * s) * 255);
+        int vi = (int) (v * 255);
+
+        switch (i % 6) {
+            case 0 -> {
+                r = vi;
+                g = t;
+                b = p;
+            }
+            case 1 -> {
+                r = q;
+                g = vi;
+                b = p;
+            }
+            case 2 -> {
+                r = p;
+                g = vi;
+                b = t;
+            }
+            case 3 -> {
+                r = p;
+                g = q;
+                b = vi;
+            }
+            case 4 -> {
+                r = t;
+                g = p;
+                b = vi;
+            }
+            case 5 -> {
+                r = vi;
+                g = p;
+                b = q;
+            }
+            default -> {
+                r = 0;
+                g = 0;
+                b = 0;
+            }
+        }
+
+        return (r << 16) | (g << 8) | b;
     }
 }
