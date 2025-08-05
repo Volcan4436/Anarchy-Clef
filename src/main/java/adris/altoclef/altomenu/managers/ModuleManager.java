@@ -107,6 +107,7 @@ public class ModuleManager {
         addModule(new Step());
         addModule(new Velocity());
         addModule(new WaterSpeed());
+        addModule(new Vehicle());
         
         //Player
         addModule(new AntiHunger());

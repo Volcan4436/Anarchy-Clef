@@ -1,6 +1,7 @@
 package adris.altoclef.altomenu.modules.Movement;
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.eventbus.EventHandler;
 import net.minecraft.block.Blocks;
@@ -20,6 +21,7 @@ public class Jesus extends Mod {
 
     //ModeSetting
     ModeSetting mode = new ModeSetting("Mode", "Trampoline", "Trampoline", "Bypass");
+    BooleanSetting vehicleFix = new BooleanSetting("VehicleFix", false);
 
     @Override
     public void onDisable() {
@@ -41,11 +43,13 @@ public class Jesus extends Mod {
         if (mode.getMode() == "Trampoline") {
             if (isInsideWater) {
                 mc.player.setVelocity(mc.player.getVelocity().x, 0.75, mc.player.getVelocity().z);
+                if (vehicleFix.isEnabled() && mc.player.getVehicle() != null) mc.player.getVehicle().setVelocity(mc.player.getVehicle().getVelocity().x, 0.75, mc.player.getVehicle().getVelocity().z);
             }
         }
         else if (mode.getMode() == "Bypass") {
             if (isAboveWater) {
                 mc.player.setPos(mc.player.getX(), mc.player.getY() + 0.1, mc.player.getZ());
+                if (vehicleFix.isEnabled() && mc.player.getVehicle() != null) mc.player.getVehicle().setPos(mc.player.getVehicle().getX(), mc.player.getVehicle().getY() + 0.1, mc.player.getVehicle().getZ());
             }
         }
         return false;

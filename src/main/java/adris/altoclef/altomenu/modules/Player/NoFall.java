@@ -31,6 +31,7 @@ public class NoFall extends Mod {
     boolean jumpCheck = false; //we need a cleaner implementation
 
     //TODO ASAP: Fix these to work at any fall distance @ChiefWarCry
+    // update: Packet and Packet+ work for any Distance. This Requires a Packet setting you to OnGround to do so (also Required for 1.8 NoFalls)
     @EventHandler
     public boolean onShitTick() {
         if (mc.world == null || mc.player == null) return true;

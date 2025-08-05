@@ -1,6 +1,7 @@
 package adris.altoclef.altomenu.modules.Render;
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.managers.GlowManager;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.eventbus.EventHandler;
@@ -9,6 +10,9 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +35,9 @@ public class ESP extends Mod {
     public BooleanSetting monsters = new BooleanSetting("Monsters", true);
     public BooleanSetting passives = new BooleanSetting("Passives", true);
     public BooleanSetting invisibles = new BooleanSetting("Invisibles", true);
+    public BooleanSetting is2D = new BooleanSetting("2D", true);
     public BooleanSetting tracers = new BooleanSetting("Tracers", true);
+    public BooleanSetting glow = new BooleanSetting("Glow", true);
 
     public static ESP getInstance() {
         return (ESP) ModuleManager.INSTANCE.getModuleByName("ESP");
@@ -45,6 +51,8 @@ public class ESP extends Mod {
     }
     @Override
     public void onDisable() {
+        // Update all tracked entitiesk
+        GlowManager.clear();
         super.onDisable();
     }
     public boolean shouldRenderEntity(Entity entity) {
@@ -60,8 +68,8 @@ public class ESP extends Mod {
         if (this.isEnabled()) {
             assert mc.world != null;
             for (PlayerEntity entity : mc.world.getPlayers()) {
-                if (!(entity instanceof ClientPlayerEntity) && entity instanceof PlayerEntity) {
-                    renderOutline(entity, new Color(255, 255, 255), matrices);
+                if (!(entity instanceof ClientPlayerEntity) && entity instanceof PlayerEntity && players.isEnabled()) {
+                    if (is2D.isEnabled()) renderOutline(entity, new Color(255, 255, 255), matrices);
                     if (tracers.isEnabled()) renderLine(entity, new Color(255, 255, 255), matrices);
 
                     renderHealthBG(entity, new Color(0, 0, 0, 255), matrices);
@@ -69,20 +77,20 @@ public class ESP extends Mod {
                     if (entity.getHealth() > 8 && entity.getHealth() <= 13)
                         renderHealth(entity, new Color(255, 255, 0), matrices);
                     if (entity.getHealth() <= 8) renderHealth(entity, new Color(255, 0, 0), matrices);
-                    renderHealthOutline(entity, new Color(0, 0, 0), matrices);
+                    if (is2D.isEnabled()) renderHealthOutline(entity, new Color(0, 0, 0), matrices);
                 }
             }
             // do the same for monsters
             for (Entity entity : mc.world.getEntities()) {
-                if (entity instanceof Monster) {
-                    renderOutline(entity, new Color(255, 0, 0), matrices);
+                if (entity instanceof HostileEntity && monsters.isEnabled()) {
+                    if (is2D.isEnabled()) renderOutline(entity, new Color(255, 0, 0), matrices);
                     if (tracers.isEnabled()) renderLine(entity, new Color(255, 0, 0), matrices);
                 }
             }
             // do the same for passives
             for (Entity entity : mc.world.getEntities()) {
-                if (entity instanceof PassiveEntity) {
-                    renderOutline(entity, new Color(0, 255, 0), matrices);
+                if (entity instanceof PassiveEntity && passives.isEnabled()) {
+                    if (is2D.isEnabled()) renderOutline(entity, new Color(0, 255, 0), matrices);
                     if (tracers.isEnabled()) renderLine(entity, new Color(0, 255, 0), matrices);
                 }
             }
@@ -360,11 +368,26 @@ public class ESP extends Mod {
     public boolean onShitTick() {
         prevPlayerPos = mc.player.getPos();
 
-        // Update all tracked entities
+        // Update all tracked entitiesk
         for (Entity entity : mc.world.getEntities()) {
             if (shouldRenderEntity(entity)) {
                 prevEntityPositions.put(entity, entity.getPos());
             }
+            if (entity instanceof PlayerEntity && glow.isEnabled()) {
+                if (players.isEnabled()) GlowManager.addGlow(entity.getUuid());
+                else GlowManager.removeGlow(entity.getUuid());
+            }
+            if (entity instanceof HostileEntity && glow.isEnabled()) {
+                if (monsters.isEnabled()) GlowManager.addGlow(entity.getUuid());
+                else GlowManager.removeGlow(entity.getUuid());
+            }
+            if (entity instanceof PassiveEntity && glow.isEnabled()) {
+                if (passives.isEnabled()) GlowManager.addGlow(entity.getUuid());
+                else GlowManager.removeGlow(entity.getUuid());
+            }
+        }
+        if (!glow.isEnabled()) {
+            GlowManager.clear();
         }
 
         // Clean up old entities

@@ -11,13 +11,11 @@ import adris.altoclef.eventbus.EventHandler;
 //todo:
 // add ElytraPacket Spammer (Can Allow us to mess with older Anticheats)
 // add BlockPhase Methods (MightBeUseful For CrystalPvP movement setup)
-// add Position Shifter (Shift our position in a really small area as we move to mess with Anticheats)
 // add Stutter (Stutter our movement to mess with Anticheats)
 // add GroundSpoof Spammer (Can help with FallDamage and might cause Disablers)
 // add Blink
 // add Elytra Packet Method (Similar to Meteor)
 // add LongJump Style Methods
-// add Position Abuse (Shifts your Position randomly to mess with Anticheats)
 // add Standard Disabler Methods (KeepAlive, Transaction, PingSpoof, Blink, IncreaseYPositionSpam, GroundSpoof, AutoVoid *ForBedwarsServers*)
 // add SlowFall Potion Effect Spoofer
 // Add Strict Mode that uses a yawStep to slow your rotations that might help with bypassing
@@ -30,6 +28,7 @@ public class AdvancedFly extends Mod {
     }
 
     int ticks = 0;
+    int posAbuseTicks = 0;
 
     //Settings
     BooleanSetting spoofCanFly = new BooleanSetting("Ability", false);
@@ -45,6 +44,9 @@ public class AdvancedFly extends Mod {
     NumberSetting forceYaw = new NumberSetting("Force Yaw", 0, 360, 0, 0.1);
     NumberSetting forcePitch = new NumberSetting("Force Pitch", -90, 90, 0, 0.1);
     BooleanSetting gravity = new BooleanSetting("Gravity", true); //todo: create a GravityUtil
+    BooleanSetting positionAbuse = new BooleanSetting("Position Abuse", false);
+    NumberSetting positionAbuseTicks = new NumberSetting("Position Abuse Ticks", 1, 20, 3, 1);
+    NumberSetting positionAbuseIntensity = new NumberSetting("Position Abuse Intensity", 0.1, 0.9, 0.3, 0.1);
 
     @EventHandler
     public boolean onShitTick() {
@@ -168,6 +170,60 @@ public class AdvancedFly extends Mod {
         } else if (!gravity.isEnabled() && !mc.player.hasNoGravity()) {
             mc.player.setNoGravity(true); // disable gravity
         }
+
+        // Position Abuse
+        if (positionAbuse.isEnabled()) {
+            posAbuseTicks++; // Increment position abuse ticks
+
+            if (posAbuseTicks >= positionAbuseTicks.getValueInt()) {
+                if (!mc.player.isOnGround() && CMoveUtil.isMoving()) {
+                    // Get player yaw and convert to radians
+                    float yaw = mc.player.getYaw();
+                    double radians = Math.toRadians(yaw);
+
+                    // Calculate forward direction
+                    double xOffset = -Math.sin(radians);
+                    double zOffset = Math.cos(radians);
+
+                    // Interpolate based on intensity and random factor
+                    double random = Math.random() * 10;  // Generate random number
+                    double interp = random * positionAbuseIntensity.getValuefloat();
+
+                    // Normalize the direction vector
+                    double length = Math.sqrt(xOffset * xOffset + zOffset * zOffset);
+                    if (length != 0) {
+                        xOffset /= length;
+                        zOffset /= length;
+                    }
+
+                    // Apply velocity in the yaw direction
+                    mc.player.setVelocity(
+                            mc.player.getVelocity().x + xOffset * interp,
+                            mc.player.getVelocity().y,
+                            mc.player.getVelocity().z + zOffset * interp
+                    );
+                }
+            }
+
+            // Reset counter to loop
+            if (posAbuseTicks > positionAbuseTicks.getValueInt() + 1) {
+                posAbuseTicks = 0;
+            }
+        }
+
+/*        // Position Abuse
+        if (positionAbuse.isEnabled()) {
+            posAbuseTicks++; // Increment position abuse ticks
+            double random = Math.random() * 10;  // Generate random number
+            double interp = random * positionAbuseIntensity.getValuefloat(); // Interpolate based on intensity
+
+            if (posAbuseTicks >= positionAbuseTicks.getValueInt()) {
+                if (!mc.player.isOnGround() && CMoveUtil.isMoving()) {
+                    mc.player.setVelocity(mc.player.getVelocity().x + interp, mc.player.getVelocity().y, mc.player.getVelocity().z + interp); // Testing
+                }
+            }
+            if (posAbuseTicks > positionAbuseTicks.getValueInt() + 1) posAbuseTicks = 0;
+        }*/
 
         return false;
     }

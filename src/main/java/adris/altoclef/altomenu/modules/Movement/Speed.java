@@ -62,7 +62,6 @@ public class Speed extends Mod {
         double zOffset = Math.cos(radians) * (speed / 100);  // Calculate Z offset based on yaw
 
         if (mc.options.forwardKey.isPressed()) {
-            //devide speed by 100
             mc.player.setVelocity(mc.player.getVelocity().x + xOffset, mc.player.getVelocity().y, mc.player.getVelocity().z + zOffset);
         } else if (mc.options.backKey.isPressed()) {
             mc.player.setVelocity(mc.player.getVelocity().x - xOffset, mc.player.getVelocity().y, mc.player.getVelocity().z - zOffset);
