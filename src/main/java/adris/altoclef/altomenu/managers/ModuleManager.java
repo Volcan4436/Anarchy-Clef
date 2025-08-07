@@ -124,6 +124,8 @@ public class ModuleManager {
         addModule(new OldSwing());
         addModule(new NoSwing());
         addModule(new ViewModel());
+        addModule(new ForceGlint());
+        addModule(new Ambience());
 
 
         //Utility

@@ -2,10 +2,9 @@ plugins {
     id "fabric-loom" version "1.5-SNAPSHOT"
     id "maven-publish"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -76,6 +75,7 @@ dependencies {
         modImplementation "cabaletta:baritone-unoptimized-fabric:1.20.4-beta1"
         include "cabaletta:baritone-unoptimized-fabric:1.20.4-beta1"
     }
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     //modImplementation 'baritone-api-fabric:baritone-api-fabric:1.6.3'
     //implementation files('baritone-plus/build/libs/baritone-unoptimized-fabric-1.6.3.jar')
 }
@@ -140,4 +140,7 @@ publishing {
         // uncomment to publish to the local maven
         // mavenLocal()
     }
+}
+kotlin {
+    jvmToolchain(17)
 }

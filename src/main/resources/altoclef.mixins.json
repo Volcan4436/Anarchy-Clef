@@ -15,6 +15,9 @@
     "EntityAccessor",
     "GameOverlayMixin",
     "GlowMixin",
+    "ItemStackMixin",
+    "MixinFoliageColors",
+    "MixinGrassColors",
     "PersistentProjectileEntityAccessor",
     "SlotClickMixin",
     "WorldBlockModifiedMixin"

@@ -14,7 +14,7 @@ public class CChatUtil {
 
     public static void addChatMessage(final String msg) {
         MutableText message = Text.empty();
-        message.append(AltoClef.INSTANCE.getModSettings().getChatLogPrefix() + " ");
+        message.append("[AnarchyClef]" + " ");
         message.append(msg);
         mc.inGameHud.getChatHud().addMessage(message);
     }
