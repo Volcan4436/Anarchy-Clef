@@ -41,6 +41,7 @@
     "MixinLocalPlayer",
     "PlayerCollidesWithEntityMixin",
     "RadarMixin",
+    "TitleScreenMixin",
     "WorldRenderMixin"
   ],
   "injectors": {

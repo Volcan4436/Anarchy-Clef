@@ -1,13 +1,11 @@
 package adris.altoclef.mixins;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.altomenu.cheatUtils.CChatUtil;
 import adris.altoclef.altomenu.command.Command;
-import adris.altoclef.altomenu.command.CommandManager;
-import adris.altoclef.altomenu.command.CommandSuggestEvent;
+import adris.altoclef.altomenu.managers.CommandManager;
 import adris.altoclef.altomenu.managers.ChatHandler;
-import adris.altoclef.altomenu.modules.Baritone.ChatBot;
 import adris.altoclef.altomenu.modules.Player.Velocity;
-import adris.altoclef.altomenu.modules.Render.Fullbright;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -50,12 +48,19 @@ public abstract class ClientPlayNetworkHandlerMixin {
         String[] args = CMD.toString().split(" ");
 
         if (msg.startsWith(AltoClef.commandPrefix)) {
+            boolean commandFound = false;
             for (Command command : CommandManager.INSTANCE.getCmds()) {
                 if (args[0].equalsIgnoreCase(command.getName())) {
                     command.onCmd(msg, args);
-                    ci.cancel();
+                    commandFound = true;
                     break;
                 }
+            }
+            ci.cancel(); // Always cancel the packet if the message starts with the prefix
+            if (commandFound) {
+                // do nothing
+            } else {
+                CChatUtil.addChatMessage("Invalid command");
             }
         }
     }

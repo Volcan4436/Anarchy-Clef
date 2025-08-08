@@ -1,7 +1,10 @@
 package adris.altoclef.ui;
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.command.HUDSettings;
+import adris.altoclef.altomenu.command.impl.ToggleHud;
 import adris.altoclef.altomenu.managers.ModuleManager;
+import adris.altoclef.util.VersionUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -36,8 +39,8 @@ public class HUD {
     private static final Identifier CUSTOM_ICON = new Identifier("altoclef", "textures/gui/kisaragi.png");
     protected static MinecraftClient mc = MinecraftClient.getInstance();
 
-    public static String clientVersion = "AnarchyClef - b0.2.0 ";
-    public static String cvUpdateName = "Visual Update";
+    public static String clientVersion = VersionUtil.clientVersion;
+    public static String cvUpdateName = VersionUtil.cvUpdateName;
 
     private static float hueOffset = 0f;
     private static final float RAINBOW_SPEED = 0.01f; // ~33s per cycle originally
@@ -46,6 +49,7 @@ public class HUD {
     private static long lastMs = Util.getMeasuringTimeMs();
 
     public static void render(DrawContext context, float tickDelta) {
+        if (HUDSettings.isToggleHUD()) {
         // Update hueOffset based on real elapsed time
         long nowMs = Util.getMeasuringTimeMs();
         float elapsed = (nowMs - lastMs) / 1000f; // seconds since last frame
@@ -62,8 +66,8 @@ public class HUD {
                 screenWidth - mc.textRenderer.getWidth("HP: " + mc.player.getHealth()) - 3,
                 screenHeight - 10, Color.red.getRGB(), false);
 
-        String yawText = Math.round(-mc.player.getYaw() % 360) + " :Yaw";
-        String pitchText = Math.round(mc.player.getPitch()) + " :Pitch";
+        String yawText = Math.abs(Math.round(-mc.player.getYaw() % 360)) + " :Yaw";
+        String pitchText = -Math.round(mc.player.getPitch()) + " :Pitch";
         context.drawText(mc.textRenderer, yawText,
                 screenWidth - mc.textRenderer.getWidth(yawText) - 3,
                 screenHeight - 20, -1, false);
@@ -102,40 +106,43 @@ public class HUD {
         int drawWidth = (int)(textureWidth * scale), drawHeight = (int)(textureHeight * scale);
         context.drawTexture(CUSTOM_ICON, 5, 10, drawWidth, drawHeight,
                 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+        }
     }
 
     private static void renderArrayList(DrawContext context) {
-        TextRenderer tr = mc.textRenderer;
-        int sw = mc.getWindow().getScaledWidth();
-        int fh = tr.fontHeight;
+        if (HUDSettings.isToggleHUD()) {
+            TextRenderer tr = mc.textRenderer;
+            int sw = mc.getWindow().getScaledWidth();
+            int fh = tr.fontHeight;
 
-        List<Mod> mods = ModuleManager.INSTANCE.getEnabledModules();
-        mods.sort(Comparator.comparingInt(m -> tr.getWidth(m.getDisplayName())));
+            List<Mod> mods = ModuleManager.INSTANCE.getEnabledModules();
+            mods.sort(Comparator.comparingInt(m -> tr.getWidth(m.getDisplayName())));
 
-        for (int i = 0; i < mods.size(); i++) {
-            String name = mods.get(i).getDisplayName();
-            int textWidth = tr.getWidth(name);
-            int baseX = sw - 4 - textWidth;
-            int y0 = 46 + i * fh;
-            int y1 = y0 + fh - 1;
-            int x1 = sw - 2;
+            for (int i = 0; i < mods.size(); i++) {
+                String name = mods.get(i).getDisplayName();
+                int textWidth = tr.getWidth(name);
+                int baseX = sw - 4 - textWidth;
+                int y0 = 46 + i * fh;
+                int y1 = y0 + fh - 1;
+                int x1 = sw - 2;
 
-            // Background
-            context.fill(baseX - 2, y0 - 1, x1 + 1, y1, 0x80000000);
+                // Background
+                context.fill(baseX - 2, y0 - 1, x1 + 1, y1, 0x80000000);
 
-            // Per-letter rainbow
-            for (int j = 0; j < name.length(); j++) {
-                float letterHue = (hueOffset + (float) j / name.length()) % 1.0f;
-                int color = hsvToRgb(letterHue, 1f, 1f) | 0xFF000000;
-                String ch = name.substring(j, j + 1);
-                int charX = baseX + tr.getWidth(name.substring(0, j));
-                context.drawText(tr, ch, charX, y0, color, false);
+                // Per-letter rainbow
+                for (int j = 0; j < name.length(); j++) {
+                    float letterHue = (hueOffset + (float) j / name.length()) % 1.0f;
+                    int color = hsvToRgb(letterHue, 1f, 1f) | 0xFF000000;
+                    String ch = name.substring(j, j + 1);
+                    int charX = baseX + tr.getWidth(name.substring(0, j));
+                    context.drawText(tr, ch, charX, y0, color, false);
+                }
+
+                // Right-hand rainbow line
+                float lineHue = (hueOffset + (float) i / mods.size()) % 1.0f;
+                int lineColor = hsvToRgb(lineHue, 1f, 1f) | 0xFF000000;
+                context.drawVerticalLine(x1, y0 - 1, y1, lineColor);
             }
-
-            // Right-hand rainbow line
-            float lineHue = (hueOffset + (float) i / mods.size()) % 1.0f;
-            int lineColor = hsvToRgb(lineHue, 1f, 1f) | 0xFF000000;
-            context.drawVerticalLine(x1, y0 - 1, y1, lineColor);
         }
     }
 

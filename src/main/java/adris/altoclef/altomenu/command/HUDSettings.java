@@ -1,6 +1,10 @@
 package adris.altoclef.altomenu.command;
 
 public class HUDSettings {
+
+    //Instance
+    public static HUDSettings INSTANCE = new HUDSettings();
+
     private static boolean toggleHUD = true;
 
     public static boolean isToggleHUD() {
