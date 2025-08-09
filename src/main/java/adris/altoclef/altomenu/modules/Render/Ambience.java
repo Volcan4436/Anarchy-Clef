@@ -12,9 +12,6 @@ import net.minecraft.client.color.world.GrassColors;
 
 public class Ambience extends Mod {
 
-    private final BooleanSetting foliage = new BooleanSetting("Foliage", true);
-    private final BooleanSetting grass = new BooleanSetting("Grass", true);
-
     private final NumberSetting red = new NumberSetting("Red", 0, 255, 0, 1);
     private final NumberSetting green = new NumberSetting("Green", 0, 255, 0, 1);
     private final NumberSetting blue = new NumberSetting("Blue", 0, 255, 0, 1);
@@ -47,5 +44,6 @@ public class Ambience extends Mod {
             AmbienceColorHolder.currentColor = (0xFF << 24) | (r << 16) | (g << 8) | b;
         }
     }
+
 
 }

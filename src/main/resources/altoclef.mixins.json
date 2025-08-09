@@ -41,6 +41,7 @@
     "MixinLocalPlayer",
     "PlayerCollidesWithEntityMixin",
     "RadarMixin",
+    "SkyColorMixin",
     "TitleScreenMixin",
     "WorldRenderMixin"
   ],

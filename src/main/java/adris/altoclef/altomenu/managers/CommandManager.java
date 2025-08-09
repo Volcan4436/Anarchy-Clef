@@ -1,10 +1,7 @@
 package adris.altoclef.altomenu.managers;
 
 import adris.altoclef.altomenu.command.Command;
-import adris.altoclef.altomenu.command.impl.Bind;
-import adris.altoclef.altomenu.command.impl.ConfigCommand;
-import adris.altoclef.altomenu.command.impl.ToggleHud;
-import adris.altoclef.altomenu.command.impl.Help;
+import adris.altoclef.altomenu.command.impl.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,7 @@ public class CommandManager {
 
     public static CommandManager INSTANCE = new CommandManager();
     private final List<Command> cmds = new ArrayList<>();
-    private static final String PREFIX = "!";
+    private static final String PREFIX = "$";
     public CommandManager() {
         init();
     }
@@ -23,7 +20,9 @@ public class CommandManager {
         add(new ConfigCommand());
         add(new ToggleHud());
         add(new Help());
-
+        add(new SelfCrash());
+        add(new HClip());
+        add(new VClip());
     }
 
     public void add(Command command) {
