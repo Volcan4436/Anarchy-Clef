@@ -37,6 +37,7 @@
     "HeldItemRendererMixin",
     "KeyboardMixin",
     "LoadChunkMixin",
+    "MixinClientPlayNetworkHandler",
     "MixinLightmapTextureManager",
     "MixinLocalPlayer",
     "PlayerCollidesWithEntityMixin",
