@@ -12,9 +12,9 @@ import net.minecraft.client.color.world.GrassColors;
 
 public class Ambience extends Mod {
 
-    private final NumberSetting red = new NumberSetting("Red", 0, 255, 0, 1);
-    private final NumberSetting green = new NumberSetting("Green", 0, 255, 0, 1);
-    private final NumberSetting blue = new NumberSetting("Blue", 0, 255, 0, 1);
+    public final NumberSetting red = new NumberSetting("Red", 0, 255, 0, 1);
+    public final NumberSetting green = new NumberSetting("Green", 0, 255, 0, 1);
+    public final NumberSetting blue = new NumberSetting("Blue", 0, 255, 0, 1);
 
     // Cache the last RGB values to detect changes
     private int lastR = -1, lastG = -1, lastB = -1;
@@ -44,6 +44,4 @@ public class Ambience extends Mod {
             AmbienceColorHolder.currentColor = (0xFF << 24) | (r << 16) | (g << 8) | b;
         }
     }
-
-
 }

@@ -19,6 +19,8 @@ import adris.altoclef.eventbus.EventHandler;
 // add Standard Disabler Methods (KeepAlive, Transaction, PingSpoof, Blink, IncreaseYPositionSpam, GroundSpoof, AutoVoid *ForBedwarsServers*)
 // add SlowFall Potion Effect Spoofer
 // Add Strict Mode that uses a yawStep to slow your rotations that might help with bypassing
+// add Option to start using a Fireball (For Bedwars)
+// add Option to use with an elytra (for Custom Elytra Fly)
 // Add Option to Start Fly Under a Block (For Legacy Anticheat Support)
 // Add Option to Start Fly after Phasing into a Block (Similar to Old Hypixel Fly Methods) (For Legacy Anticheat Support)
 public class AdvancedFly extends Mod {

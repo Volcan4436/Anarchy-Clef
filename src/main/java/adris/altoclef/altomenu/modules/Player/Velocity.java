@@ -12,7 +12,7 @@ import java.util.Objects;
 public class Velocity extends Mod {
 
     //todo:
-    // modes: Vanilla, Clutch (Attempts to Decrease Damage by Placing Blocks below you), PacketAbuse, NCP, Matrix (Decrease + Full), GroundSpoof, NoGround, Collision
+    // modes: Vanilla, Clutch (Attempts to Decrease Damage by Placing Blocks below you), PacketAbuse, NCP, Matrix (Decrease + Full), GroundSpoof, NoGround, Collision, Jump (Legit)
     // Add 1.8 Fix (Makes our modes work on 1.8) (Essentially GroundSpoofing)
     // Add Boat Clutch (And AutoBreak option using an Axe)
     // Support WaterBucket (Use the Bot's Clutch Feature)

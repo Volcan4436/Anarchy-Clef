@@ -9,6 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
+//Add Support to change amount of SlowDown (percentage for Matrix and Intave)
 public class NoSlow extends Mod {
 
     public BooleanSetting items = new BooleanSetting("Items", true);
