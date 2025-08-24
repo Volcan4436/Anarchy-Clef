@@ -7,10 +7,11 @@ import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
 
 //todo
-// Add Modes: PhysicsCalc, onGround, Strict, NCPStrict, Grim (Entity + YawSpoof), Matrix7, 5b5tFast, 5b5tStrict
+// Add Modes: PhysicsCalc, onGround, Strict, NCPStrict, Grim (Entity + YawSpoof), Matrix7, 5b5tFast, 5b5tStrict, Karhu
 // Add SetBack Toggle
 // Add LowHop (Similar to Future Client)
 // Create AdvancedSpeed Module
+// Improve the Legit Mode by letting you customise it for better Ghost Cheating
 public class Speed extends Mod {
 
     public Speed() {

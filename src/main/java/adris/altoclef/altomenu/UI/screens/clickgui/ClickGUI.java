@@ -70,7 +70,10 @@ public class ClickGUI extends Screen {
 
 
     // Step 1: Declare the texture Identifier somewhere in your class
-    private static final Identifier CUSTOM_ICON = new Identifier("altoclef", "textures/gui/hibiki.png");
+    private static final Identifier HIBIKI = new Identifier("altoclef", "textures/gui/hibiki.png");
+    // altomenu.png
+
+    private static final Identifier MENU_LOGO = new Identifier("altoclef", "textures/gui/altomenu.png");
 
 
     @Override
@@ -92,7 +95,7 @@ public class ClickGUI extends Screen {
         // 2. Then draw the image on top
         int textureWidth = 750;
         int textureHeight = 727;
-        float scale = 0.15f;
+        float scale = 0.08f;
 
         int drawWidth = (int) (textureWidth * scale);
         int drawHeight = (int) (textureHeight * scale);
@@ -100,7 +103,7 @@ public class ClickGUI extends Screen {
         int x = this.width - drawWidth - 5;
         int y = this.height - drawHeight - 5;
 
-        matrices.drawTexture(CUSTOM_ICON, x, y, drawWidth, drawHeight, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+        matrices.drawTexture(MENU_LOGO, x + 5, y + 5, drawWidth - 10, drawHeight - 10, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
 
 
         // 3. Do NOT call super.render if it might draw above your image

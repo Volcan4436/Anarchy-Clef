@@ -100,7 +100,7 @@ public class HUD {
         // Rainbow ArrayList
         renderArrayList(context);
 
-        // Custom icon
+        // Hibiki Icon
         int textureWidth = 305, textureHeight = 581;
         float scale = 0.2f;
         int drawWidth = (int)(textureWidth * scale), drawHeight = (int)(textureHeight * scale);

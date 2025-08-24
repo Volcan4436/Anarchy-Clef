@@ -9,6 +9,7 @@ import adris.altoclef.altomenu.*;
 import adris.altoclef.altomenu.UI.screens.clickgui.ClickGUI;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.commandsystem.CommandExecutor;
+import adris.altoclef.helpers.ClickHelper;
 import adris.altoclef.scripting.LuaScriptEngine;
 import adris.altoclef.control.InputControls;
 import adris.altoclef.control.PlayerExtraController;
@@ -43,6 +44,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -64,6 +66,8 @@ public class AltoClef implements ModInitializer {
     }
     // Static access to altoclef
     private static final Queue<Consumer<AltoClef>> _postInitQueue = new ArrayDeque<>();
+
+
 
     // Central Managers
     private static CommandExecutor _commandExecutor;
@@ -188,7 +192,7 @@ public class AltoClef implements ModInitializer {
         System.out.println("Script engine final state: " + (_scriptEngine != null ? "INITIALIZED" : "NULL"));
         System.out.println("=== SCRIPT ENGINE INITIALIZATION DEBUG END ===");
         System.out.println();
-        
+
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // As such, nothing will be loaded here but basic initialization.

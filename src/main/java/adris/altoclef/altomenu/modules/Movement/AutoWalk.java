@@ -9,6 +9,8 @@ import adris.altoclef.eventbus.EventHandler;
 // Support Using Rockets if using an Elytra
 // Add Yaw/Pitch Lock
 // Support Disabling module on Disconnect or Death
+// Support Horses and Boats
+// Support Detecting when we are against a wall for too long and toggle off the module then send a chat output saying we couldn't get past the wall
 public class AutoWalk extends Mod {
 
     public AutoWalk() {

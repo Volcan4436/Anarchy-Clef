@@ -6,6 +6,7 @@ import adris.altoclef.altomenu.managers.AmbienceColorHolder;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
+import adris.altoclef.helpers.RainbowColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.FoliageColors;
 import net.minecraft.client.color.world.GrassColors;

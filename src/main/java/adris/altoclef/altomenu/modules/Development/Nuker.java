@@ -13,6 +13,21 @@ import net.minecraft.util.math.Direction;
 import java.util.ArrayList;
 import java.util.List;
 
+
+//todo:
+// - Create a LegitNuker that uses real rotations and tries to look legit from another players perspective
+// - Implement Breaker inside this module (Bed, Cake, DragonEgg)
+// - Add InstaBreak Exploit
+// - Add Option to RayCast the break so that it is more legit (Modes: None, Lenient, Strict, Perfect)
+// - Add MoveFix to this Module (So it works on Grim and Polar)
+// - Add FOV Option (Only Break Blocks within the FOV Circle)
+// - Add AutoThirdPerson (Automatically changes to third person view when Breaking Blocks)
+// - Add Option to AutoDisable on Respawn, Disconnect and Death
+// - Add SpeedMine Option (Effect, Percentage)
+// - Add Option for the nuker to attempt to keep the mine progress of the last block it was mining
+// - Add MultiBreak (Useful for Griefing)
+// - Add a Whitelist and BlackList .txt file in the Config Folder that lets you configure what blocks it should mine (call the file NukerWhiteList.txt and NukerBlackList.txt)
+// - Add Option to AutoDisable if no blocks are targeted after 30 seconds
 public class Nuker extends Mod {
 
     private static final int MAX_BREAK_RANGE = 6;

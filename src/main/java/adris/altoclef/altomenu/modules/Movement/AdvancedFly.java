@@ -23,6 +23,7 @@ import adris.altoclef.eventbus.EventHandler;
 // add Option to use with an elytra (for Custom Elytra Fly)
 // Add Option to Start Fly Under a Block (For Legacy Anticheat Support)
 // Add Option to Start Fly after Phasing into a Block (Similar to Old Hypixel Fly Methods) (For Legacy Anticheat Support)
+// Add ClientServerSync that tries to keep your client synced with the Server with differnt methods so we don't get lag backs or have issues at high speed
 public class AdvancedFly extends Mod {
 
     public AdvancedFly() {
@@ -49,9 +50,14 @@ public class AdvancedFly extends Mod {
     BooleanSetting positionAbuse = new BooleanSetting("Position Abuse", false);
     NumberSetting positionAbuseTicks = new NumberSetting("Position Abuse Ticks", 1, 20, 3, 1);
     NumberSetting positionAbuseIntensity = new NumberSetting("Position Abuse Intensity", 0.1, 0.9, 0.3, 0.1);
+    BooleanSetting isElytraFly = new BooleanSetting("Elytra Fly", false);
 
     @EventHandler
     public boolean onShitTick() {
+        //ElytraFly
+        if (isElytraFly.isEnabled() && !mc.player.isFallFlying()) return false;
+
+        // General
         assert mc.player != null;
         ticks++; //Keeps track of Ticks
 
@@ -174,6 +180,10 @@ public class AdvancedFly extends Mod {
         }
 
         // Position Abuse
+        // todo:
+        //  - Implement Different Abuse Methods
+        //  - Improve Delay Mechanism
+        //  - Add TPS Sync (Sync the Position Abuse to run during a Tick with 2 options ServerSide Tick or ClientSided Tick)
         if (positionAbuse.isEnabled()) {
             posAbuseTicks++; // Increment position abuse ticks
 

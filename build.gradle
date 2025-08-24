@@ -78,6 +78,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     //modImplementation 'baritone-api-fabric:baritone-api-fabric:1.6.3'
     //implementation files('baritone-plus/build/libs/baritone-unoptimized-fabric-1.6.3.jar')
+
+
+    implementation 'com.github.kwhat:jnativehook:2.2.2'
 }
 shadowJar {
     configurations = [project.configurations.shadow]

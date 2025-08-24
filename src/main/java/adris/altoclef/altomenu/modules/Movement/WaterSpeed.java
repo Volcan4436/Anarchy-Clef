@@ -6,6 +6,10 @@ import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
 import net.minecraft.block.Blocks;
 
+
+//todo:
+// - Add Different Bypass Methods (Mainly for NoCheatPlus and Matrix)
+// - Attempt to find a way to make a legit waterspeed for Grimv4 (2b2t)
 public class WaterSpeed extends Mod {
 
     public WaterSpeed() {

@@ -9,6 +9,7 @@ import java.util.Objects;
 
 //todo We need a true OmniSprint
 // add Silent MultiDirection Sprint (use fake rotations to sprint in all directions in a legit way) (makes omnisprint a permanent Bypass)
+// Create a bunch of Ghost Settings to improve Ghost Cheat Side of this module
 public class Sprint extends Mod {
 
     private static final Logger log = LoggerFactory.getLogger(Sprint.class);

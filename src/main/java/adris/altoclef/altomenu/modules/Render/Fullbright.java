@@ -1,6 +1,9 @@
 package adris.altoclef.altomenu.modules.Render;
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.settings.BooleanSetting;
+import adris.altoclef.eventbus.EventHandler;
+import adris.altoclef.helpers.RainbowColor;
 
 //TODO
 // add Light Colour Changer (Similar to Future Client)
@@ -13,6 +16,9 @@ public class Fullbright extends Mod {
         super("Fullbright", "Full bright bull shit.", Mod.Category.RENDER);
         Instance = this;
     }
+
+    public BooleanSetting lsd = new BooleanSetting("LSD", false);
+
     @Override
     public void onEnable() {
         System.out.println("fullbright enabled");
@@ -23,5 +29,17 @@ public class Fullbright extends Mod {
     public void onDisable() {
         System.out.println("fullbright disabled");
         super.onDisable();
+    }
+
+    private int rainbowColor;
+
+
+    @EventHandler
+    public void onTick() {
+        rainbowColor = RainbowColor.getRainbowColor(0xFFFFFFFF);
+    }
+
+    public int getRainbowColor() {
+        return rainbowColor;
     }
 }

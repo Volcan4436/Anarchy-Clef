@@ -1,11 +1,9 @@
 package adris.altoclef.altomenu.managers;
 
+
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.Baritone.ChatBot;
-import adris.altoclef.altomenu.modules.Combat.CrystalAura;
-import adris.altoclef.altomenu.modules.Combat.FakeEntity;
-import adris.altoclef.altomenu.modules.Combat.NewCrystalAura;
-import adris.altoclef.altomenu.modules.Combat.Surround;
+import adris.altoclef.altomenu.modules.Combat.*;
 import adris.altoclef.altomenu.modules.Development.FakeRotation;
 import adris.altoclef.altomenu.modules.Development.Nuker;
 import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;

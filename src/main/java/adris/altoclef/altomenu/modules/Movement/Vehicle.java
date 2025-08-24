@@ -35,7 +35,7 @@ public class Vehicle extends Mod {
 
     BooleanSetting fly = new BooleanSetting("Fly", false);
     ModeSetting antiKick = new ModeSetting("Anti-Kick", "OFF", "OFF", "Position");
-    NumberSetting antiKickTicksSet = new NumberSetting("Anti-Kick Ticks", 8, 20, 5, 1);
+    NumberSetting antiKickTicksSet = new NumberSetting("Anti-Kick Ticks", 8, 20, 8, 1);
     NumberSetting speed = new NumberSetting("Speed", 0.1, 100, 1, 0.1);
     BooleanSetting yawFix = new BooleanSetting("YawFix", true);
 
