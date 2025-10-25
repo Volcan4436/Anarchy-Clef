@@ -15,6 +15,7 @@ import adris.altoclef.altomenu.modules.Player.Velocity;
 import adris.altoclef.altomenu.modules.Render.*;
 import adris.altoclef.altomenu.modules.Utility.PickPlus;
 import adris.altoclef.altomenu.modules.Utility.Stealer;
+import adris.altoclef.altomenu.modules.World.Timer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,5 +136,6 @@ public class ModuleManager {
 
         //World
         addModule(new FakeEntity());
+        addModule(new Timer());
     }
 }

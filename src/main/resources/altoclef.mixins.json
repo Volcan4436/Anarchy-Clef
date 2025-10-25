@@ -44,6 +44,7 @@
     "RadarMixin",
     "SkyColorMixin",
     "TitleScreenMixin",
+    "TimerTestMixin",
     "WorldRenderMixin"
   ],
   "injectors": {

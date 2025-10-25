@@ -21,7 +21,7 @@ public class Speed extends Mod {
     NumberSetting speed = new NumberSetting("Speed", 0.1, 10, 0.6, 0.1);
     @EventHandler
     public boolean onShitTick() {
-        if (mode.getMode() == "Legit") { //todo: add Speed Equivalent (Similar to Rise 6)
+        if (mode.getMode() == "Legit") { //todo: add Speed Equivalent (Similar to Rise 6) (Makes you Move at the speed that you go when going diagonally but in any direction without rotations)
             mc.options.jumpKey.setPressed(false);
             if (CMoveUtil.isMoving() && CMoveUtil.isOnGround()) {
                 mc.player.jump();
@@ -53,6 +53,8 @@ public class Speed extends Mod {
         }
         return false;
     }
+
+    //This needs to be moved into CMoveUtil
     public void calcSpeed() {
         float yaw = mc.player.getYaw();
         double radians = Math.toRadians(yaw);
