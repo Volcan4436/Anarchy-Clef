@@ -1,6 +1,7 @@
 package adris.altoclef;
 
 import adris.altoclef.altomenu.command.ChatUtils;
+import adris.altoclef.altomenu.command.HUDSettings;
 import adris.altoclef.altomenu.config.Config;
 import adris.altoclef.altomenu.config.configloader;
 import adris.altoclef.butler.Butler;
@@ -34,6 +35,7 @@ import baritone.api.BaritoneAPI;
 import baritone.api.Settings;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -192,6 +194,28 @@ public class AltoClef implements ModInitializer {
         System.out.println("Script engine final state: " + (_scriptEngine != null ? "INITIALIZED" : "NULL"));
         System.out.println("=== SCRIPT ENGINE INITIALIZATION DEBUG END ===");
         System.out.println();
+
+
+        // Original Conflict Check **KEPT FOR DEBUGGING**
+/*        if (FabricLoader.getInstance().isModLoaded("rusherhack")) {
+            HUDSettings.toggleHUD();
+            System.out.println("🚨 WARNING: Rusher Hack is installed, HUD is disabled!");
+        }*/
+
+
+        // todo:
+        //  # Move this into its own Class and implement a better list that can be configured by the user
+        //  # create a public list of known conflicts and pull from that on launch (make it a Github Repo to make sure it doesn't go down and so others can contribute)
+        List<String> found = List.of("rusherhack", "future", "meteor", "bleachhack")
+                .stream()
+                .filter(id -> FabricLoader.getInstance().isModLoaded(id))
+                .toList();
+
+        if (!found.isEmpty()) {
+            HUDSettings.toggleHUD();
+            System.out.println("WARNING: Detected HUD Conflicts, HUD is disabled!");
+            System.out.println(" Conflicts: " + String.join(", ", found));
+        }
 
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
