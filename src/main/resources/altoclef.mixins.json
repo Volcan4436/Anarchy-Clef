@@ -40,11 +40,12 @@
     "MixinClientPlayNetworkHandler",
     "MixinLightmapTextureManager",
     "MixinLocalPlayer",
+    "MixinPlayerEntityModel",
     "PlayerCollidesWithEntityMixin",
     "RadarMixin",
     "SkyColorMixin",
-    "TitleScreenMixin",
     "TimerTestMixin",
+    "TitleScreenMixin",
     "WorldRenderMixin"
   ],
   "injectors": {
