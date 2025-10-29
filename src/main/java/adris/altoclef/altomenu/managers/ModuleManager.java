@@ -128,6 +128,8 @@ public class ModuleManager {
         addModule(new ViewModel());
         addModule(new ForceGlint());
         addModule(new Ambience());
+        addModule(new BetterCamera());
+        addModule(new PlayerScale());
 
 
         //Utility

@@ -23,6 +23,8 @@
     "WorldBlockModifiedMixin"
   ],
   "client": [
+    "CameraAccessor",
+    "CameraMixin",
     "ChatInputMixin",
     "ChatReadMixin",
     "ClientBlockBreakMixin",
@@ -42,6 +44,7 @@
     "MixinLocalPlayer",
     "MixinPlayerEntityModel",
     "PlayerCollidesWithEntityMixin",
+    "PlayerEntityRendererMixin",
     "RadarMixin",
     "SkyColorMixin",
     "TimerTestMixin",
