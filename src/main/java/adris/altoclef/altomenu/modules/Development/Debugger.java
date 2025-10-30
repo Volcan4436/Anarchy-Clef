@@ -29,4 +29,9 @@ public class Debugger extends Mod {
         CChatUtil.addChatMessage(" [Alert] Debugger Disabled");
         super.onDisable();
     }
+
+    @EventHandler
+    public void onMove() {
+        //CChatUtil.addChatMessage(" Player Moved");
+    }
 }

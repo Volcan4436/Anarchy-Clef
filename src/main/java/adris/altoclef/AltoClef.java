@@ -1,5 +1,6 @@
 package adris.altoclef;
 
+import adris.altoclef.altomenu.cheatUtils.CMoveUtil;
 import adris.altoclef.altomenu.command.ChatUtils;
 import adris.altoclef.altomenu.command.HUDSettings;
 import adris.altoclef.altomenu.config.Config;
@@ -709,6 +710,9 @@ public class AltoClef implements ModInitializer {
                 module.onTick();
                 module.onShitTick();
                 module.onCockAndBallTorture();
+
+
+                if (CMoveUtil.isMoving()) module.onMove();
             }
         }
     }

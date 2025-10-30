@@ -1,5 +1,6 @@
 package adris.altoclef.altomenu;
 
+import adris.altoclef.altomenu.cheatUtils.CMoveUtil;
 import adris.altoclef.altomenu.settings.Setting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -127,6 +128,11 @@ public class Mod {
     public String setDisplayname(String displayName) {
         this.displayName = displayName;
         return displayName;
+    }
+
+
+    public void onMove() {
+
     }
 
     public boolean onShitTick() {
