@@ -1,7 +1,6 @@
 package adris.altoclef.mixins;
 
 import adris.altoclef.altomenu.Mod;
-import adris.altoclef.altomenu.cheatUtils.RenderCallGate;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
@@ -28,20 +27,13 @@ public class WorldRenderMixin {
         }
     }
 
-    // set the gate at the start of render
-    @Inject(method = "render", at = @At("HEAD"))
-    private void onRenderHead(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
-        RenderCallGate.enterRender();
-    }
-
-    // clear the gate at the end of render and call modules
+    //onRender
     @Inject(method = "render", at = @At(value = "RETURN"))
-    private void onRenderReturn(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
+    private void onRender(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
         for (Mod m : ModuleManager.INSTANCE.getModules()) {
             if (m.isEnabled()) {
                 m.onRender();
             }
         }
-        RenderCallGate.exitRender();
     }
 }

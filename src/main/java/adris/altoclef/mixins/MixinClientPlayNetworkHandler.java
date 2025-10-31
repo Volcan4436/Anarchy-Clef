@@ -17,10 +17,10 @@ public abstract class MixinClientPlayNetworkHandler {
             at = @At("TAIL"), require = 0)
     private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
         MinecraftClient client = MinecraftClient.getInstance();
-        System.out.println("[CA MIXIN] onEntitySpawn packet id=" + packet.getId() + " type=" + packet.getEntityType() +
-                " pos=" + packet.getX() + "," + packet.getY() + "," + packet.getZ());
+//        System.out.println("[CA MIXIN] onEntitySpawn packet id=" + packet.getId() + " type=" + packet.getEntityType() +
+//                " pos=" + packet.getX() + "," + packet.getY() + "," + packet.getZ());
         Entity e = (client != null && client.world != null) ? client.world.getEntityById(packet.getId()) : null;
-        System.out.println("[CA MIXIN] entity present? " + (e != null));
+//        System.out.println("[CA MIXIN] entity present? " + (e != null));
         CrystalAura.onEntitySpawned(e);
     }
 }

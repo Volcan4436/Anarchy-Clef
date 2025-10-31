@@ -1,6 +1,6 @@
 package adris.altoclef.mixins;
 
-import adris.altoclef.altomenu.cheatUtils.RenderCallGate;
+import adris.altoclef.altomenu.modules.Combat.KillAuraModule;
 import adris.altoclef.altomenu.modules.Development.FakeRotation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -20,18 +20,25 @@ public abstract class MixinPlayerEntityModel<T extends LivingEntity> {
     private void fakeHeadRotation(T entity, float limbSwing, float limbSwingAmount,
                                   float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
 
-        // Only apply fake rotation if the render gate is active and module enabled.
-        if (!RenderCallGate.isInRender()) return;
-        if (!FakeRotation.INSTANCE.isEnabled()) return;
-
-        if (entity == MinecraftClient.getInstance().player) {
+        if (entity == MinecraftClient.getInstance().player && FakeRotation.INSTANCE.isEnabled()) {
             PlayerEntityModel<?> model = (PlayerEntityModel<?>) (Object) this;
 
-            float fakeYaw = FakeRotation.headyaw.getValuefloat();
-            float fakePitch = FakeRotation.headpitch.getValuefloat();
+            // Fake head rotation (yaw = horizontal, pitch = vertical)
+            float fakeYaw = FakeRotation.headyaw.getValuefloat();   // head looking east
+            float fakePitch = FakeRotation.headpitch.getValuefloat(); // slightly up
 
             model.head.yaw = fakeYaw;
             model.head.pitch = fakePitch;
+        }
+        if (entity == MinecraftClient.getInstance().player && KillAuraModule.INSTANCE.isEnabled() && KillAuraModule.HasTarget) {
+            PlayerEntityModel<?> model = (PlayerEntityModel<?>) (Object) this;
+
+            // Fake head rotation (yaw = horizontal, pitch = vertical)
+            float fakeYaw = FakeRotation.headyaw.getValuefloat();   // head looking east
+            float fakePitch = FakeRotation.headpitch.getValuefloat(); // slightly up
+
+            model.head.yaw = KillAuraModule.RTYAW;
+            model.head.pitch = KillAuraModule.RTPITCH;
         }
     }
 }

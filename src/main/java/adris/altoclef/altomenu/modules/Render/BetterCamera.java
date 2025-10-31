@@ -15,5 +15,6 @@ public class BetterCamera extends Mod {
 
     public NumberSetting cameradistance = new NumberSetting("CameraDistance", 1, 20, 4, 1);
     public BooleanSetting noclip = new BooleanSetting("NoClip", false);
+    public static BooleanSetting bounce = new BooleanSetting("Bouncayyyy", false);
 
 }

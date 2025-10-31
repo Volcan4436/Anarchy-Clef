@@ -6,9 +6,6 @@ import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.ModeSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-
-import java.util.Objects;
 
 // We Will Need the ability to change Settings of a Module with commands at some point
 //todo:
@@ -54,7 +51,6 @@ public class AdvancedFly extends Mod {
     NumberSetting positionAbuseTicks = new NumberSetting("Position Abuse Ticks", 1, 20, 3, 1);
     NumberSetting positionAbuseIntensity = new NumberSetting("Position Abuse Intensity", 0.1, 0.9, 0.3, 0.1);
     BooleanSetting isElytraFly = new BooleanSetting("Elytra Fly", false);
-    BooleanSetting groundSpoof = new BooleanSetting("Ground Spoof", false);
 
     @EventHandler
     public boolean onShitTick() {
@@ -240,9 +236,6 @@ public class AdvancedFly extends Mod {
             }
             if (posAbuseTicks > positionAbuseTicks.getValueInt() + 1) posAbuseTicks = 0;
         }*/
-
-
-        if (groundSpoof.isEnabled()) Objects.requireNonNull(mc.getNetworkHandler()).sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
 
         return false;
     }

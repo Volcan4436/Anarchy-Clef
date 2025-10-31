@@ -1,17 +1,13 @@
 package adris.altoclef;
 
-import adris.altoclef.altomenu.cheatUtils.CMoveUtil;
-import adris.altoclef.altomenu.command.ChatUtils;
 import adris.altoclef.altomenu.command.HUDSettings;
-import adris.altoclef.altomenu.config.Config;
-import adris.altoclef.altomenu.config.configloader;
+import adris.altoclef.altomenu.config.ConfigManager;
 import adris.altoclef.butler.Butler;
 import adris.altoclef.chains.*;
 import adris.altoclef.altomenu.*;
 import adris.altoclef.altomenu.UI.screens.clickgui.ClickGUI;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.commandsystem.CommandExecutor;
-import adris.altoclef.helpers.ClickHelper;
 import adris.altoclef.scripting.LuaScriptEngine;
 import adris.altoclef.control.InputControls;
 import adris.altoclef.control.PlayerExtraController;
@@ -47,12 +43,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
-import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -100,14 +91,19 @@ public class AltoClef implements ModInitializer {
     private MessageSender _messageSender;
     private InputControls _inputControls;
     private SlotHandler _slotHandler;
-    public static Config selectedConfig;
     // Butler
     private Butler _butler;
     
     // Lua Scripting System  
     private volatile LuaScriptEngine _scriptEngine;
     private volatile boolean _wasInitialized = false;
-    
+
+    //Binding
+    private final java.util.Map<Integer, Boolean> wasKeyPressed = new java.util.HashMap<>();
+    private final java.util.Map<Integer, Long> lastToggleTime = new java.util.HashMap<>();
+    private final long KEY_DEBOUNCE_MS = 50; // 50ms debounce (adjust if needed)
+
+
     /**
      * Track when script engine is set to help debug null issues
      */
@@ -142,9 +138,18 @@ public class AltoClef implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        loadDefaultConfig();
+
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            loadConfig(); // This is your method
+            ConfigManager.loadConfig(); // This is your method
+        });
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            ConfigManager.saveConfig();
+        });
+        net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            ConfigManager.saveConfig();
+        });
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, sender) -> {
+            ConfigManager.saveConfig();
         });
         
         // Initialize Lua scripting system EARLY on the correct Fabric instance
@@ -226,33 +231,7 @@ public class AltoClef implements ModInitializer {
     public static String getName() {
         return name;
     }
-    private void loadDefaultConfig() {
-        configloader configLoader = new configloader();
-        try {
-            configloader.loadConfigs(); // Load available configs from file
-            // Check if the default config already exists
-            Config defaultConfig = configLoader.getConfigByName("default");
-            if (defaultConfig == null) {
-                // If not, create a new default config and save it
-                Config newDefaultConfig = new Config("default", "Default Configuration");
-                configloader.saveNewConfig("default");
-            }
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception appropriately
-        }
-    }
-    private void loadConfig() {
-        configloader configLoader = new configloader();
-        try {
-            configLoader.loadConfigs(); // Load available configs from file
-            Config config = configLoader.getConfigByName("default");
-            if (config != null) {
-                configLoader.loadConfig(config);
-            }
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception appropriately
-        }
-    }
+
     public void onInitializeLoad() {
         // This code should be run after Minecraft loads everything else in.
         // This is the actual start point, controlled by a mixin.
@@ -343,10 +322,62 @@ public class AltoClef implements ModInitializer {
 
         // External mod initialization
         runEnqueuedPostInits();
+
+        // === CONFIG SYSTEM INTEGRATION ===
+// Make sure modules exist first
+        ModuleManager.INSTANCE.getModules(); // initializes modules if needed
+
+// Load config after modules are ready
+        ConfigManager.loadConfig();
+
+// Save config on disconnect or when client stops
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            ConfigManager.saveConfig();
+        });
+        net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            ConfigManager.saveConfig();
+        });
     }
+    // Handle Binding Toggling.
+    private void handleKeybinds() {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc == null || mc.getWindow() == null) return;
+
+        // Prevent toggling while chat or any GUI that accepts text is open
+        if (mc.currentScreen instanceof net.minecraft.client.gui.screen.ChatScreen
+                || mc.currentScreen instanceof net.minecraft.client.gui.screen.ingame.CommandBlockScreen
+                || mc.currentScreen instanceof net.minecraft.client.gui.screen.ingame.BookScreen
+                || mc.currentScreen instanceof net.minecraft.client.gui.screen.ingame.SignEditScreen) {
+            return;
+        }
+
+        long window = mc.getWindow().getHandle();
+        long now = System.currentTimeMillis();
+
+        for (adris.altoclef.altomenu.Mod module : adris.altoclef.altomenu.managers.ModuleManager.INSTANCE.getModules()) {
+            int key = module.getKey();
+            if (key == 0) continue;
+
+            boolean pressed = org.lwjgl.glfw.GLFW.glfwGetKey(window, key) == org.lwjgl.glfw.GLFW.GLFW_PRESS;
+            boolean prev = wasKeyPressed.getOrDefault(key, false);
+
+            if (pressed && !prev) {
+                Long last = lastToggleTime.get(key);
+                if (last == null || (now - last) >= KEY_DEBOUNCE_MS) {
+                    module.toggle();
+                    lastToggleTime.put(key, now);
+                }
+            }
+
+            wasKeyPressed.put(key, pressed);
+        }
+    }
+
 
     // Client tick
     private void onClientTick() {
+        handleKeybinds();
+
         runEnqueuedPostInits();
 
         _inputControls.onTickPre();
@@ -691,9 +722,6 @@ public class AltoClef implements ModInitializer {
 
     public void onKeypress(int key, int action) {
         if (action == GLFW.GLFW_PRESS) {
-            for (Mod module : ModuleManager.INSTANCE.getModules()) {
-                if (key == module.getKey()) module.toggle();
-            }
             if (key == GLFW.GLFW_KEY_INSERT) mc.setScreenAndRender(ClickGUI.INSTANCE);
         }
     }
@@ -710,9 +738,6 @@ public class AltoClef implements ModInitializer {
                 module.onTick();
                 module.onShitTick();
                 module.onCockAndBallTorture();
-
-
-                if (CMoveUtil.isMoving()) module.onMove();
             }
         }
     }

@@ -16,8 +16,8 @@ public class CommandManager {
     }
 
     private void init() {
-        add(new Bind());
-        add(new ConfigCommand());
+        add(new BindCommand());
+        add(new SaveConfigCommand());
         add(new ToggleHud());
         add(new Help());
         add(new SelfCrash());

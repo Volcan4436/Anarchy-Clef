@@ -23,17 +23,22 @@ public class PlayerEntityRendererMixin {
         if (PlayerScale.Instance.isEnabled()) {
             newScale = PlayerScale.Instance.scale.getValuefloat(); // Set the desired scale value
         }
-        if (PlayerScale.Instance.isEnabled() && player == MinecraftClient.getInstance().player) {
-            matrixStack.scale(newScale, newScale, newScale);
-        }
         if (player != MinecraftClient.getInstance().player) {
             if (PlayerScale.Instance.allPlayers.isEnabled()) {
                 matrixStack.scale(newScale, newScale, newScale);
             }
             return;
-        }
-        else newScale = 1f;
+        } else newScale = 1f;
         matrixStack.scale(newScale, newScale, newScale);
         ci.cancel();
     }
+
+    //debugger
+/*    @Inject(method = "scale(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;F)V",
+            at = @At("HEAD"),
+            cancellable = true)
+    private void scale(AbstractClientPlayerEntity player, MatrixStack matrixStack, float amount, CallbackInfo ci) {
+        System.out.println("Vanilla scale amount: " + amount);
+        // ... your logic ...
+    }*/
 }

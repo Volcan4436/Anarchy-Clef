@@ -12,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import adris.altoclef.altomenu.UI.screens.clickgui.setting.Component;
 
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
