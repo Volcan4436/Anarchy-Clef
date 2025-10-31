@@ -4,9 +4,9 @@ package adris.altoclef.altomenu.managers;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.Baritone.ChatBot;
 import adris.altoclef.altomenu.modules.Combat.*;
+import adris.altoclef.altomenu.modules.Development.Debugger;
 import adris.altoclef.altomenu.modules.Development.FakeRotation;
 import adris.altoclef.altomenu.modules.Development.Nuker;
-import adris.altoclef.altomenu.modules.Development.TracerModule;
 import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;
 import adris.altoclef.altomenu.modules.Movement.*;
 import adris.altoclef.altomenu.modules.Player.AntiHunger;
@@ -90,14 +90,15 @@ public class ModuleManager {
         addModule(new NewCrystalAura());
         addModule(new Surround());
         addModule(new CrystalAura());
-        addModule(new KillAuraModule());
 
         //Development
         addModule(new FakeRotation());
+        addModule(new Debugger());
 
         //Exploit
         addModule(new UnlockRecipes());
         addModule(new PickPlus());
+        addModule(new Scaffold());
 
         //Movement
         addModule(new AdvancedFly());
@@ -112,7 +113,9 @@ public class ModuleManager {
         addModule(new Velocity());
         addModule(new WaterSpeed());
         addModule(new Vehicle());
-        addModule(new Scaffold());
+        addModule(new Strafe());
+        addModule(new AdvancedSpeed());
+        addModule(new Freeze());
         
         //Player
         addModule(new AntiHunger());
@@ -121,7 +124,6 @@ public class ModuleManager {
 
         //Render
         addModule(new Fullbright());
-        addModule(new TracerModule());
         addModule(new RenderTags());
         addModule(new Radar());
         addModule(new crosshairRGH());
