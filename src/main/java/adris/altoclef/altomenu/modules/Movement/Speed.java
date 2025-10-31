@@ -28,50 +28,25 @@ public class Speed extends Mod {
             }
         }
         else if (mode.getMode() == "Strafe") {
-            CMoveUtil.strafe();
-            calcSpeed();
+            CMoveUtil.strafe(speed.getValuefloat());
         }
         else if (mode.getMode() == "StrafeHop") {
-            CMoveUtil.strafe();
-            calcSpeed();
+            CMoveUtil.strafe(speed.getValuefloat());
             if (CMoveUtil.isMoving() && CMoveUtil.isOnGround()) {
                 mc.player.jump();
             }
         }
         else if (mode.getMode() == "GroundStrafe") {
             if (CMoveUtil.isOnGround()) {
-                CMoveUtil.strafe();
-                calcSpeed();
+                CMoveUtil.strafe(speed.getValuefloat());
             }
         }
         else if (mode.getMode() == "GroundStrafeHop") {
             if (CMoveUtil.isOnGround()) {
-                CMoveUtil.strafe();
-                calcSpeed();
+                CMoveUtil.strafe(speed.getValuefloat());
                 if (CMoveUtil.isMoving()) mc.player.jump();
             }
         }
         return false;
-    }
-
-    //This needs to be moved into CMoveUtil
-    public void calcSpeed() {
-        float yaw = mc.player.getYaw();
-        double radians = Math.toRadians(yaw);
-        double speed = this.speed.getValuefloat();
-
-        // Calculate the offset based on the player's viewing direction
-        double xOffset = -Math.sin(radians) * (speed / 100); // Calculate X offset based on yaw
-        double zOffset = Math.cos(radians) * (speed / 100);  // Calculate Z offset based on yaw
-
-        if (mc.options.forwardKey.isPressed()) {
-            mc.player.setVelocity(mc.player.getVelocity().x + xOffset, mc.player.getVelocity().y, mc.player.getVelocity().z + zOffset);
-        } else if (mc.options.backKey.isPressed()) {
-            mc.player.setVelocity(mc.player.getVelocity().x - xOffset, mc.player.getVelocity().y, mc.player.getVelocity().z - zOffset);
-        } else if (mc.options.leftKey.isPressed()) {
-            mc.player.setVelocity(mc.player.getVelocity().x + zOffset, mc.player.getVelocity().y, mc.player.getVelocity().z - xOffset);
-        } else if (mc.options.rightKey.isPressed()) {
-            mc.player.setVelocity(mc.player.getVelocity().x - zOffset, mc.player.getVelocity().y, mc.player.getVelocity().z + xOffset);
-        }
     }
 }
