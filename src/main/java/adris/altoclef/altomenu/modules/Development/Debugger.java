@@ -34,4 +34,10 @@ public class Debugger extends Mod {
     public void onMove() {
         //CChatUtil.addChatMessage(" Player Moved");
     }
+
+    //This can easily cause lag if called too often
+    @Override
+    public void onRender() {
+        //CChatUtil.addChatMessage(" Frame Rendered");
+    }
 }

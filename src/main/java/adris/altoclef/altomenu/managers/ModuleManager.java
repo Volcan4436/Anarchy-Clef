@@ -113,6 +113,8 @@ public class ModuleManager {
         addModule(new WaterSpeed());
         addModule(new Vehicle());
         addModule(new Strafe());
+        addModule(new AdvancedSpeed());
+        addModule(new Freeze());
         
         //Player
         addModule(new AntiHunger());
