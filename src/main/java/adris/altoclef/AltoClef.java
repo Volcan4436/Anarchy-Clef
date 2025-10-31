@@ -739,9 +739,8 @@ public class AltoClef implements ModInitializer {
                 module.onTick();
                 module.onShitTick();
                 module.onCockAndBallTorture();
+                if (CMoveUtil.isMoving()) module.onMove();
             }
-
-            if (CMoveUtil.isMoving()) module.onMove();
         }
     }
 }
