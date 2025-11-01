@@ -25,10 +25,7 @@ import adris.altoclef.tasks.resources.TradeWithPiglinsTask;
 import adris.altoclef.tasks.speedrun.KillEnderDragonTask;
 import adris.altoclef.tasks.speedrun.KillEnderDragonWithBedsTask;
 import adris.altoclef.tasks.speedrun.WaitForDragonAndPearlTask;
-import adris.altoclef.tasks.stupid.BeeMovieTask;
-import adris.altoclef.tasks.stupid.ReplaceBlocksTask;
-import adris.altoclef.tasks.stupid.SCP173Task;
-import adris.altoclef.tasks.stupid.TerminatorTask;
+import adris.altoclef.tasks.stupid.*;
 import adris.altoclef.util.*;
 import adris.altoclef.util.helpers.WorldHelper;
 import net.minecraft.block.Block;
@@ -301,6 +298,9 @@ public class Playground {
                 break;
             case "terminate":
                 mod.runUserTask(new TerminatorTask(mod.getPlayer().getBlockPos(), 900));
+                break;
+            case "terminate2":
+                mod.runUserTask(new TerminatorTask2(mod.getPlayer().getBlockPos(), 900));
                 break;
             case "fightbot":
                 mod.runUserTask(new FightBotTask(mod.getPlayer().getBlockPos(), 900));
