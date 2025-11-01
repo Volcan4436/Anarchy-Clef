@@ -137,7 +137,6 @@ public class ModuleManager {
         addModule(new BetterCamera());
         addModule(new PlayerScale());
 
-
         //Utility
         addModule(new Stealer());
         addModule(new Nuker());
