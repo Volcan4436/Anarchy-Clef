@@ -25,7 +25,7 @@ public class NoFall extends Mod {
         super("NoFall", "Decreased the amount of damage you take from falling", Mod.Category.PLAYER);
     }
 
-    ModeSetting mode = new ModeSetting("Mode", "Packet", "Packet", "Packet+", "Velocity", "Jump", "Position", "dev");
+    ModeSetting mode = new ModeSetting("Mode", "Packet", "Packet", "Packet+", "Velocity", "Jump", "Position", "mcMMO", "dev");
     boolean velocityCheck = false; //we need a cleaner implementation
     boolean positionCheck = false; //we need a cleaner implementation
     boolean jumpCheck = false; //we need a cleaner implementation
@@ -67,6 +67,11 @@ public class NoFall extends Mod {
                 positionCheck = true;
             }
             if (mc.player.fallDistance == 0 && positionCheck) positionCheck = false;
+        }
+        else if (Objects.equals(mode.getMode(), "mcMMO")) {
+            if (mc.player.fallDistance > 3) {
+                mc.options.sneakKey.setPressed(true);
+            }
         }
         else if (Objects.equals(mode.getMode(), "dev")) {
             System.out.println("This is For Debug Purposes");
