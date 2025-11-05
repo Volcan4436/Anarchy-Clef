@@ -22,8 +22,8 @@
 //public class EndCrystalRendererMixin {
 //
 //    // Use the vanilla texture & render layer constants like vanilla.
-//    private static final Identifier TEXTURE = new Identifier("textures/entity/end_crystal/end_crystal.png");
-//    private static final RenderLayer END_CRYSTAL_LAYER = RenderLayer.getEntityCutoutNoCull(TEXTURE);
+//    private static Identifier TEXTURE = new Identifier("textures/entity/end_crystal/end_crystal.png");
+//    private static RenderLayer END_CRYSTAL_LAYER = RenderLayer.getEntityCutoutNoCull(TEXTURE);
 //
 //    /**
 //     * Inject at the start of vanilla render and replace it if our module is active.

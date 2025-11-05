@@ -23,7 +23,13 @@ public class CMoveUtil {
 
 
 
-    static double yaw = mc.player.getYaw();
+    static double yaw;
+
+    static {
+        assert mc.player != null;
+        yaw = mc.player.getYaw();
+    }
+
     private static double speed = 1.0; // Replace with your desired speed value
 
     static double  motionX = -Math.sin(yaw) * speed;
@@ -67,6 +73,7 @@ public class CMoveUtil {
     }
 
     public static double getDirection() {
+        assert MinecraftClient.getInstance().player != null;
         double rotationYaw = MinecraftClient.getInstance().player.getYaw();
         if (MinecraftClient.getInstance().player.input.movementForward < 0) {
             rotationYaw += 180;

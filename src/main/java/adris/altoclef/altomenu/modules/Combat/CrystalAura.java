@@ -74,20 +74,20 @@ public class CrystalAura extends Mod {
     // Mixin approach is recommended (inject into ClientPlayNetworkHandler spawn packet handlers).
     public static void onEntitySpawned(Entity e) {
         CrystalAura inst = getInstance(); // keep your existing getter
-        System.out.println("[CA MODULE] onEntitySpawned called. entity="
-                + (e == null ? "null" : (e.getId() + ":" + e.getClass().getSimpleName()))
-                + " INST=" + (inst == null ? "null" : "ok")
-                + " CEXPL=" + (inst == null ? "?" : inst.cexpl.isEnabled()));
+//        System.out.println("[CA MODULE] onEntitySpawned called. entity="
+//                + (e == null ? "null" : (e.getId() + ":" + e.getClass().getSimpleName()))
+//                + " INST=" + (inst == null ? "null" : "ok")
+//                + " CEXPL=" + (inst == null ? "?" : inst.cexpl.isEnabled()));
         if (inst != null) inst.onEntitySpawnedInternal(e);
     }
 
     private void onEntitySpawnedInternal(Entity e) {
         // Debug/info print
-        System.out.println("[CA ATTACK] onEntitySpawnedInternal: e="
-                + (e == null ? "null" : (e.getId() + ":" + e.getClass().getSimpleName()))
-                + " lastPlaced=" + lastPlacedPos
-                + " lastPlacedAgeMs=" + (lastPlacedTime == 0 ? "na" : (System.currentTimeMillis() - lastPlacedTime))
-                + " CEXPL=" + cexpl.isEnabled());
+//        System.out.println("[CA ATTACK] onEntitySpawnedInternal: e="
+//                + (e == null ? "null" : (e.getId() + ":" + e.getClass().getSimpleName()))
+//                + " lastPlaced=" + lastPlacedPos
+//                + " lastPlacedAgeMs=" + (lastPlacedTime == 0 ? "na" : (System.currentTimeMillis() - lastPlacedTime))
+//                + " CEXPL=" + cexpl.isEnabled());
 
         if (e == null) return;
         if (!(e instanceof EndCrystalEntity)) return;
@@ -96,33 +96,33 @@ public class CrystalAura extends Mod {
             return;
         }
         if (mc.player == null) {
-            System.out.println("[CA ATTACK] mc.player null, skipping.");
+//            System.out.println("[CA ATTACK] mc.player null, skipping.");
             return;
         }
 
         // Range check
         double maxRange = breakRange.getValue();
         double distSq = mc.player.squaredDistanceTo(e);
-        System.out.println("[CA ATTACK] distSq=" + distSq + " maxRange^2=" + (maxRange * maxRange));
+//        System.out.println("[CA ATTACK] distSq=" + distSq + " maxRange^2=" + (maxRange * maxRange));
         if (distSq > maxRange * maxRange) {
-            System.out.println("[CA ATTACK] crystal out of configured break range, skipping.");
+//            System.out.println("[CA ATTACK] crystal out of configured break range, skipping.");
             return;
         }
 
         int id = e.getId();
         // Avoid duplicate handling
         if (knownEntityIds.contains(id)) {
-            System.out.println("[CA ATTACK] entity id " + id + " already known/handled, skipping.");
+//            System.out.println("[CA ATTACK] entity id " + id + " already known/handled, skipping.");
             return;
         }
         knownEntityIds.add(id);
 
         // Perform the immediate break using your existing break-sending logic
         try {
-            System.out.println("[CA ATTACK] sending break packets for entity id=" + id);
+//            System.out.println("[CA ATTACK] sending break packets for entity id=" + id);
             sendBreakPackets(e);
         } catch (Exception ex) {
-            System.out.println("[CA ATTACK] error sending break packets: " + ex);
+//            System.out.println("[CA ATTACK] error sending break packets: " + ex);
         }
 
         // If this spawned crystal matches our last placed pos, clear lastPlacedPos so the detector won't double-attack
@@ -130,7 +130,7 @@ public class CrystalAura extends Mod {
             Vec3d placedCenter = new Vec3d(lastPlacedPos.getX() + 0.5, lastPlacedPos.getY() + 1.0, lastPlacedPos.getZ() + 0.5);
             double sq = e.getPos().squaredDistanceTo(placedCenter);
             if (sq <= 2.25) {
-                System.out.println("[CA ATTACK] spawned crystal matches lastPlacedPos — clearing lastPlacedPos.");
+//                System.out.println("[CA ATTACK] spawned crystal matches lastPlacedPos — clearing lastPlacedPos.");
                 lastPlacedPos = null;
                 lastPlacedTime = 0L;
             }

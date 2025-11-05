@@ -7,6 +7,7 @@ import adris.altoclef.altomenu.modules.Combat.*;
 import adris.altoclef.altomenu.modules.Development.Debugger;
 import adris.altoclef.altomenu.modules.Development.FakeRotation;
 import adris.altoclef.altomenu.modules.Development.Nuker;
+import adris.altoclef.altomenu.modules.Development.TracerModule;
 import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;
 import adris.altoclef.altomenu.modules.Movement.*;
 import adris.altoclef.altomenu.modules.Player.AntiHunger;
@@ -90,10 +91,12 @@ public class ModuleManager {
         addModule(new NewCrystalAura());
         addModule(new Surround());
         addModule(new CrystalAura());
+        addModule(new KillAuraModule());
 
         //Development
         addModule(new FakeRotation());
         addModule(new Debugger());
+//        addModule(new TracerModule());
 
         //Exploit
         addModule(new UnlockRecipes());
@@ -136,6 +139,7 @@ public class ModuleManager {
         addModule(new Ambience());
         addModule(new BetterCamera());
         addModule(new PlayerScale());
+        addModule(new CrystalPlus());
 
         //Utility
         addModule(new Stealer());
