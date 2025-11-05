@@ -90,6 +90,7 @@ public class ModuleManager {
         addModule(new NewCrystalAura());
         addModule(new Surround());
         addModule(new CrystalAura());
+        addModule(new KillAuraModule());
 
         //Development
         addModule(new FakeRotation());
