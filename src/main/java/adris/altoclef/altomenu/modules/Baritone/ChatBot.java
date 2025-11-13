@@ -3,9 +3,21 @@ package adris.altoclef.altomenu.modules.Baritone;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
+import adris.altoclef.butler.ButlerConfig;
+import adris.altoclef.butler.UserAuth;
+import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.EventHandler;
+import adris.altoclef.eventbus.events.ChatMessageEvent;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.network.message.SignedMessage;
 import net.minecraft.text.Text;
+
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 //Todo
 // - Add Player Whitelist
@@ -34,20 +46,26 @@ public class ChatBot extends Mod {
     public ChatBot() {
         super("ChatBot", "ChatBot", Mod.Category.BARITONE);
         instance = this;
+        EventBus.subscribe(ChatMessageEvent.class, this::onChatMessage);
     }
 
-    NumberSetting messageDelay = new NumberSetting("Message Delay", 1, 10, 1, 0.1);
+    NumberSetting messageDelay = new NumberSetting("Message Delay (ticks)", 1, 999, 100, 1);
     BooleanSetting greentext = new BooleanSetting("GreenText", false);
+    BooleanSetting announcer = new BooleanSetting("Announcer", false);
+
+    double delay = 0;
 
     @Override
     public void onEnable() {
         System.out.println("ChatBot Enabled");
+        addAnnouncerMessage();
         super.onEnable();
     }
 
     @Override
     public void onDisable() {
         System.out.println("ChatBot Disabled");
+        removeAnnouncerMessage();
         super.onDisable();
     }
 
@@ -55,6 +73,8 @@ public class ChatBot extends Mod {
 
     @EventHandler
     public boolean onShitTick() {
+        delay++;
+        if (delay > messageDelay.getValuefloat()) delay = 0; //this kills performance probably FUCK!
         boolean justDied = !mc.player.isAlive() && !hasSentMessageAlready;
         boolean justRespawned = mc.player.isAlive() && hasSentMessageAlready;
         if (justDied) {
@@ -63,7 +83,24 @@ public class ChatBot extends Mod {
         } else if (justRespawned) {
             hasSentMessageAlready = false;
         }
+
+        if (announcer.isEnabled() && (delay >= messageDelay.getValuefloat())) {
+            Random random = new Random();
+            int randomIndex = random.nextInt(announcerMessages.size());
+            String randomMessage = announcerMessages.get(randomIndex);
+            sendMessage(randomMessage);
+        }
         return false;
+    }
+
+    @EventHandler
+    public void onChatMessage(ChatMessageEvent event) {
+        if (this.isEnabled()) {
+            if (event.messageContent().startsWith("!")) {
+                processCommand(event.messageContent().substring(1));
+            }
+            System.out.println("Received message: " + event.messageContent());
+        }
     }
 
     public void processMessage(Text message) {
@@ -79,6 +116,12 @@ public class ChatBot extends Mod {
             case "github":
                 sendMessage("github.com/Volcan4436/Anarchy-Clef");
                 break;
+
+            //todo: Fix and Integrate Butler System
+/*            case "kill":
+                assert mc.player != null;
+                mc.player.networkHandler.sendCommand("kill");
+                break;*/
             case "help":
                 // Handle the help command
                 break;
@@ -99,5 +142,23 @@ public class ChatBot extends Mod {
         if (greentext.isEnabled()) prefix = "> ";
         else prefix = "";
         MinecraftClient.getInstance().player.networkHandler.sendChatMessage(prefix + s);
+    }
+
+
+    private final List<String> announcerMessages = new ArrayList<>();
+
+
+
+
+    public void addAnnouncerMessage() {
+        assert mc.player != null;
+        announcerMessages.add("I am holding " + mc.player.getMainHandStack().getName().getString());
+        announcerMessages.add("I have " + Math.round(mc.player.getHealth()) + " health left");
+        announcerMessages.add("I have " + mc.player.getHungerManager().getFoodLevel() + " food left");
+        //Add More Here
+    }
+
+    public void removeAnnouncerMessage() {
+        announcerMessages.clear();
     }
 }
