@@ -5,6 +5,13 @@ import adris.altoclef.altomenu.modules.Render.Ambience;
 import adris.altoclef.altomenu.settings.NumberSetting;
 import adris.altoclef.eventbus.EventHandler;
 
+
+//TODO:
+// - Implement TPS Sync
+// - Implement Smoothing (SecureRandom to stop servers from cracking our RNG Seed and detecting the smoothing)
+// - Implement Burst (Build up timer when standing still then send all the ticks at once)
+
+//Mixin
 public class Timer extends Mod {
     public static Timer INSTANCE = new Timer();
 

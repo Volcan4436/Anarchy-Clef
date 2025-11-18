@@ -14,7 +14,7 @@ public class Infjump extends Mod {
     @EventHandler
     public boolean onShitTick() {
         if (mc.options.jumpKey.wasPressed()) {
-            mc.player.jump();
+            mc.player.jump(); // This method would be more consistent if we didn't use the vanilla jump call
         }
         return false;
     }

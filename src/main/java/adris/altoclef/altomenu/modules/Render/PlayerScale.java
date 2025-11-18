@@ -4,6 +4,8 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
 
+
+//BUG: Causes all Models to be wrong size on launch (This is a mixin issue)
 public class PlayerScale extends Mod {
 
     public static PlayerScale Instance;

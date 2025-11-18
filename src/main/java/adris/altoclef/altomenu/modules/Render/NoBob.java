@@ -22,6 +22,8 @@ public class NoBob extends Mod {
 
     public BooleanSetting cool = new BooleanSetting("Cool", true);
 
+
+    //todo: clean up math
     public void onHeldItemRender(HeldItemRenderEvent event) {
         if (ModuleManager.INSTANCE.getModuleByClass(NoBob.class).isEnabled()) {
             if (cool.isEnabled()) {

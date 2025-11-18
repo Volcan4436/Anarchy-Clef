@@ -4,6 +4,8 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
 
+
+//Note: RusherHack takes priority over us
 public class BetterCamera extends Mod {
 
     public static BetterCamera Instance;

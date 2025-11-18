@@ -46,7 +46,7 @@ public class Jesus extends Mod {
                 if (vehicleFix.isEnabled() && mc.player.getVehicle() != null) mc.player.getVehicle().setVelocity(mc.player.getVehicle().getVelocity().x, 0.75, mc.player.getVehicle().getVelocity().z);
             }
         }
-        else if (mode.getMode() == "Bypass") {
+        else if (mode.getMode() == "Bypass") { //@ChiefWarCry: This Doesn't work the best and causes you to just sink what did you do bro :(
             if (isAboveWater) {
                 mc.player.setPos(mc.player.getX(), mc.player.getY() + 0.1, mc.player.getZ());
                 if (vehicleFix.isEnabled() && mc.player.getVehicle() != null) mc.player.getVehicle().setPos(mc.player.getVehicle().getX(), mc.player.getVehicle().getY() + 0.1, mc.player.getVehicle().getZ());

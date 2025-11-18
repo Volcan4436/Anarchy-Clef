@@ -16,7 +16,7 @@ public class Freeze extends Mod {
     public boolean onShitTick() {
         if (mc.player == null) return false;
         if (onSneak.isEnabled() && !mc.options.sneakKey.isPressed()) return false;
-        mc.player.setVelocity(0, 0, 0);
+        mc.player.setVelocity(0, 0, 0); //BUG: Causes you to move weirdly in the air (Fix this by making fake Ground Collision)
         return false;
     }
 }

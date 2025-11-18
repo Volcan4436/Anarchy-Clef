@@ -8,6 +8,7 @@ import adris.altoclef.eventbus.events.HeldItemRenderEvent;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RotationAxis;
 
+// Why did I code this like this
 public class ViewModel extends Mod {
 
     public ViewModel() {

@@ -166,6 +166,7 @@ public class ClickGUI extends Screen {
             scriptFrame.handleKeyPressed(key, character);
         }
         
+        // TODO: Stop them from moving off screen visually
         if (key == GLFW.GLFW_KEY_DOWN) {
             for (Frame frame : frames) {
                 frame.updatePositionNoMouse(frame.x, frame.y + 10);
@@ -198,6 +199,13 @@ public class ClickGUI extends Screen {
                 scriptFrame.updatePositionNoMouse(scriptFrame.x - 10, scriptFrame.y);
             }
         }
+/*        if (key == GLFW.GLFW_KEY_DELETE) {
+            // Take their Current Position and change it so they move towards 0 0
+            for (Frame frame : frames) {
+                //take frame x and frame y and move them closer to 0 0
+                frame.updatePositionNoMouse(frame.x - frame.x / 2, frame.y - frame.y / 2);
+            }
+        }*/
     }
     
     /**
