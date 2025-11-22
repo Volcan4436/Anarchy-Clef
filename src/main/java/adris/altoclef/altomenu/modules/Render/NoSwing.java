@@ -11,7 +11,7 @@ public class NoSwing extends Mod {
 
     @EventHandler
     public boolean onShitTick() {
-        mc.player.handSwinging = false;
+        mc.player.handSwinging = false; //This could be done better
         return false;
     }
 }

@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.Baritone;
+package adris.altoclef.altomenu.modules.Bot;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.ModeSetting;
@@ -9,7 +9,7 @@ public class SafeMode extends Mod {
     //todo:Allow Community to create their own SafeModes
 
     public SafeMode() {
-        super("SafeMode", "Disables Certain Features to reduce ban risk", Mod.Category.BARITONE);
+        super("SafeMode", "Disables Certain Features to reduce ban risk", Mod.Category.BOT);
     }
 
     //Settings

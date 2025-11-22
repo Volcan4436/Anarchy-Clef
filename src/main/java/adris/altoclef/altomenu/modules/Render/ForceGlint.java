@@ -2,6 +2,8 @@ package adris.altoclef.altomenu.modules.Render;
 
 import adris.altoclef.altomenu.Mod;
 
+//todo: implement Glint Colorizer
+
 //Uses ItemStackMixin
 public class ForceGlint extends Mod {
 

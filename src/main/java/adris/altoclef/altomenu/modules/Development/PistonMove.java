@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.Utility;
+package adris.altoclef.altomenu.modules.Development;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.eventbus.EventHandler;

@@ -166,38 +166,48 @@ public class ClickGUI extends Screen {
             scriptFrame.handleKeyPressed(key, character);
         }
         
-        if (key == GLFW.GLFW_KEY_DOWN) {
-            for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x, frame.y + 10);
+        // TODO: Stop them from moving off screen visually
+        if (mc.currentScreen instanceof ClickGUI) {
+            if (key == GLFW.GLFW_KEY_DOWN) {
+                for (Frame frame : frames) {
+                    frame.updatePositionNoMouse(frame.x, frame.y + 10);
+                }
+                if (scriptFrame != null) {
+                    scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y + 10);
+                }
             }
-            if (scriptFrame != null) {
-                scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y + 10);
+            if (key == GLFW.GLFW_KEY_UP) {
+                for (Frame frame : frames) {
+                    frame.updatePositionNoMouse(frame.x, frame.y - 10);
+                }
+                if (scriptFrame != null) {
+                    scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y - 10);
+                }
+            }
+            if (key == GLFW.GLFW_KEY_RIGHT) {
+                for (Frame frame : frames) {
+                    frame.updatePositionNoMouse(frame.x + 10, frame.y);
+                }
+                if (scriptFrame != null) {
+                    scriptFrame.updatePositionNoMouse(scriptFrame.x + 10, scriptFrame.y);
+                }
+            }
+            if (key == GLFW.GLFW_KEY_LEFT) {
+                for (Frame frame : frames) {
+                    frame.updatePositionNoMouse(frame.x - 10, frame.y);
+                }
+                if (scriptFrame != null) {
+                    scriptFrame.updatePositionNoMouse(scriptFrame.x - 10, scriptFrame.y);
+                }
             }
         }
-        if (key == GLFW.GLFW_KEY_UP) {
+/*        if (key == GLFW.GLFW_KEY_DELETE) {
+            // Take their Current Position and change it so they move towards 0 0
             for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x, frame.y - 10);
+                //take frame x and frame y and move them closer to 0 0
+                frame.updatePositionNoMouse(frame.x - frame.x / 2, frame.y - frame.y / 2);
             }
-            if (scriptFrame != null) {
-                scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y - 10);
-            }
-        }
-        if (key == GLFW.GLFW_KEY_RIGHT) {
-            for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x + 10, frame.y);
-            }
-            if (scriptFrame != null) {
-                scriptFrame.updatePositionNoMouse(scriptFrame.x + 10, scriptFrame.y);
-            }
-        }
-        if (key == GLFW.GLFW_KEY_LEFT) {
-            for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x - 10, frame.y);
-            }
-            if (scriptFrame != null) {
-                scriptFrame.updatePositionNoMouse(scriptFrame.x - 10, scriptFrame.y);
-            }
-        }
+        }*/
     }
     
     /**

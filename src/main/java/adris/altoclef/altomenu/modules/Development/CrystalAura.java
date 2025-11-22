@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.Combat;
+package adris.altoclef.altomenu.modules.Development;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.BooleanSetting;

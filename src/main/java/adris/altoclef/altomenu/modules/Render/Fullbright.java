@@ -6,7 +6,7 @@ import adris.altoclef.eventbus.EventHandler;
 import adris.altoclef.helpers.RainbowColor;
 
 //TODO
-// add Light Colour Changer (Similar to Future Client)
+// add Light Colour Changer (Similar to Future Client) *Kind of done but our fullbright method is just editing textures so this isn't possible with our current method*
 // add NightVision Spoof mode
 // add Intensity Slider
 // Somehow add Support For Shaders like SuesPTGI

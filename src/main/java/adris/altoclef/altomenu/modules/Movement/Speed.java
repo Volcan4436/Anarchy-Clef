@@ -19,6 +19,7 @@ public class Speed extends Mod {
     }
     ModeSetting mode = new ModeSetting("Mode", "Legit", "Legit", "Strafe", "StrafeHop", "GroundStrafe", "GroundStrafeHop");
     NumberSetting speed = new NumberSetting("Speed", 0.1, 10, 0.6, 0.1);
+
     @EventHandler
     public boolean onShitTick() {
         if (mode.getMode() == "Legit") { //todo: add Speed Equivalent (Similar to Rise 6) (Makes you Move at the speed that you go when going diagonally but in any direction without rotations)
@@ -26,9 +27,10 @@ public class Speed extends Mod {
             if (CMoveUtil.isMoving() && CMoveUtil.isOnGround()) {
                 mc.player.jump();
             }
+            //todo: Silent Rotate for Perfect Strafe
         }
         else if (mode.getMode() == "Strafe") {
-            CMoveUtil.strafe(speed.getValuefloat());
+            CMoveUtil.strafe(speed.getValuefloat()); //BUG: This Doesn't Abide by Slowdown (Items, Blocks, etc.)
         }
         else if (mode.getMode() == "StrafeHop") {
             CMoveUtil.strafe(speed.getValuefloat());

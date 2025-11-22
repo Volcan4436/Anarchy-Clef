@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.Movement;
+package adris.altoclef.altomenu.modules.Bot;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.cheatUtils.CMoveUtil;
@@ -8,7 +8,7 @@ import adris.altoclef.eventbus.EventHandler;
 public class AutoJump extends Mod {
 
     public AutoJump() {
-        super("AutoJump", "AutoJump", Mod.Category.MOVEMENT);
+        super("AutoJump", "AutoJump", Mod.Category.BOT);
     }
 
     BooleanSetting onMove = new BooleanSetting("onMove", false);

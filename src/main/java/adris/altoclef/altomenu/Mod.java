@@ -1,6 +1,5 @@
 package adris.altoclef.altomenu;
 
-import adris.altoclef.altomenu.cheatUtils.CMoveUtil;
 import adris.altoclef.altomenu.settings.Setting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -179,7 +178,7 @@ public class Mod {
         COMBAT("Combat"),
         MOVEMENT("Movement"),
         PLAYER("Player"),
-        BARITONE("Baritone"),
+        BOT("Bot"),
         WORLD("World"),
         RENDER("Render"),
         EXPLOIT("Exploit"),

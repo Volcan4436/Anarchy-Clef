@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.Baritone;
+package adris.altoclef.altomenu.modules.Bot;
 
 public class BotRotationMode {
     //TODO implement
