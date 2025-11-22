@@ -4,6 +4,7 @@ package adris.altoclef.altomenu.managers;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.Baritone.ChatBot;
 import adris.altoclef.altomenu.modules.Combat.*;
+import adris.altoclef.altomenu.modules.Development.AutoFisher;
 import adris.altoclef.altomenu.modules.Development.Debugger;
 import adris.altoclef.altomenu.modules.Development.FakeRotation;
 import adris.altoclef.altomenu.modules.Development.Nuker;
@@ -91,10 +92,12 @@ public class ModuleManager {
         addModule(new Surround());
         addModule(new CrystalAura());
         addModule(new KillAuraModule());
+        addModule(new OffhandModule());
 
         //Development
         addModule(new FakeRotation());
         addModule(new Debugger());
+        addModule(new AutoFisher());
 
         //Exploit
         addModule(new UnlockRecipes());

@@ -17,10 +17,9 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 public class NewCrystalAura extends Mod {
-
+    // Crystal Aura++
     BooleanSetting AntiDeath = new BooleanSetting("AntiDeath", true);
     BooleanSetting Rotate = new BooleanSetting("Rotate", false);
     BooleanSetting EveryEntity = new BooleanSetting("EveryEntity", true);
@@ -30,7 +29,8 @@ public class NewCrystalAura extends Mod {
     BooleanSetting Outline = new BooleanSetting("Outline", false);
     BooleanSetting MultiPlace = new BooleanSetting("MultiPlace", false);
     BooleanSetting MultiBreak = new BooleanSetting("MultiBreak", false);
-    BooleanSetting SmartTargeting = new BooleanSetting("SmartTargeting", false);
+    BooleanSetting Smart = new BooleanSetting("Smart", false);
+    BooleanSetting Protocall = new BooleanSetting("Protocall", false);
 
     NumberSetting Speed = new NumberSetting("Speed", 0, 20, 4, 1);
     NumberSetting EntityDistance = new NumberSetting("EntityDistance", 1, 8, 5, 1);
@@ -45,7 +45,7 @@ public class NewCrystalAura extends Mod {
     public NewCrystalAura() {
         super("CrystalAura++", "Optimized Crystal Aura", Category.COMBAT);
         addSettings(AntiDeath, Rotate, EveryEntity, PacketAttack, InstantBreak,
-                SwingTolerance, Outline, MultiPlace, MultiBreak, SmartTargeting,
+                SwingTolerance, Outline, MultiPlace, MultiBreak, Smart, Protocall,
                 Speed, EntityDistance, BreakDistance, PlaceDistance);
     }
 
@@ -73,7 +73,7 @@ public class NewCrystalAura extends Mod {
             BlockPos placePos = findOptimalPlacePos();
             if (placePos != null) {
                 placeCrystal(placePos);
-                shouldPlace = !MultiPlace.isEnabled();
+                shouldPlace = !MultiPlace.isEnabled(); // first place handled inside findOptimalPlacePos()
                 return true;
             }
         } else {
@@ -111,26 +111,41 @@ public class NewCrystalAura extends Mod {
                 findClosestPlayer(EntityDistance.getValue());
         if (target == null) return null;
 
-        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
         BlockPos bestPos = null;
         double bestScore = Double.MAX_VALUE;
         double maxDistSq = PlaceDistance.getValue() * PlaceDistance.getValue();
         Vec3d targetPos = target.getPos();
-
         int range = PlaceDistance.getValueInt();
+        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
+
+        // Primary placement calculation
         for (int x = -range; x <= range; x++) {
             for (int y = -range; y <= range; y++) {
                 for (int z = -range; z <= range; z++) {
                     mutablePos.set(targetPos.x + x, targetPos.y + y, targetPos.z + z);
 
                     if (!isValidCrystalBase(mutablePos)) continue;
-                    if (!mc.world.getBlockState(mutablePos.up()).isAir()) continue;
+
+                    if (Protocall.isEnabled()) {
+                        if (!mc.world.getBlockState(mutablePos.up()).isAir() || !mc.world.getBlockState(mutablePos.up(2)).isAir())
+                            continue;
+                    } else {
+                        if (!mc.world.getBlockState(mutablePos.up()).isAir()) continue;
+                    }
+
                     if (AntiDeath.isEnabled() && isInDeathZone(mutablePos)) continue;
+                    if (Smart.isEnabled() && mutablePos.equals(target.getBlockPos())) continue;
 
-                    double distSq = targetPos.squaredDistanceTo(Vec3d.ofCenter(mutablePos));
-                    if (distSq > maxDistSq) continue;
+                    double score;
+                    if (Smart.isEnabled()) {
+                        double potentialDamage = estimateCrystalDamage(mutablePos, target);
+                        score = mutablePos.getSquaredDistance(target.getBlockPos()) / (1.0 + potentialDamage);
+                    } else {
+                        score = targetPos.squaredDistanceTo(Vec3d.ofCenter(mutablePos));
+                    }
 
-                    double score = distSq * (mutablePos.equals(lastPlacePos) ? 0.9 : 1.0);
+                    score *= (mutablePos.equals(lastPlacePos) ? 0.9 : 1.0);
+
                     if (score < bestScore) {
                         bestScore = score;
                         bestPos = mutablePos.toImmutable();
@@ -140,13 +155,32 @@ public class NewCrystalAura extends Mod {
         }
 
         lastPlacePos = bestPos;
+
+        // MultiPlace: secondary placement opposite
+        if (MultiPlace.isEnabled() && bestPos != null) {
+            int dx = bestPos.getX() - target.getBlockPos().getX();
+            int dz = bestPos.getZ() - target.getBlockPos().getZ();
+            BlockPos mirrorPos = new BlockPos(target.getBlockPos().getX() - dx, bestPos.getY(), target.getBlockPos().getZ() - dz);
+
+            if (isValidCrystalBase(mirrorPos)) {
+                if (Protocall.isEnabled()) {
+                    if (!mc.world.getBlockState(mirrorPos.up()).isAir() || !mc.world.getBlockState(mirrorPos.up(2)).isAir())
+                        mirrorPos = null;
+                } else {
+                    if (!mc.world.getBlockState(mirrorPos.up()).isAir()) mirrorPos = null;
+                }
+
+                if (mirrorPos != null && !mirrorPos.equals(bestPos) && !mirrorPos.equals(target.getBlockPos())) {
+                    placeCrystal(mirrorPos);
+                }
+            }
+        }
+
         return bestPos;
     }
 
     private void breakCrystal(EndCrystalEntity crystal) {
-        if (SwingTolerance.isEnabled() && mc.player.getAttackCooldownProgress(0) < 1.0f) {
-            return;
-        }
+        if (SwingTolerance.isEnabled() && mc.player.getAttackCooldownProgress(0) < 1.0f) return;
 
         if (PacketAttack.isEnabled()) {
             mc.player.networkHandler.sendPacket(
@@ -157,6 +191,7 @@ public class NewCrystalAura extends Mod {
         }
 
         mc.player.swingHand(Hand.MAIN_HAND);
+
         if (InstantBreak.isEnabled()) {
             crystal.discard();
         }
@@ -167,7 +202,6 @@ public class NewCrystalAura extends Mod {
     }
 
     private void placeCrystal(BlockPos pos) {
-        // Hit vector must simulate a real player click (center of top of block)
         Vec3d hitVec = Vec3d.ofCenter(pos).add(0, 0.5, 0);
         BlockHitResult hitResult = new BlockHitResult(hitVec, Direction.UP, pos, false);
 
@@ -238,5 +272,12 @@ public class NewCrystalAura extends Mod {
 
     private boolean hasCrystalInOffhand() {
         return mc.player.getOffHandStack().getItem() == Items.END_CRYSTAL;
+    }
+
+    private double estimateCrystalDamage(BlockPos crystalPos, Entity target) {
+        // Placeholder for smart calculation (could use explosion damage formula)
+        Vec3d crystalCenter = Vec3d.ofCenter(crystalPos);
+        double distance = crystalCenter.distanceTo(target.getPos());
+        return 6.0 / (distance + 0.1); // simple inverse distance damage estimate
     }
 }
