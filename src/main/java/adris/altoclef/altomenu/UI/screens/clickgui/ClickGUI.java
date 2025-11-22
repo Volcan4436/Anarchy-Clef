@@ -79,8 +79,13 @@ public class ClickGUI extends Screen {
     @Override
     public void render(DrawContext matrices, int mouseX, int mouseY, float delta) {
         // 1. Draw everything else first
-        matrices.drawCenteredTextWithShadow(this.textRenderer, "AltoMenu [Developed by Volcan & ChiefWarCry]", 125, this.height - 20, Color.RED.getRGB());
+        int screenWidth = mc.getWindow().getScaledWidth(); // Get the screen width
+        int screenHeight = mc.getWindow().getScaledHeight(); // Get the screen height
 
+        int screenX = screenWidth / 2; // Calculate the x-coordinate at the middle of the screen
+        int screenY = 20; // Calculate the y-coordinate at the top of the screen
+
+        matrices.drawCenteredTextWithShadow(this.textRenderer, "AltoMenu [Developed by Volcan & ChiefWarCry]", screenX, screenY, Color.RED.getRGB());
         for (Frame frame : frames) {
             frame.render(matrices, mouseX, mouseY, delta);
             frame.updatePosition(mouseX, mouseY);

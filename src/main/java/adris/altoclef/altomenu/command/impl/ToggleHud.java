@@ -10,7 +10,7 @@ public class ToggleHud extends Command {
     public boolean toggleHud = false;
 
     public ToggleHud() {
-        super("togglehud", "hudtoggler", "*config <load/save> <configName>");
+        super("togglehud", "Toggles the Hud", "*config <load/save> <configName>");
     }
 
     @Override

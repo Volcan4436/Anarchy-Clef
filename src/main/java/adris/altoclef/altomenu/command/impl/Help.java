@@ -17,7 +17,7 @@ public class Help extends Command {
         }
         helpMessage.append("Commands:\n");
         for (Command command : CommandManager.INSTANCE.getCmds()) {
-            CChatUtil.addChatMessage("-" + command.getName());
+            CChatUtil.addChatMessage("- " + command.getName() + ": " + command.getDescription());
         }
         // Send the help message to the user
         // (You can use a messaging system or a GUI to display the message)

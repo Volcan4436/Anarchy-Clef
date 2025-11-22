@@ -13,7 +13,7 @@ public class Strafe extends Mod {
 
     @EventHandler
     public boolean onShitTick() {
-        CMoveUtil.strafe(0.6);
+        CMoveUtil.strafe();
         return false;
     }
 }

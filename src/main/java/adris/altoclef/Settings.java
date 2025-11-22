@@ -68,7 +68,7 @@ public class Settings implements IFailableConfigFile {
     /**
      * When logging to chat, will prepend this to each log.
      */
-    private String chatLogPrefix = "[Alto Clef] ";
+    private String chatLogPrefix = "[AnarchyClef] ";
 
     /**
      * If true, will show a timer.

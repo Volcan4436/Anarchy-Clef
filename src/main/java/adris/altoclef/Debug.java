@@ -10,7 +10,7 @@ public class Debug {
     public static AltoClef jankModInstance;
 
     public static void logInternal(String message) {
-        System.out.println("ALTO CLEF: " + message);
+        System.out.println("[AnarchyClef]: " + message);
     }
 
     public static void logInternal(String format, Object... args) {
@@ -21,13 +21,13 @@ public class Debug {
         if (jankModInstance != null) {
             return jankModInstance.getModSettings().getChatLogPrefix();
         }
-        return "[Alto Clef] ";
+        return "[AnarchyClef] ";
     }
 
     public static void logMessage(String message, boolean prefix) {
         if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
             if (prefix) {
-                message = "\u00A72\u00A7l\u00A7o" + getLogPrefix() + "\u00A7r" + message;
+                message = "§4§l§o" + getLogPrefix() + "\u00A7r" + message;
             }
             MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
             //MinecraftClient.getInstance().player.sendChatMessage(msg);

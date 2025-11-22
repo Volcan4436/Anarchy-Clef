@@ -5,7 +5,7 @@ import adris.altoclef.altomenu.command.Command;
 public class SelfCrash extends Command {
 
     public SelfCrash() {
-        super("selfcrash", "crash");
+        super("selfcrash", "Crashes the Game");
     }
 
     @Override

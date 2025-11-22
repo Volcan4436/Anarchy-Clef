@@ -14,7 +14,7 @@ public class CChatUtil {
 
     public static void addChatMessage(final String msg) {
         MutableText message = Text.empty();
-        message.append("[AnarchyClef]" + " ");
+        message.append("§4§l§o" + "[AnarchyClef]" + " ");
         message.append(msg);
         mc.inGameHud.getChatHud().addMessage(message);
     }
