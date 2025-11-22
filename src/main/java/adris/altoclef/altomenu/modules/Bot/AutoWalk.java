@@ -1,4 +1,4 @@
-package adris.altoclef.altomenu.modules.Movement;
+package adris.altoclef.altomenu.modules.Bot;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.eventbus.EventHandler;
@@ -14,7 +14,7 @@ import adris.altoclef.eventbus.EventHandler;
 public class AutoWalk extends Mod {
 
     public AutoWalk() {
-        super("AutoWalk", "Auto Walk", Mod.Category.MOVEMENT);
+        super("AutoWalk", "Auto Walk", Mod.Category.BOT);
     }
 
     @EventHandler

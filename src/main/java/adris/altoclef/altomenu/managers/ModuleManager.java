@@ -2,11 +2,11 @@ package adris.altoclef.altomenu.managers;
 
 
 import adris.altoclef.altomenu.Mod;
+import adris.altoclef.altomenu.modules.Bot.AutoJump;
+import adris.altoclef.altomenu.modules.Bot.AutoWalk;
 import adris.altoclef.altomenu.modules.Bot.ChatBot;
 import adris.altoclef.altomenu.modules.Combat.*;
-import adris.altoclef.altomenu.modules.Development.Debugger;
-import adris.altoclef.altomenu.modules.Development.FakeRotation;
-import adris.altoclef.altomenu.modules.Development.Nuker;
+import adris.altoclef.altomenu.modules.Development.*;
 import adris.altoclef.altomenu.modules.Exploit.UnlockRecipes;
 import adris.altoclef.altomenu.modules.Movement.*;
 import adris.altoclef.altomenu.modules.Player.AntiHunger;
@@ -14,8 +14,7 @@ import adris.altoclef.altomenu.modules.Player.NoFall;
 import adris.altoclef.altomenu.modules.Player.NoSlow;
 import adris.altoclef.altomenu.modules.Player.Velocity;
 import adris.altoclef.altomenu.modules.Render.*;
-import adris.altoclef.altomenu.modules.Utility.PickPlus;
-import adris.altoclef.altomenu.modules.Utility.Stealer;
+import adris.altoclef.altomenu.modules.World.FakeEntity;
 import adris.altoclef.altomenu.modules.World.Timer;
 
 import java.util.ArrayList;

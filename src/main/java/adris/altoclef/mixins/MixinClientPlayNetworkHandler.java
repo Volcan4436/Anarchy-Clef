@@ -1,6 +1,6 @@
 package adris.altoclef.mixins;
 
-import adris.altoclef.altomenu.modules.Combat.CrystalAura;
+import adris.altoclef.altomenu.modules.Development.CrystalAura;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
