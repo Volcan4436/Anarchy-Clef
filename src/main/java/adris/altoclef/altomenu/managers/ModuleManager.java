@@ -2,7 +2,7 @@ package adris.altoclef.altomenu.managers;
 
 
 import adris.altoclef.altomenu.Mod;
-import adris.altoclef.altomenu.modules.Baritone.ChatBot;
+import adris.altoclef.altomenu.modules.Bot.ChatBot;
 import adris.altoclef.altomenu.modules.Combat.*;
 import adris.altoclef.altomenu.modules.Development.Debugger;
 import adris.altoclef.altomenu.modules.Development.FakeRotation;

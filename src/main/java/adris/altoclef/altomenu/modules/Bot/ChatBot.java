@@ -1,20 +1,14 @@
-package adris.altoclef.altomenu.modules.Baritone;
+package adris.altoclef.altomenu.modules.Bot;
 
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
-import adris.altoclef.butler.ButlerConfig;
-import adris.altoclef.butler.UserAuth;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.EventHandler;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.network.message.SignedMessage;
 import net.minecraft.text.Text;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -44,7 +38,7 @@ import java.util.Random;
 public class ChatBot extends Mod {
     public static ChatBot instance;
     public ChatBot() {
-        super("ChatBot", "ChatBot", Mod.Category.BARITONE);
+        super("ChatBot", "ChatBot", Mod.Category.BOT);
         instance = this;
         EventBus.subscribe(ChatMessageEvent.class, this::onChatMessage);
     }

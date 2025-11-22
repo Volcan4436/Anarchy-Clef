@@ -1,10 +1,8 @@
 package adris.altoclef.altomenu.managers;
 
-import adris.altoclef.altomenu.modules.Baritone.ChatBot;
-import net.minecraft.network.message.SignedMessage;
+import adris.altoclef.altomenu.modules.Bot.ChatBot;
 import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 //TODO
 // make it possible to use this for making full commands instead of just checking 1 word
