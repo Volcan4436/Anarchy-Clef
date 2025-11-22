@@ -167,36 +167,38 @@ public class ClickGUI extends Screen {
         }
         
         // TODO: Stop them from moving off screen visually
-        if (key == GLFW.GLFW_KEY_DOWN) {
-            for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x, frame.y + 10);
+        if (mc.currentScreen instanceof ClickGUI) {
+            if (key == GLFW.GLFW_KEY_DOWN) {
+                for (Frame frame : frames) {
+                    frame.updatePositionNoMouse(frame.x, frame.y + 10);
+                }
+                if (scriptFrame != null) {
+                    scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y + 10);
+                }
             }
-            if (scriptFrame != null) {
-                scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y + 10);
+            if (key == GLFW.GLFW_KEY_UP) {
+                for (Frame frame : frames) {
+                    frame.updatePositionNoMouse(frame.x, frame.y - 10);
+                }
+                if (scriptFrame != null) {
+                    scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y - 10);
+                }
             }
-        }
-        if (key == GLFW.GLFW_KEY_UP) {
-            for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x, frame.y - 10);
+            if (key == GLFW.GLFW_KEY_RIGHT) {
+                for (Frame frame : frames) {
+                    frame.updatePositionNoMouse(frame.x + 10, frame.y);
+                }
+                if (scriptFrame != null) {
+                    scriptFrame.updatePositionNoMouse(scriptFrame.x + 10, scriptFrame.y);
+                }
             }
-            if (scriptFrame != null) {
-                scriptFrame.updatePositionNoMouse(scriptFrame.x, scriptFrame.y - 10);
-            }
-        }
-        if (key == GLFW.GLFW_KEY_RIGHT) {
-            for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x + 10, frame.y);
-            }
-            if (scriptFrame != null) {
-                scriptFrame.updatePositionNoMouse(scriptFrame.x + 10, scriptFrame.y);
-            }
-        }
-        if (key == GLFW.GLFW_KEY_LEFT) {
-            for (Frame frame : frames) {
-                frame.updatePositionNoMouse(frame.x - 10, frame.y);
-            }
-            if (scriptFrame != null) {
-                scriptFrame.updatePositionNoMouse(scriptFrame.x - 10, scriptFrame.y);
+            if (key == GLFW.GLFW_KEY_LEFT) {
+                for (Frame frame : frames) {
+                    frame.updatePositionNoMouse(frame.x - 10, frame.y);
+                }
+                if (scriptFrame != null) {
+                    scriptFrame.updatePositionNoMouse(scriptFrame.x - 10, scriptFrame.y);
+                }
             }
         }
 /*        if (key == GLFW.GLFW_KEY_DELETE) {
