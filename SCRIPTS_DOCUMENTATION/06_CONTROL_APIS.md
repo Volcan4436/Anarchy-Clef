@@ -1,8 +1,8 @@
 # Control APIs
 
-**Status**: ✅ Complete  
+**Status**: Complete  
 **Version**: 1.0  
-**Created**: 2025-01-10  
+**Created**: 2025-01-10
 
 Control APIs provide comprehensive input control, actions, and automation capabilities for Lua scripts. These APIs allow scripts to simulate keyboard inputs, control camera movement, monitor player actions, and implement complex automation sequences.
 
@@ -86,16 +86,16 @@ local success = Utils.Control.openChat()
 local unwantedItems = {"dirt", "cobblestone", "gravel"}
 
 for _, itemName in ipairs(unwantedItems) do
-    if AltoClef.hasItem(itemName) then
-        -- Select item in hotbar first
-        local slot = AltoClef.getItemSlot(itemName)
-        if slot then
-            AltoClef.selectHotbarSlot(slot)
-            Utils.Time.sleep(100)
-            AltoClef.dropItem()
-            AltoClef.log("Dropped " .. itemName)
-        end
-    end
+   if AltoClef.hasItem(itemName) then
+       -- Select item in hotbar first
+       local slot = AltoClef.getItemSlot(itemName)
+       if slot then
+           AltoClef.selectHotbarSlot(slot)
+           Utils.Time.sleep(100)
+           AltoClef.dropItem()
+           AltoClef.log("Dropped " .. itemName)
+       end
+   end
 end
 ```
 
@@ -125,14 +125,14 @@ local scanAngles = {0, 45, 90, 135, 180, 225, 270, 315}
 
 AltoClef.log("Starting area scan...")
 for i, angle in ipairs(scanAngles) do
-    AltoClef.lookAt(angle, 0)
-    Utils.Time.sleep(500)
-    
-    -- Check for entities or blocks at this angle
-    local entities = AltoClef.getEntitiesInRange(20)
-    if #entities > 0 then
-        AltoClef.log("Found " .. #entities .. " entities at angle " .. angle)
-    end
+   AltoClef.lookAt(angle, 0)
+   Utils.Time.sleep(500)
+   
+   -- Check for entities or blocks at this angle
+   local entities = AltoClef.getEntitiesInRange(20)
+   if #entities > 0 then
+       AltoClef.log("Found " .. #entities .. " entities at angle " .. angle)
+   end
 end
 
 -- Return to north
@@ -163,29 +163,29 @@ local progress = Utils.Control.getBreakingProgress()
 ```lua
 -- Monitor mining progress with feedback
 local function monitorMining()
-    while true do
-        local isBreaking = AltoClef.isBreakingBlock()
-        
-        if isBreaking then
-            local pos = AltoClef.getBreakingBlockPos()
-            local progress = AltoClef.getBreakingProgress()
-            
-            if pos then
-                local progressPercent = math.floor(progress * 100)
-                AltoClef.log(string.format("Mining block at (%d, %d, %d) - %d%% complete", 
-                           pos.x, pos.y, pos.z, progressPercent))
-                
-                -- Play sound at certain progress milestones
-                if progressPercent >= 50 and progressPercent < 55 then
-                    AltoClef.log("Mining halfway complete!")
-                elseif progressPercent >= 90 then
-                    AltoClef.log("Almost done mining!")
-                end
-            end
-        end
-        
-        Utils.Time.sleep(250)  -- Check 4 times per second
-    end
+   while true do
+       local isBreaking = AltoClef.isBreakingBlock()
+       
+       if isBreaking then
+           local pos = AltoClef.getBreakingBlockPos()
+           local progress = AltoClef.getBreakingProgress()
+           
+           if pos then
+               local progressPercent = math.floor(progress * 100)
+               AltoClef.log(string.format("Mining block at (%d, %d, %d) - %d%% complete",
+                          pos.x, pos.y, pos.z, progressPercent))
+               
+               -- Play sound at certain progress milestones
+               if progressPercent >= 50 and progressPercent < 55 then
+                   AltoClef.log("Mining halfway complete!")
+               elseif progressPercent >= 90 then
+                   AltoClef.log("Almost done mining!")
+               end
+           end
+       end
+       
+       Utils.Time.sleep(250)  -- Check 4 times per second
+   end
 end
 ```
 
@@ -196,25 +196,25 @@ end
 ```lua
 -- Complex movement patterns
 local function performParkourSequence()
-    -- Sprint jump forward
-    AltoClef.holdKey("sprint")
-    AltoClef.holdKey("forward")
-    AltoClef.pressKey("jump")
-    Utils.Time.sleep(800)
-    
-    -- Mid-air strafe
-    AltoClef.releaseKey("forward")
-    AltoClef.holdKey("right")
-    Utils.Time.sleep(300)
-    
-    -- Land and continue
-    AltoClef.releaseKey("right")
-    AltoClef.holdKey("forward")
-    Utils.Time.sleep(500)
-    
-    -- Stop
-    AltoClef.releaseKey("forward")
-    AltoClef.releaseKey("sprint")
+   -- Sprint jump forward
+   AltoClef.holdKey("sprint")
+   AltoClef.holdKey("forward")
+   AltoClef.pressKey("jump")
+   Utils.Time.sleep(800)
+   
+   -- Mid-air strafe
+   AltoClef.releaseKey("forward")
+   AltoClef.holdKey("right")
+   Utils.Time.sleep(300)
+   
+   -- Land and continue
+   AltoClef.releaseKey("right")
+   AltoClef.holdKey("forward")
+   Utils.Time.sleep(500)
+   
+   -- Stop
+   AltoClef.releaseKey("forward")
+   AltoClef.releaseKey("sprint")
 end
 ```
 
@@ -223,23 +223,23 @@ end
 ```lua
 -- Simple combat sequence
 local function basicCombat()
-    -- Face the target (assumes target position is known)
-    local targetPos = AltoClef.getClosestEntity("zombie")
-    if targetPos then
-        local yaw = Utils.Math.angleTo(AltoClef.getPlayerPos(), targetPos)
-        AltoClef.lookAt(yaw, 0)
-        
-        -- Attack pattern: strike, back up, strike
-        AltoClef.pressKey("attack")
-        Utils.Time.sleep(100)
-        
-        AltoClef.holdKey("back")
-        Utils.Time.sleep(300)
-        AltoClef.releaseKey("back")
-        
-        AltoClef.pressKey("attack")
-        Utils.Time.sleep(600)  -- Wait for attack cooldown
-    end
+   -- Face the target (assumes target position is known)
+   local targetPos = AltoClef.getClosestEntity("zombie")
+   if targetPos then
+       local yaw = Utils.Math.angleTo(AltoClef.getPlayerPos(), targetPos)
+       AltoClef.lookAt(yaw, 0)
+       
+       -- Attack pattern: strike, back up, strike
+       AltoClef.pressKey("attack")
+       Utils.Time.sleep(100)
+       
+       AltoClef.holdKey("back")
+       Utils.Time.sleep(300)
+       AltoClef.releaseKey("back")
+       
+       AltoClef.pressKey("attack")
+       Utils.Time.sleep(600)  -- Wait for attack cooldown
+   end
 end
 ```
 
@@ -252,26 +252,26 @@ All Control APIs include comprehensive error handling:
 ```lua
 -- Safe key operations with validation
 local function safeKeyPress(keyName)
-    if not keyName or type(keyName) ~= "string" then
-        AltoClef.log("Error: Invalid key name")
-        return false
-    end
-    
-    local result = AltoClef.pressKey(keyName)
-    if not result then
-        AltoClef.log("Warning: Key press failed for " .. keyName)
-    end
-    
-    return result
+   if not keyName or type(keyName) ~= "string" then
+       AltoClef.log("Error: Invalid key name")
+       return false
+   end
+   
+   local result = AltoClef.pressKey(keyName)
+   if not result then
+       AltoClef.log("Warning: Key press failed for " .. keyName)
+   end
+   
+   return result
 end
 
 -- Safe look control with bounds checking
 local function safeLookAt(yaw, pitch)
-    -- Clamp values to valid ranges
-    yaw = Utils.Math.clamp(yaw, -180, 180)
-    pitch = Utils.Math.clamp(pitch, -90, 90)
-    
-    return AltoClef.lookAt(yaw, pitch)
+   -- Clamp values to valid ranges
+   yaw = Utils.Math.clamp(yaw, -180, 180)
+   pitch = Utils.Math.clamp(pitch, -90, 90)
+   
+   return AltoClef.lookAt(yaw, pitch)
 end
 ```
 
@@ -281,38 +281,38 @@ end
 
 ```lua
 local function autoWalkWithAvoidance(distance)
-    local startPos = AltoClef.getPlayerPos()
-    local targetDistance = distance or 50
-    
-    AltoClef.holdKey("forward")
-    
-    while true do
-        local currentPos = AltoClef.getPlayerPos()
-        local distanceTraveled = Utils.Math.distance2D(startPos, currentPos)
-        
-        if distanceTraveled >= targetDistance then
-            break
-        end
-        
-        -- Check for obstacles ahead
-        local frontPos = {
-            x = currentPos.x + math.sin(math.rad(AltoClef.getYaw())),
-            y = currentPos.y,
-            z = currentPos.z - math.cos(math.rad(AltoClef.getYaw()))
-        }
-        
-        local blockAhead = AltoClef.getBlock(frontPos.x, frontPos.y, frontPos.z)
-        if blockAhead ~= "air" then
-            -- Try to jump over obstacle
-            AltoClef.pressKey("jump")
-            Utils.Time.sleep(200)
-        end
-        
-        Utils.Time.sleep(100)
-    end
-    
-    AltoClef.releaseKey("forward")
-    AltoClef.log("Auto-walk completed: " .. distanceTraveled .. " blocks")
+   local startPos = AltoClef.getPlayerPos()
+   local targetDistance = distance or 50
+   
+   AltoClef.holdKey("forward")
+   
+   while true do
+       local currentPos = AltoClef.getPlayerPos()
+       local distanceTraveled = Utils.Math.distance2D(startPos, currentPos)
+       
+       if distanceTraveled >= targetDistance then
+           break
+       end
+       
+       -- Check for obstacles ahead
+       local frontPos = {
+           x = currentPos.x + math.sin(math.rad(AltoClef.getYaw())),
+           y = currentPos.y,
+           z = currentPos.z - math.cos(math.rad(AltoClef.getYaw()))
+       }
+       
+       local blockAhead = AltoClef.getBlock(frontPos.x, frontPos.y, frontPos.z)
+       if blockAhead ~= "air" then
+           -- Try to jump over obstacle
+           AltoClef.pressKey("jump")
+           Utils.Time.sleep(200)
+       end
+       
+       Utils.Time.sleep(100)
+   end
+   
+   AltoClef.releaseKey("forward")
+   AltoClef.log("Auto-walk completed: " .. distanceTraveled .. " blocks")
 end
 ```
 
@@ -320,37 +320,37 @@ end
 
 ```lua
 local function autoCollectResources()
-    local collectionRadius = 10
-    local itemsToCollect = {"diamond", "iron_ingot", "gold_ingot", "emerald"}
-    
-    -- Scan in a circle
-    for angle = 0, 350, 45 do
-        AltoClef.lookAt(angle, -15)  -- Look slightly down
-        Utils.Time.sleep(200)
-        
-        -- Check for items on ground
-        local nearbyItems = AltoClef.getItemsInRange(collectionRadius)
-        
-        for _, item in ipairs(nearbyItems) do
-            if Utils.Table.contains(itemsToCollect, item.name) then
-                AltoClef.log("Found " .. item.name .. " at distance " .. item.distance)
-                
-                -- Navigate to item
-                local yawToItem = Utils.Math.angleTo(AltoClef.getPlayerPos(), item.pos)
-                AltoClef.lookAt(yawToItem, 0)
-                
-                -- Walk towards item
-                AltoClef.holdKey("forward")
-                while Utils.Math.distance2D(AltoClef.getPlayerPos(), item.pos) > 2 do
-                    Utils.Time.sleep(100)
-                end
-                AltoClef.releaseKey("forward")
-                
-                -- Item should be auto-collected
-                Utils.Time.sleep(500)
-            end
-        end
-    end
+   local collectionRadius = 10
+   local itemsToCollect = {"diamond", "iron_ingot", "gold_ingot", "emerald"}
+   
+   -- Scan in a circle
+   for angle = 0, 350, 45 do
+       AltoClef.lookAt(angle, -15)  -- Look slightly down
+       Utils.Time.sleep(200)
+       
+       -- Check for items on ground
+       local nearbyItems = AltoClef.getItemsInRange(collectionRadius)
+       
+       for _, item in ipairs(nearbyItems) do
+           if Utils.Table.contains(itemsToCollect, item.name) then
+               AltoClef.log("Found " .. item.name .. " at distance " .. item.distance)
+               
+               -- Navigate to item
+               local yawToItem = Utils.Math.angleTo(AltoClef.getPlayerPos(), item.pos)
+               AltoClef.lookAt(yawToItem, 0)
+               
+               -- Walk towards item
+               AltoClef.holdKey("forward")
+               while Utils.Math.distance2D(AltoClef.getPlayerPos(), item.pos) > 2 do
+                   Utils.Time.sleep(100)
+               end
+               AltoClef.releaseKey("forward")
+               
+               -- Item should be auto-collected
+               Utils.Time.sleep(500)
+           end
+       end
+   end
 end
 ```
 
@@ -358,47 +358,47 @@ end
 
 ```lua
 local function autoBuildWall(length, height)
-    local buildMaterial = "cobblestone"
-    
-    if not AltoClef.hasItem(buildMaterial) then
-        AltoClef.log("Error: No " .. buildMaterial .. " available")
-        return false
-    end
-    
-    -- Select building material
-    AltoClef.equipItem(buildMaterial)
-    
-    for y = 1, height do
-        for x = 1, length do
-            -- Look at placement position
-            AltoClef.lookAt(90, 45)  -- Look right and down
-            
-            -- Place block
-            AltoClef.pressKey("use")
-            Utils.Time.sleep(100)
-            
-            -- Move forward
-            if x < length then
-                AltoClef.holdKey("forward")
-                Utils.Time.sleep(300)
-                AltoClef.releaseKey("forward")
-            end
-        end
-        
-        -- Move up for next layer
-        if y < height then
-            AltoClef.pressKey("jump")
-            Utils.Time.sleep(400)
-            
-            -- Move back to start position
-            AltoClef.lookAt(270, 0)  -- Look left
-            AltoClef.holdKey("forward")
-            Utils.Time.sleep(length * 300)
-            AltoClef.releaseKey("forward")
-        end
-    end
-    
-    AltoClef.log("Wall construction completed: " .. length .. "x" .. height)
+   local buildMaterial = "cobblestone"
+   
+   if not AltoClef.hasItem(buildMaterial) then
+       AltoClef.log("Error: No " .. buildMaterial .. " available")
+       return false
+   end
+   
+   -- Select building material
+   AltoClef.equipItem(buildMaterial)
+   
+   for y = 1, height do
+       for x = 1, length do
+           -- Look at placement position
+           AltoClef.lookAt(90, 45)  -- Look right and down
+           
+           -- Place block
+           AltoClef.pressKey("use")
+           Utils.Time.sleep(100)
+           
+           -- Move forward
+           if x < length then
+               AltoClef.holdKey("forward")
+               Utils.Time.sleep(300)
+               AltoClef.releaseKey("forward")
+           end
+       end
+       
+       -- Move up for next layer
+       if y < height then
+           AltoClef.pressKey("jump")
+           Utils.Time.sleep(400)
+           
+           -- Move back to start position
+           AltoClef.lookAt(270, 0)  -- Look left
+           AltoClef.holdKey("forward")
+           Utils.Time.sleep(length * 300)
+           AltoClef.releaseKey("forward")
+       end
+   end
+   
+   AltoClef.log("Wall construction completed: " .. length .. "x" .. height)
 end
 ```
 
@@ -418,25 +418,25 @@ end
 local activeKeys = {}
 
 local function startKeyHold(key)
-    if not activeKeys[key] then
-        AltoClef.holdKey(key)
-        activeKeys[key] = true
-    end
+   if not activeKeys[key] then
+       AltoClef.holdKey(key)
+       activeKeys[key] = true
+   end
 end
 
 local function stopKeyHold(key)
-    if activeKeys[key] then
-        AltoClef.releaseKey(key)
-        activeKeys[key] = false
-    end
+   if activeKeys[key] then
+       AltoClef.releaseKey(key)
+       activeKeys[key] = false
+   end
 end
 
 -- Cleanup function
 local function releaseAllKeys()
-    for key, _ in pairs(activeKeys) do
-        AltoClef.releaseKey(key)
-    end
-    activeKeys = {}
+   for key, _ in pairs(activeKeys) do
+       AltoClef.releaseKey(key)
+   end
+   activeKeys = {}
 end
 ```
 
@@ -447,25 +447,25 @@ end
 ```lua
 -- Health-aware movement
 local function smartMovement()
-    local health = AltoClef.getHealth()
-    local hunger = AltoClef.getHunger()
-    
-    if health < 6 then
-        -- Low health: sneak and move carefully
-        AltoClef.holdKey("sneak")
-        AltoClef.log("Low health detected - sneaking mode")
-    elseif hunger > 6 then
-        -- Good hunger: can sprint
-        AltoClef.holdKey("sprint")
-    end
-    
-    AltoClef.holdKey("forward")
-    Utils.Time.sleep(3000)
-    
-    -- Clean up
-    AltoClef.releaseKey("forward")
-    AltoClef.releaseKey("sprint")
-    AltoClef.releaseKey("sneak")
+   local health = AltoClef.getHealth()
+   local hunger = AltoClef.getHunger()
+   
+   if health < 6 then
+       -- Low health: sneak and move carefully
+       AltoClef.holdKey("sneak")
+       AltoClef.log("Low health detected - sneaking mode")
+   elseif hunger > 6 then
+       -- Good hunger: can sprint
+       AltoClef.holdKey("sprint")
+   end
+   
+   AltoClef.holdKey("forward")
+   Utils.Time.sleep(3000)
+   
+   -- Clean up
+   AltoClef.releaseKey("forward")
+   AltoClef.releaseKey("sprint")
+   AltoClef.releaseKey("sneak")
 end
 ```
 
@@ -474,21 +474,21 @@ end
 ```lua
 -- Auto-equip tools while mining
 local function smartMining()
-    while AltoClef.isBreakingBlock() do
-        local pos = AltoClef.getBreakingBlockPos()
-        if pos then
-            local blockType = AltoClef.getBlock(pos.x, pos.y, pos.z)
-            
-            -- Auto-equip appropriate tool
-            if Utils.String.contains(blockType, "ore") then
-                AltoClef.equipItem("iron_pickaxe")
-            elseif Utils.String.contains(blockType, "log") then
-                AltoClef.equipItem("iron_axe")
-            end
-        end
-        
-        Utils.Time.sleep(250)
-    end
+   while AltoClef.isBreakingBlock() do
+       local pos = AltoClef.getBreakingBlockPos()
+       if pos then
+           local blockType = AltoClef.getBlock(pos.x, pos.y, pos.z)
+           
+           -- Auto-equip appropriate tool
+           if Utils.String.contains(blockType, "ore") then
+               AltoClef.equipItem("iron_pickaxe")
+           elseif Utils.String.contains(blockType, "log") then
+               AltoClef.equipItem("iron_axe")
+           end
+       end
+       
+       Utils.Time.sleep(250)
+   end
 end
 ```
 
@@ -517,7 +517,7 @@ The comprehensive test script `control_demo.lua` validates all Control APIs:
 ### Key Control Functions
 - `pressKey(keyName)` - Single key press
 - `holdKey(keyName)` - Continuous key hold
-- `releaseKey(keyName)` - Release held key  
+- `releaseKey(keyName)` - Release held key
 - `isHoldingKey(keyName)` - Check key hold status
 
 ### Special Actions

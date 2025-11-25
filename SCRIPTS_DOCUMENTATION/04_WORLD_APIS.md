@@ -1,30 +1,30 @@
-# 🌍 World APIs
+# World APIs
 
 **Version:** 1.0.0  
-**Status:** ✅ Complete  
-**Category:** Core APIs  
+**Status:** Complete  
+**Category:** Core APIs
 
-## 📖 Overview
+## Overview
 
 World APIs provide access to environmental information including time, weather, dimensions, biomes, blocks, and light levels. These APIs are essential for creating context-aware automation scripts that respond to environmental conditions.
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents
 
-1. [🚀 Quick Start](#-quick-start)
-2. [⏰ Time & Weather](#-time--weather)
-3. [🌎 Dimensions & Biomes](#-dimensions--biomes)
-4. [🧱 Block Information](#-block-information)
-5. [💡 Light Levels](#-light-levels)
-6. [🏗️ World Interaction](#️-world-interaction)
-7. [🧪 Examples](#-examples)
-8. [💡 Best Practices](#-best-practices)
-9. [🔗 Related Topics](#-related-topics)
+1. [Quick Start](#-quick-start)
+2. [Time & Weather](#-time--weather)
+3. [Dimensions & Biomes](#-dimensions--biomes)
+4. [Block Information](#-block-information)
+5. [Light Levels](#-light-levels)
+6. [World Interaction](#-world-interaction)
+7. [Examples](#-examples)
+8. [Best Practices](#-best-practices)
+9. [Related Topics](#-related-topics)
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Essential Functions
 ```lua
@@ -48,16 +48,16 @@ local block = Utils.World.getBlockAt(x, y, z)
 ### Environmental Monitor
 ```lua
 function onTick()
-    if not AltoClef.isInGame() then return end
-    
-    local time = AltoClef.getTimeOfDay()
-    if AltoClef.isNight() then
-        AltoClef.log("🌙 Night time - hostile mobs spawning")
-    end
-    
-    if AltoClef.isRaining() then
-        AltoClef.log("🌧️ Rainy weather detected")
-    end
+   if not AltoClef.isInGame() then return end
+   
+   local time = AltoClef.getTimeOfDay()
+   if AltoClef.isNight() then
+       AltoClef.log("Night time - hostile mobs spawning")
+   end
+   
+   if AltoClef.isRaining() then
+       AltoClef.log("Rainy weather detected")
+   end
 end
 ```
 
@@ -65,7 +65,7 @@ end
 
 ---
 
-## ⏰ Time & Weather
+## Time & Weather
 
 ### Time Functions
 
@@ -98,18 +98,18 @@ local canSleep = AltoClef.canSleep()
 
 ```lua
 function onTick()
-    if AltoClef.isNight() and AltoClef.canSleep() then
-        AltoClef.log("It's nighttime! Time to sleep.")
-    end
-    
-    if AltoClef.isRaining() then
-        AltoClef.log("It's raining - seeking shelter!")
-    end
-    
-    local timeOfDay = AltoClef.getTimeOfDay()
-    if timeOfDay > 12000 and timeOfDay < 13000 then
-        AltoClef.log("Sunset time - beautiful!")
-    end
+   if AltoClef.isNight() and AltoClef.canSleep() then
+       AltoClef.log("It's nighttime! Time to sleep.")
+   end
+   
+   if AltoClef.isRaining() then
+       AltoClef.log("It's raining - seeking shelter!")
+   end
+   
+   local timeOfDay = AltoClef.getTimeOfDay()
+   if timeOfDay > 12000 and timeOfDay < 13000 then
+       AltoClef.log("Sunset time - beautiful!")
+   end
 end
 ```
 
@@ -117,9 +117,9 @@ end
 
 ---
 
-## 🌎 Dimensions & Biomes
+## Dimensions & Biomes
 
-### 🌍 Dimension Detection
+### Dimension Detection
 
 ### Current Dimension
 
@@ -138,20 +138,20 @@ local isEnd = AltoClef.isInEnd()
 
 ```lua
 function onLoad()
-    local dimension = AltoClef.getCurrentDimension()
-    AltoClef.log("Currently in: " .. dimension)
-    
-    if AltoClef.isInNether() then
-        AltoClef.log("In the Nether - watch out for lava!")
-    elseif AltoClef.isInEnd() then
-        AltoClef.log("In the End - beware the void!")
-    else
-        AltoClef.log("In the Overworld - home sweet home!")
-    end
+   local dimension = AltoClef.getCurrentDimension()
+   AltoClef.log("Currently in: " .. dimension)
+   
+   if AltoClef.isInNether() then
+       AltoClef.log("In the Nether - watch out for lava!")
+   elseif AltoClef.isInEnd() then
+       AltoClef.log("In the End - beware the void!")
+   else
+       AltoClef.log("In the Overworld - home sweet home!")
+   end
 end
 ```
 
-### 🗺️ Biome Information
+### Biome Information
 
 ### Current Biome Detection
 
@@ -171,23 +171,23 @@ local biomeAt = AltoClef.getBiomeAt(x, y, z)
 
 ```lua
 function analyzeSurroundings()
-    local biome = AltoClef.getCurrentBiome()
-    AltoClef.log("Current biome: " .. biome)
-    
-    if AltoClef.isInOcean() then
-        AltoClef.log("In ocean biome - water everywhere!")
-    end
-    
-    -- Check biomes in nearby chunks
-    local pos = AltoClef.getPlayerPos()
-    if pos then
-        for dx = -16, 16, 16 do
-            for dz = -16, 16, 16 do
-                local nearbyBiome = AltoClef.getBiomeAt(pos.x + dx, pos.y, pos.z + dz)
-                AltoClef.log("Biome at offset (" .. dx .. ", " .. dz .. "): " .. nearbyBiome)
-            end
-        end
-    end
+   local biome = AltoClef.getCurrentBiome()
+   AltoClef.log("Current biome: " .. biome)
+   
+   if AltoClef.isInOcean() then
+       AltoClef.log("In ocean biome - water everywhere!")
+   end
+   
+   -- Check biomes in nearby chunks
+   local pos = AltoClef.getPlayerPos()
+   if pos then
+       for dx = -16, 16, 16 do
+           for dz = -16, 16, 16 do
+               local nearbyBiome = AltoClef.getBiomeAt(pos.x + dx, pos.y, pos.z + dz)
+               AltoClef.log("Biome at offset (" .. dx .. ", " .. dz .. "): " .. nearbyBiome)
+           end
+       end
+   end
 end
 ```
 
@@ -215,23 +215,23 @@ local isSolid = AltoClef.isSolidAt(x, y, z)
 
 ```lua
 function analyzeBlocksAroundPlayer()
-    local pos = AltoClef.getPlayerPos()
-    if not pos then return end
-    
-    local x, y, z = math.floor(pos.x), math.floor(pos.y), math.floor(pos.z)
-    
-    -- Check blocks around player
-    for dx = -1, 1 do
-        for dy = -1, 1 do
-            for dz = -1, 1 do
-                local blockX, blockY, blockZ = x + dx, y + dy, z + dz
-                local block = AltoClef.getBlockAt(blockX, blockY, blockZ)
-                local isSolid = AltoClef.isSolidAt(blockX, blockY, blockZ)
-                
-                AltoClef.log("Block at (" .. blockX .. ", " .. blockY .. ", " .. blockZ .. "): " .. block .. " (solid: " .. tostring(isSolid) .. ")")
-            end
-        end
-    end
+   local pos = AltoClef.getPlayerPos()
+   if not pos then return end
+   
+   local x, y, z = math.floor(pos.x), math.floor(pos.y), math.floor(pos.z)
+   
+   -- Check blocks around player
+   for dx = -1, 1 do
+       for dy = -1, 1 do
+           for dz = -1, 1 do
+               local blockX, blockY, blockZ = x + dx, y + dy, z + dz
+               local block = AltoClef.getBlockAt(blockX, blockY, blockZ)
+               local isSolid = AltoClef.isSolidAt(blockX, blockY, blockZ)
+               
+               AltoClef.log("Block at (" .. blockX .. ", " .. blockY .. ", " .. blockZ .. "): " .. block .. " (solid: " .. tostring(isSolid) .. ")")
+           end
+       end
+   end
 end
 ```
 
@@ -256,30 +256,30 @@ local skyLight = AltoClef.getSkyLightAt(x, y, z)
 
 ```lua
 function findDarkSpots()
-    local pos = AltoClef.getPlayerPos()
-    if not pos then return end
-    
-    local darkSpots = {}
-    local radius = 5
-    
-    for dx = -radius, radius do
-        for dy = -2, 2 do
-            for dz = -radius, radius do
-                local x, y, z = pos.x + dx, pos.y + dy, pos.z + dz
-                local lightLevel = AltoClef.getLightLevelAt(x, y, z)
-                
-                -- Light level 7 or below allows mob spawning
-                if lightLevel <= 7 then
-                    table.insert(darkSpots, {x = x, y = y, z = z, light = lightLevel})
-                end
-            end
-        end
-    end
-    
-    AltoClef.log("Found " .. #darkSpots .. " dark spots where mobs can spawn:")
-    for i, spot in ipairs(darkSpots) do
-        AltoClef.log("  (" .. spot.x .. ", " .. spot.y .. ", " .. spot.z .. ") - Light: " .. spot.light)
-    end
+   local pos = AltoClef.getPlayerPos()
+   if not pos then return end
+   
+   local darkSpots = {}
+   local radius = 5
+   
+   for dx = -radius, radius do
+       for dy = -2, 2 do
+           for dz = -radius, radius do
+               local x, y, z = pos.x + dx, pos.y + dy, pos.z + dz
+               local lightLevel = AltoClef.getLightLevelAt(x, y, z)
+               
+               -- Light level 7 or below allows mob spawning
+               if lightLevel <= 7 then
+                   table.insert(darkSpots, {x = x, y = y, z = z, light = lightLevel})
+               end
+           end
+       end
+   end
+   
+   AltoClef.log("Found " .. #darkSpots .. " dark spots where mobs can spawn:")
+   for i, spot in ipairs(darkSpots) do
+       AltoClef.log("  (" .. spot.x .. ", " .. spot.y .. ", " .. spot.z .. ") - Light: " .. spot.light)
+   end
 end
 ```
 
@@ -295,32 +295,32 @@ local hardness = AltoClef.getBlockHardnessAt(x, y, z)
 
 -- Example: Find hardest nearby blocks
 function findHardestBlocks()
-    local pos = AltoClef.getPlayerPos()
-    if not pos then return end
-    
-    local hardestBlock = {hardness = -1, name = "none", pos = nil}
-    
-    for dx = -3, 3 do
-        for dy = -3, 3 do
-            for dz = -3, 3 do
-                local x, y, z = pos.x + dx, pos.y + dy, pos.z + dz
-                local hardness = AltoClef.getBlockHardnessAt(x, y, z)
-                local blockName = AltoClef.getBlockAt(x, y, z)
-                
-                if hardness > hardestBlock.hardness then
-                    hardestBlock = {
-                        hardness = hardness,
-                        name = blockName,
-                        pos = {x = x, y = y, z = z}
-                    }
-                end
-            end
-        end
-    end
-    
-    if hardestBlock.pos then
-        AltoClef.log("Hardest block: " .. hardestBlock.name .. " (hardness: " .. hardestBlock.hardness .. ")")
-    end
+   local pos = AltoClef.getPlayerPos()
+   if not pos then return end
+   
+   local hardestBlock = {hardness = -1, name = "none", pos = nil}
+   
+   for dx = -3, 3 do
+       for dy = -3, 3 do
+           for dz = -3, 3 do
+               local x, y, z = pos.x + dx, pos.y + dy, pos.z + dz
+               local hardness = AltoClef.getBlockHardnessAt(x, y, z)
+               local blockName = AltoClef.getBlockAt(x, y, z)
+               
+               if hardness > hardestBlock.hardness then
+                   hardestBlock = {
+                       hardness = hardness,
+                       name = blockName,
+                       pos = {x = x, y = y, z = z}
+                   }
+               end
+           end
+       end
+   end
+   
+   if hardestBlock.pos then
+       AltoClef.log("Hardest block: " .. hardestBlock.name .. " (hardness: " .. hardestBlock.hardness .. ")")
+   end
 end
 ```
 
@@ -337,29 +337,29 @@ local isInteractable = AltoClef.isInteractableAt(x, y, z)
 
 -- Example: Find nearby containers
 function findNearbyContainers()
-    local pos = AltoClef.getPlayerPos()
-    if not pos then return end
-    
-    local chests = {}
-    local interactables = {}
-    
-    for dx = -10, 10 do
-        for dy = -5, 5 do
-            for dz = -10, 10 do
-                local x, y, z = pos.x + dx, pos.y + dy, pos.z + dz
-                
-                if AltoClef.isChestAt(x, y, z) then
-                    table.insert(chests, {x = x, y = y, z = z})
-                elseif AltoClef.isInteractableAt(x, y, z) then
-                    local blockName = AltoClef.getBlockAt(x, y, z)
-                    table.insert(interactables, {x = x, y = y, z = z, block = blockName})
-                end
-            end
-        end
-    end
-    
-    AltoClef.log("Found " .. #chests .. " chests")
-    AltoClef.log("Found " .. #interactables .. " other interactable blocks")
+   local pos = AltoClef.getPlayerPos()
+   if not pos then return end
+   
+   local chests = {}
+   local interactables = {}
+   
+   for dx = -10, 10 do
+       for dy = -5, 5 do
+           for dz = -10, 10 do
+               local x, y, z = pos.x + dx, pos.y + dy, pos.z + dz
+               
+               if AltoClef.isChestAt(x, y, z) then
+                   table.insert(chests, {x = x, y = y, z = z})
+               elseif AltoClef.isInteractableAt(x, y, z) then
+                   local blockName = AltoClef.getBlockAt(x, y, z)
+                   table.insert(interactables, {x = x, y = y, z = z, block = blockName})
+               end
+           end
+       end
+   end
+   
+   AltoClef.log("Found " .. #chests .. " chests")
+   AltoClef.log("Found " .. #interactables .. " other interactable blocks")
 end
 ```
 
@@ -384,30 +384,30 @@ local canPlace = AltoClef.canPlace(x, y, z)
 
 ```lua
 function findSafeBuildingSpot()
-    local pos = AltoClef.getPlayerPos()
-    if not pos then return end
-    
-    local baseX, baseY, baseZ = math.floor(pos.x), math.floor(pos.y), math.floor(pos.z)
-    
-    for dx = -5, 5 do
-        for dz = -5, 5 do
-            for dy = 0, 3 do
-                local x, y, z = baseX + dx, baseY + dy, baseZ + dz
-                
-                local canReach = AltoClef.canReach(x, y, z)
-                local canPlace = AltoClef.canPlace(x, y, z)
-                local isAir = AltoClef.isAirAt(x, y, z)
-                local groundBelow = AltoClef.isSolidAt(x, y - 1, z)
-                
-                if canReach and canPlace and isAir and groundBelow then
-                    AltoClef.log("Good building spot found at (" .. x .. ", " .. y .. ", " .. z .. ")")
-                    return {x = x, y = y, z = z}
-                end
-            end
-        end
-    end
-    
-    AltoClef.log("No suitable building spots found nearby")
+   local pos = AltoClef.getPlayerPos()
+   if not pos then return end
+   
+   local baseX, baseY, baseZ = math.floor(pos.x), math.floor(pos.y), math.floor(pos.z)
+   
+   for dx = -5, 5 do
+       for dz = -5, 5 do
+           for dy = 0, 3 do
+               local x, y, z = baseX + dx, baseY + dy, baseZ + dz
+               
+               local canReach = AltoClef.canReach(x, y, z)
+               local canPlace = AltoClef.canPlace(x, y, z)
+               local isAir = AltoClef.isAirAt(x, y, z)
+               local groundBelow = AltoClef.isSolidAt(x, y - 1, z)
+               
+               if canReach and canPlace and isAir and groundBelow then
+                   AltoClef.log("Good building spot found at (" .. x .. ", " .. y .. ", " .. z .. ")")
+                   return {x = x, y = y, z = z}
+               end
+           end
+       end
+   end
+   
+   AltoClef.log("No suitable building spots found nearby")
 end
 ```
 
@@ -423,20 +423,20 @@ local groundY = AltoClef.getGroundHeight(x, z)
 
 -- Example: Map terrain height
 function mapTerrain()
-    local pos = AltoClef.getPlayerPos()
-    if not pos then return end
-    
-    local centerX, centerZ = math.floor(pos.x), math.floor(pos.z)
-    
-    AltoClef.log("Terrain height map around player:")
-    for dz = -5, 5 do
-        local line = ""
-        for dx = -5, 5 do
-            local height = AltoClef.getGroundHeight(centerX + dx, centerZ + dz)
-            line = line .. string.format("%3d ", height)
-        end
-        AltoClef.log(line)
-    end
+   local pos = AltoClef.getPlayerPos()
+   if not pos then return end
+   
+   local centerX, centerZ = math.floor(pos.x), math.floor(pos.z)
+   
+   AltoClef.log("Terrain height map around player:")
+   for dz = -5, 5 do
+       local line = ""
+       for dx = -5, 5 do
+           local height = AltoClef.getGroundHeight(centerX + dx, centerZ + dz)
+           line = line .. string.format("%3d ", height)
+       end
+       AltoClef.log(line)
+   end
 end
 ```
 
@@ -473,43 +473,43 @@ Both APIs provide identical functionality. Choose based on your preference for c
 ```lua
 -- Complete world analysis script
 function analyzeWorld()
-    AltoClef.log("=== WORLD ANALYSIS ===")
-    
-    -- Time and weather
-    local timeOfDay = AltoClef.getTimeOfDay()
-    local isDay = AltoClef.isDay()
-    local isRaining = AltoClef.isRaining()
-    
-    AltoClef.log("Time: " .. timeOfDay .. " (Day: " .. tostring(isDay) .. ")")
-    AltoClef.log("Weather: " .. (isRaining and "Raining" or "Clear"))
-    
-    -- Dimension and biome
-    local dimension = AltoClef.getCurrentDimension()
-    local biome = AltoClef.getCurrentBiome()
-    
-    AltoClef.log("Dimension: " .. dimension)
-    AltoClef.log("Biome: " .. biome)
-    
-    -- Player surroundings
-    local pos = AltoClef.getPlayerPos()
-    if pos then
-        local x, y, z = math.floor(pos.x), math.floor(pos.y), math.floor(pos.z)
-        
-        -- Block below
-        local blockBelow = AltoClef.getBlockAt(x, y - 1, z)
-        local lightLevel = AltoClef.getLightLevelAt(x, y, z)
-        
-        AltoClef.log("Standing on: " .. blockBelow)
-        AltoClef.log("Light level: " .. lightLevel)
-        
-        -- Ground height
-        local groundHeight = AltoClef.getGroundHeight(x, z)
-        AltoClef.log("Ground height: " .. groundHeight)
-    end
+   AltoClef.log("=== WORLD ANALYSIS ===")
+   
+   -- Time and weather
+   local timeOfDay = AltoClef.getTimeOfDay()
+   local isDay = AltoClef.isDay()
+   local isRaining = AltoClef.isRaining()
+   
+   AltoClef.log("Time: " .. timeOfDay .. " (Day: " .. tostring(isDay) .. ")")
+   AltoClef.log("Weather: " .. (isRaining and "Raining" or "Clear"))
+   
+   -- Dimension and biome
+   local dimension = AltoClef.getCurrentDimension()
+   local biome = AltoClef.getCurrentBiome()
+   
+   AltoClef.log("Dimension: " .. dimension)
+   AltoClef.log("Biome: " .. biome)
+   
+   -- Player surroundings
+   local pos = AltoClef.getPlayerPos()
+   if pos then
+       local x, y, z = math.floor(pos.x), math.floor(pos.y), math.floor(pos.z)
+       
+       -- Block below
+       local blockBelow = AltoClef.getBlockAt(x, y - 1, z)
+       local lightLevel = AltoClef.getLightLevelAt(x, y, z)
+       
+       AltoClef.log("Standing on: " .. blockBelow)
+       AltoClef.log("Light level: " .. lightLevel)
+       
+       -- Ground height
+       local groundHeight = AltoClef.getGroundHeight(x, z)
+       AltoClef.log("Ground height: " .. groundHeight)
+   end
 end
 
 function onLoad()
-    analyzeWorld()
+   analyzeWorld()
 end
 ```
 
@@ -518,41 +518,41 @@ end
 ```lua
 -- Security system that monitors light levels
 local secureArea = {
-    minX = 100, maxX = 120,
-    minY = 60, maxY = 80,
-    minZ = 200, maxZ = 220
+   minX = 100, maxX = 120,
+   minY = 60, maxY = 80,
+   minZ = 200, maxZ = 220
 }
 
 function checkSecurity()
-    local darkSpots = 0
-    local totalSpots = 0
-    
-    for x = secureArea.minX, secureArea.maxX do
-        for y = secureArea.minY, secureArea.maxY do
-            for z = secureArea.minZ, secureArea.maxZ do
-                local lightLevel = AltoClef.getLightLevelAt(x, y, z)
-                totalSpots = totalSpots + 1
-                
-                if lightLevel <= 7 then
-                    darkSpots = darkSpots + 1
-                end
-            end
-        end
-    end
-    
-    local securityLevel = ((totalSpots - darkSpots) / totalSpots) * 100
-    AltoClef.log("Security level: " .. string.format("%.1f", securityLevel) .. "%")
-    
-    if securityLevel < 90 then
-        AltoClef.log("WARNING: Security compromised! " .. darkSpots .. " dark spots found!")
-    end
+   local darkSpots = 0
+   local totalSpots = 0
+   
+   for x = secureArea.minX, secureArea.maxX do
+       for y = secureArea.minY, secureArea.maxY do
+           for z = secureArea.minZ, secureArea.maxZ do
+               local lightLevel = AltoClef.getLightLevelAt(x, y, z)
+               totalSpots = totalSpots + 1
+               
+               if lightLevel <= 7 then
+                   darkSpots = darkSpots + 1
+               end
+           end
+       end
+   end
+   
+   local securityLevel = ((totalSpots - darkSpots) / totalSpots) * 100
+   AltoClef.log("Security level: " .. string.format("%.1f", securityLevel) .. "%")
+   
+   if securityLevel < 90 then
+       AltoClef.log("WARNING: Security compromised! " .. darkSpots .. " dark spots found!")
+   end
 end
 
 function onTick()
-    -- Check security every 10 seconds
-    if AltoClef.getWorldTime() % 200 == 0 then
-        checkSecurity()
-    end
+   -- Check security every 10 seconds
+   if AltoClef.getWorldTime() % 200 == 0 then
+       checkSecurity()
+   end
 end
 ```
 

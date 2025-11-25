@@ -1,28 +1,28 @@
-# 📝 Script Structure
+# Script Structure
 
 **Version:** 1.0.0  
 **Status:** ✅ Complete  
 **Category:** Getting Started  
 
-## 📖 Overview
+## Overview
 
 AltoClef Lua scripts follow a standardized structure with metadata headers, lifecycle functions, and consistent patterns. Understanding this structure is essential for creating reliable, maintainable scripts.
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents
 
-1. [🚀 Quick Start](#-quick-start)
-2. [📋 Metadata Header](#-metadata-header)
-3. [🔄 Lifecycle Functions](#-lifecycle-functions)
-4. [🏗️ Script Template](#️-script-template)
-5. [💡 Best Practices](#-best-practices)
-6. [📁 File Organization](#-file-organization)
-7. [🔧 Development Tips](#-development-tips)
+1. [Quick Start](#-quick-start)
+2. [Metadata Header](#-metadata-header)
+3. [Lifecycle Functions](#-lifecycle-functions)
+4. [Script Template](#️-script-template)
+5. [Best Practices](#-best-practices)
+6. [File Organization](#-file-organization)
+7. [Development Tips](#-development-tips)
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Essential Template
 Use this basic template for all new scripts:
@@ -66,7 +66,7 @@ end
 
 ---
 
-## 📋 Metadata Header
+## Metadata Header
 
 Every script should start with a metadata header that provides information about the script:
 
@@ -103,7 +103,7 @@ Every script should start with a metadata header that provides information about
 
 ---
 
-## 🔄 Lifecycle Functions
+## Lifecycle Functions
 
 Scripts can implement these lifecycle functions to handle different events:
 
@@ -177,7 +177,7 @@ end
 
 ---
 
-## 🏗️ Script Template
+## Script Template
 
 Here's a complete template for new scripts:
 
@@ -375,7 +375,7 @@ end
 
 ---
 
-## 💡 Best Practices
+## Best Practices
 
 ### ✅ State Management
 
@@ -395,7 +395,7 @@ targetY = nil
 lastActionTime = nil
 ```
 
-### ✅ Error Handling
+### Error Handling
 
 ```lua
 -- ✅ Good: Comprehensive error handling
@@ -423,7 +423,7 @@ function unsafeOperation()
 end
 ```
 
-### ✅ Performance Optimization
+### Performance Optimization
 
 ```lua
 -- ✅ Good: Throttled operations
@@ -450,7 +450,7 @@ function onTick()
 end
 ```
 
-### ✅ Resource Cleanup
+### Resource Cleanup
 
 ```lua
 -- ✅ Good: Proper cleanup
@@ -483,10 +483,10 @@ function onEnable()
 end
 ```
 
-### ✅ Configuration Management
+### Configuration Management
 
 ```lua
--- ✅ Good: Centralized configuration
+-- Good: Centralized configuration
 local CONFIG = {
     HEALTH_THRESHOLD = 10,
     HUNGER_THRESHOLD = 8,
@@ -512,9 +512,9 @@ end
 
 ---
 
-## 📁 File Organization
+## File Organization
 
-### 📄 Single File Scripts
+### Single File Scripts
 For simple scripts, keep everything in one file:
 
 ```
@@ -527,7 +527,7 @@ my_simple_script.lua
 └── Lifecycle functions
 ```
 
-### 📂 Multi-File Scripts
+### Multi-File Scripts
 For complex scripts, consider splitting into modules:
 
 ```
@@ -543,9 +543,9 @@ my_complex_script/
 
 ---
 
-## 🔧 Development Tips
+## Development Tips
 
-### 🚀 Start Small
+### Start Small
 Begin with a simple template and gradually add features:
 
 ```lua
@@ -578,7 +578,7 @@ function onTick()
 end
 ```
 
-### 🧪 Test Incrementally
+### Test Incrementally
 Test each function as you add it:
 
 ```lua
@@ -593,7 +593,7 @@ function onEnable()
 end
 ```
 
-### ⚠️ Handle Edge Cases
+### Handle Edge Cases
 Always consider what could go wrong:
 
 ```lua
@@ -613,19 +613,19 @@ end
 
 ---
 
-## 🔗 Related Topics
+## Related Topics
 
 **Next Steps:**
-- [👤 Player APIs](03_PLAYER_APIS.md) - Start building functionality with player APIs
-- [📖 Examples](10_EXAMPLES.md) - Browse working example scripts
+- [Player APIs](03_PLAYER_APIS.md) - Start building functionality with player APIs
+- [Examples](10_EXAMPLES.md) - Browse working example scripts
 
 **See Also:**
-- [🔍 Debug Tools](09_DEBUG_TOOLS.md) - Debugging and troubleshooting
-- [📚 API Reference](13_API_REFERENCE.md) - Complete function reference
+- [Debug Tools](09_DEBUG_TOOLS.md) - Debugging and troubleshooting
+- [API Reference](13_API_REFERENCE.md) - Complete function reference
 
 ---
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
