@@ -12,7 +12,6 @@ import java.util.UUID;
 //  add modes: Matrix, NCP, Position, Velocity, Vanilla, Tick (Similar to TickBase), Frame (Take a few Ticks to Complete the Step by lagging), Jump (Similar to AutoJump Setting but Better), PacketAbuse (Jitter your way upwards), RubberBand (Fake a LagBack every few steps then teleport back where you are stepping to), Blink
 public class Step extends Mod {
 
-    private float originalStepHeight;
     private UUID lastVehicleUUID;
     private float originalVehicleStepHeight;
 
@@ -59,7 +58,7 @@ public class Step extends Mod {
     @Override
     public void onDisable() {
         if (mc.player != null) {
-            mc.player.setStepHeight(originalStepHeight);
+            mc.player.setStepHeight(0.6f);
 
             if (vehicleFix.isEnabled()) {
                 Entity vehicle = mc.player.getVehicle();
@@ -82,8 +81,6 @@ public class Step extends Mod {
 
     @Override
     public void onEnable() {
-        originalStepHeight = mc.player.getStepHeight();
-        System.out.println("Step Height: " + mc.player.getStepHeight());
         super.onEnable();
     }
 }
