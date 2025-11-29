@@ -50,7 +50,7 @@ public class Step extends Mod {
             lastVehicleUUID = null;
         }
 
-        else if (!mode.getMode().equals("Vanilla")) mc.player.setStepHeight(originalStepHeight);
+        else if (!mode.getMode().equals("Vanilla")) mc.player.setStepHeight(0.6f);
         else return true;
         return false;
     }
