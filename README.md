@@ -33,6 +33,7 @@ or this [Video explanation](https://youtu.be/q5OmcinQ2ck?t=387)
 - Cheat Menu (Currently in Beta)
 - Experimental Awareness System (Not Fully Working Yet)
 - Experimental AI (Not Fully Working Yet)
+- Experimental ChatBot
 
 ## Download
 Check Releases
@@ -41,12 +42,15 @@ Check Releases
 
 This is a **fabric only** mod, currently only available for **Minecraft 1.20.4**.
 
-You can Join Older Versions using these:
+Warning: **SERVERS WITH ANTICHEATS ARE NOT SAFE USING THESE WORKAROUNDS JOIN WITH THE EXPECTATION TO BE BANNED**
+
+You can join most servers using these:
 - ViaFabric
 - ViaFabricPlus
 - MultiConnect
-- ViaProxy (**More Advanced Setup**)
+- ViaProxy (**Not recommended for beginners**)
 - ViaVersion/ViaBackwards Plugin (**To be installed on Server**)
+
 
 ## Goals for this Fork
 - Survive in the Anarchy Enviroment without any User Input
@@ -64,6 +68,22 @@ You can Join Older Versions using these:
 - Improved Water PathFinding
 - Improved Combat
 - Support for as many AntiCheats as possible
+
+
+# Common Issues:
+## Message Validation Kick
+ Fix: https://modrinth.com/mod/no-chat-reports
+## General Crashes
+ Cause: Sometimes during long bot sessions memory leaks and errors can occur in rare situations. 
+ 
+ Fix: https://modrinth.com/mod/notenoughcrashes
+
+# Mods AnarchyClef fully supports:
+ - RusherHack (https://rusherhack.org/)
+ - Future Client (https://www.futureclient.net/)
+ - Sodium
+ - Iris
+ - In-Game Account Switcher
 
 ## Are you looking for developers?
 We are always looking for developers get in contact in our discord and we can see if you fit the project
