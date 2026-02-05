@@ -2,7 +2,7 @@ package adris.altoclef.mixins;
 
 // ActionResult ClientPlayerInteractionManager.interactBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult);
 
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.BlockInteractEvent;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -23,7 +23,7 @@ public final class ClientInteractWithBlockMixin {
     private void onClientBlockInteract(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> ci) {
         //Debug.logMessage("(client) INTERACTED WITH: " + (hitResult != null? hitResult.getBlockPos() : "(nothing)"));
         if (hitResult != null) {
-            EventBus.publish(new BlockInteractEvent(hitResult));
+            ClefEventBus.publish(new BlockInteractEvent(hitResult));
         }
 
     }

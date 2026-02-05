@@ -3,7 +3,7 @@ package adris.altoclef.altomenu.modules.Bot;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.altomenu.settings.NumberSetting;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.EventHandler;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
 import net.minecraft.client.MinecraftClient;
@@ -40,7 +40,7 @@ public class ChatBot extends Mod {
     public ChatBot() {
         super("ChatBot", "ChatBot", Mod.Category.BOT);
         instance = this;
-        EventBus.subscribe(ChatMessageEvent.class, this::onChatMessage);
+        ClefEventBus.subscribe(ChatMessageEvent.class, this::onChatMessage);
     }
 
     NumberSetting messageDelay = new NumberSetting("Message Delay (ticks)", 1, 999, 100, 1);

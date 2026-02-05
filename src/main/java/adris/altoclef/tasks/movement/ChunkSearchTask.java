@@ -2,7 +2,7 @@ package adris.altoclef.tasks.movement;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.ChunkLoadEvent;
 import adris.altoclef.tasksystem.Task;
@@ -68,7 +68,7 @@ abstract class ChunkSearchTask extends Task {
             }
         }
 
-        _onChunkLoad = EventBus.subscribe(ChunkLoadEvent.class, evt -> {
+        _onChunkLoad = ClefEventBus.subscribe(ChunkLoadEvent.class, evt -> {
             WorldChunk chunk = evt.chunk;
             if (chunk == null) return;
             synchronized (_searchMutex) {
@@ -136,7 +136,7 @@ abstract class ChunkSearchTask extends Task {
 
     @Override
     protected void onStop(AltoClef mod, Task interruptTask) {
-        EventBus.unsubscribe(_onChunkLoad);
+        ClefEventBus.unsubscribe(_onChunkLoad);
     }
 
     @Override

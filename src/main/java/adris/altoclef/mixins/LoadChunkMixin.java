@@ -1,6 +1,6 @@
 package adris.altoclef.mixins;
 
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.ChunkLoadEvent;
 import adris.altoclef.eventbus.events.ChunkUnloadEvent;
 import net.minecraft.client.world.ClientChunkManager;
@@ -36,7 +36,7 @@ public class LoadChunkMixin {
     )
     private void onLoadChunk(int x, int z, PacketByteBuf buf, NbtCompound nbt, Consumer<ChunkData.BlockEntityVisitor> consumer, CallbackInfoReturnable<WorldChunk> ci) {
         // Publish a ChunkLoadEvent with the return value of the method as the argument
-        EventBus.publish(new ChunkLoadEvent(ci.getReturnValue()));
+        ClefEventBus.publish(new ChunkLoadEvent(ci.getReturnValue()));
     }
 
     /**
@@ -50,6 +50,6 @@ public class LoadChunkMixin {
             at = @At("TAIL")
     )
     private void onChunkUnload(ChunkPos pos, CallbackInfo ci) {
-        EventBus.publish(new ChunkUnloadEvent(pos));
+        ClefEventBus.publish(new ChunkUnloadEvent(pos));
     }
 }

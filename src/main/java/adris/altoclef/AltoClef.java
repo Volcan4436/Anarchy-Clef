@@ -10,11 +10,11 @@ import adris.altoclef.altomenu.*;
 import adris.altoclef.altomenu.UI.screens.clickgui.ClickGUI;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.commandsystem.CommandExecutor;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.scripting.LuaScriptEngine;
 import adris.altoclef.control.InputControls;
 import adris.altoclef.control.PlayerExtraController;
 import adris.altoclef.control.SlotHandler;
-import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.events.ClientRenderEvent;
 import adris.altoclef.eventbus.events.ClientTickEvent;
 import adris.altoclef.eventbus.events.SendChatEvent;
@@ -228,7 +228,7 @@ public class AltoClef implements ModInitializer {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // As such, nothing will be loaded here but basic initialization.
-        EventBus.subscribe(TitleScreenEntryEvent.class, evt -> onInitializeLoad());
+        ClefEventBus.subscribe(TitleScreenEntryEvent.class, evt -> onInitializeLoad());
     }
     public static String getName() {
         return name;
@@ -303,7 +303,7 @@ public class AltoClef implements ModInitializer {
         });
 
         // Receive + cancel chat
-        EventBus.subscribe(SendChatEvent.class, evt -> {
+        ClefEventBus.subscribe(SendChatEvent.class, evt -> {
             String line = evt.message;
             if (getCommandExecutor().isClientCommand(line)) {
                 evt.cancel();
@@ -315,9 +315,9 @@ public class AltoClef implements ModInitializer {
         Debug.jankModInstance = this;
 
         // Tick with the client
-        EventBus.subscribe(ClientTickEvent.class, evt -> onClientTick());
+        ClefEventBus.subscribe(ClientTickEvent.class, evt -> onClientTick());
         // Render
-        EventBus.subscribe(ClientRenderEvent.class, evt -> onClientRenderOverlay(evt.stack));
+        ClefEventBus.subscribe(ClientRenderEvent.class, evt -> onClientRenderOverlay(evt.stack));
 
         // Playground
         Playground.IDLE_TEST_INIT_FUNCTION(this);

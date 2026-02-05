@@ -2,7 +2,7 @@ package adris.altoclef.butler;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
 import adris.altoclef.eventbus.events.TaskFinishedEvent;
 import adris.altoclef.ui.MessagePriority;
@@ -39,14 +39,14 @@ public class Butler {
         _userAuth = new UserAuth(mod);
 
         // Revoke our current user whenever a task finishes.
-        EventBus.subscribe(TaskFinishedEvent.class, evt -> {
+        ClefEventBus.subscribe(TaskFinishedEvent.class, evt -> {
             if (_currentUser != null) {
                 _currentUser = null;
             }
         });
 
         // Receive system events
-        EventBus.subscribe(ChatMessageEvent.class, evt -> {
+        ClefEventBus.subscribe(ChatMessageEvent.class, evt -> {
             boolean debug = ButlerConfig.getInstance().whisperFormatDebug;
             String message = evt.messageContent();
             String sender = evt.senderName();

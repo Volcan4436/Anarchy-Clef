@@ -1,7 +1,6 @@
 package adris.altoclef.altomenu.cheatUtils;
 
-import adris.altoclef.AltoClef;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.EventHandler;
 import adris.altoclef.eventbus.events.SendMovementPacketsEvent;
 import adris.altoclef.eventbus.events.TickEvent;
@@ -30,7 +29,7 @@ public class CCRotationUtil {
     private static boolean sentLastRotation;
 
     public static void init() {
-        EventBus.subscribe(SendMovementPacketsEvent.Pre.class, CCRotationUtil::onSendMovementPacketsPre);
+        ClefEventBus.subscribe(SendMovementPacketsEvent.Pre.class, CCRotationUtil::onSendMovementPacketsPre);
     }
 
     public static void rotate(double yaw, double pitch, int priority, boolean clientSide, Runnable callback) {

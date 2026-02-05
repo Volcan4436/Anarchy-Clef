@@ -1,6 +1,6 @@
 package adris.altoclef.mixins;
 
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.BlockBrokenEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,7 +29,7 @@ public class BlockModifiedByPlayerMixin {
             evt.blockPos = pos;
             evt.blockState = state;
             evt.player = player;
-            EventBus.publish(evt);
+            ClefEventBus.publish(evt);
         }
     }
 

@@ -1,6 +1,7 @@
 package adris.altoclef.scripting;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.scripting.api.LuaAltoClefAPI;
 import adris.altoclef.scripting.api.LuaAltoMenuAPI;
 import adris.altoclef.scripting.api.LuaUtilsAPI;
@@ -12,7 +13,6 @@ import adris.altoclef.scripting.script.LuaScript;
 import adris.altoclef.scripting.script.ScriptMetadata;
 import adris.altoclef.scripting.security.ScriptSandbox;
 import adris.altoclef.scripting.security.ScriptErrorHandler;
-import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
 import adris.altoclef.eventbus.events.SendChatEvent;
@@ -150,11 +150,11 @@ public class LuaScriptEngine {
     private void registerEventListeners() {
         try {
             // Listen for chat messages
-            chatEventSubscription = EventBus.subscribe(ChatMessageEvent.class, this::handleChatEvent);
+            chatEventSubscription = ClefEventBus.subscribe(ChatMessageEvent.class, this::handleChatEvent);
             
             // Listen for command execution - we'll need to hook into the command system differently
             // For now, we'll listen for SendChatEvent to catch @commands
-            sendChatEventSubscription = EventBus.subscribe(SendChatEvent.class, this::handleSendChatEvent);
+            sendChatEventSubscription = ClefEventBus.subscribe(SendChatEvent.class, this::handleSendChatEvent);
             
             System.out.println("ALTO CLEF: Registered Lua script engine event listeners");
         } catch (Exception e) {
@@ -551,11 +551,11 @@ public class LuaScriptEngine {
         
         // Unsubscribe from events
         if (chatEventSubscription != null) {
-            EventBus.unsubscribe(chatEventSubscription);
+            ClefEventBus.unsubscribe(chatEventSubscription);
             chatEventSubscription = null;
         }
         if (sendChatEventSubscription != null) {
-            EventBus.unsubscribe(sendChatEventSubscription);
+            ClefEventBus.unsubscribe(sendChatEventSubscription);
             sendChatEventSubscription = null;
         }
         

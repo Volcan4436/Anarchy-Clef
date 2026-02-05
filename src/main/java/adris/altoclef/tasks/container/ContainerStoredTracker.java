@@ -1,7 +1,7 @@
 package adris.altoclef.tasks.container;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.SlotClickChangedEvent;
 import adris.altoclef.util.ItemTarget;
@@ -28,7 +28,7 @@ public class ContainerStoredTracker {
     }
 
     public void startTracking() {
-        _slotClickChangedSubscription = EventBus.subscribe(SlotClickChangedEvent.class, evt -> {
+        _slotClickChangedSubscription = ClefEventBus.subscribe(SlotClickChangedEvent.class, evt -> {
             Slot slot = evt.slot;
             if (!slot.isSlotInPlayerInventory() && _acceptDeposit.test(slot)) {
                 ItemStack before = evt.before;
@@ -48,7 +48,7 @@ public class ContainerStoredTracker {
     }
 
     public void stopTracking() {
-        EventBus.unsubscribe(_slotClickChangedSubscription);
+        ClefEventBus.unsubscribe(_slotClickChangedSubscription);
     }
 
     /**

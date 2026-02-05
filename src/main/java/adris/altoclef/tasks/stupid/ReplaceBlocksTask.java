@@ -3,7 +3,7 @@ package adris.altoclef.tasks.stupid;
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.BlockBrokenEvent;
 import adris.altoclef.tasks.DoToClosestBlockTask;
@@ -58,7 +58,7 @@ public class ReplaceBlocksTask extends Task {
         mod.getBlockTracker().trackBlock(_toFind);
 
         //_forceReplace.clear();
-        _blockBrokenSubscription = EventBus.subscribe(BlockBrokenEvent.class, evt -> {
+        _blockBrokenSubscription = ClefEventBus.subscribe(BlockBrokenEvent.class, evt -> {
             if (evt.player.equals(MinecraftClient.getInstance().player)) {
                 if (isWithinRange(evt.blockPos)) {
                     boolean wasAReplacable = ArrayUtils.contains(_toFind, evt.blockState.getBlock());
@@ -130,7 +130,7 @@ public class ReplaceBlocksTask extends Task {
 
     @Override
     protected void onStop(AltoClef mod, Task interruptTask) {
-        EventBus.unsubscribe(_blockBrokenSubscription);
+        ClefEventBus.unsubscribe(_blockBrokenSubscription);
         mod.getBehaviour().pop();
     }
 

@@ -1,7 +1,7 @@
 package adris.altoclef.control;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.BlockBreakingCancelEvent;
 import adris.altoclef.eventbus.events.BlockBreakingEvent;
 import net.minecraft.entity.Entity;
@@ -17,8 +17,8 @@ public class PlayerExtraController {
     public PlayerExtraController(AltoClef mod) {
         _mod = mod;
 
-        EventBus.subscribe(BlockBreakingEvent.class, evt -> onBlockBreak(evt.blockPos, evt.progress));
-        EventBus.subscribe(BlockBreakingCancelEvent.class, evt -> onBlockStopBreaking());
+        ClefEventBus.subscribe(BlockBreakingEvent.class, evt -> onBlockBreak(evt.blockPos, evt.progress));
+        ClefEventBus.subscribe(BlockBreakingCancelEvent.class, evt -> onBlockStopBreaking());
     }
 
     private void onBlockBreak(BlockPos pos, double progress) {

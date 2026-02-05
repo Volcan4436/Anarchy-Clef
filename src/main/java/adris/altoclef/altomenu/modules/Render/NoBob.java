@@ -4,10 +4,8 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.cheatUtils.CMoveUtil;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.altomenu.settings.BooleanSetting;
-import adris.altoclef.eventbus.EventBus;
-import adris.altoclef.eventbus.EventHandler;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.HeldItemRenderEvent;
-import adris.altoclef.eventbus.events.TickEvent;
 
 public class NoBob extends Mod {
 
@@ -17,7 +15,7 @@ public class NoBob extends Mod {
 
     public NoBob() {
         super("NoBob", "Funne", Mod.Category.RENDER);
-        EventBus.subscribe(HeldItemRenderEvent.class, this::onHeldItemRender);
+        ClefEventBus.subscribe(HeldItemRenderEvent.class, this::onHeldItemRender);
     }
 
     public BooleanSetting cool = new BooleanSetting("Cool", true);

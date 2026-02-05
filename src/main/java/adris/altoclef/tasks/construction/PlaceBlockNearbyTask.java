@@ -2,7 +2,7 @@ package adris.altoclef.tasks.construction;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.BlockPlaceEvent;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
@@ -68,7 +68,7 @@ public class PlaceBlockNearbyTask extends Task {
         mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.CLICK_RIGHT, false);
 
         // Check for blocks being placed
-        _onBlockPlaced = EventBus.subscribe(BlockPlaceEvent.class, evt -> {
+        _onBlockPlaced = ClefEventBus.subscribe(BlockPlaceEvent.class, evt -> {
             if (ArrayUtils.contains(_toPlace, evt.blockState.getBlock())) {
                 stopPlacing(_mod);
             }
@@ -161,7 +161,7 @@ public class PlaceBlockNearbyTask extends Task {
     @Override
     protected void onStop(AltoClef mod, Task interruptTask) {
         stopPlacing(mod);
-        EventBus.unsubscribe(_onBlockPlaced);
+        ClefEventBus.unsubscribe(_onBlockPlaced);
     }
 
     @Override

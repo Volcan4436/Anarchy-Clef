@@ -1,6 +1,6 @@
 package adris.altoclef.mixins;
 
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.SlotClickChangedEvent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -40,7 +40,7 @@ public class SlotClickMixin {
             ItemStack after = afterSlots.get(i).getStack();
             if (!ItemStack.areEqual(before, after)) {
                 adris.altoclef.util.slots.Slot slot = adris.altoclef.util.slots.Slot.getFromCurrentScreen(i);
-                EventBus.publish(new SlotClickChangedEvent(slot, before, after));
+                ClefEventBus.publish(new SlotClickChangedEvent(slot, before, after));
             }
         }
     }

@@ -1,7 +1,7 @@
 package adris.altoclef.trackers.storage;
 
 import adris.altoclef.Debug;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.BlockInteractEvent;
 import adris.altoclef.eventbus.events.ScreenOpenEvent;
 import adris.altoclef.trackers.Tracker;
@@ -41,12 +41,12 @@ public class ContainerSubTracker extends Tracker {
         }
 
         // Listen for when we interact with a block
-        EventBus.subscribe(BlockInteractEvent.class, evt -> {
+        ClefEventBus.subscribe(BlockInteractEvent.class, evt -> {
             BlockPos blockPos = evt.hitResult.getBlockPos();
             BlockState bs = _mod.getWorld().getBlockState(blockPos);
             onBlockInteract(blockPos, bs.getBlock());
         });
-        EventBus.subscribe(ScreenOpenEvent.class, evt -> {
+        ClefEventBus.subscribe(ScreenOpenEvent.class, evt -> {
             if (evt.preOpen) {
                 onScreenOpenFirstTick(evt.screen);
             } else {

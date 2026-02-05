@@ -3,17 +3,16 @@ package adris.altoclef.altomenu.modules.Render;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.altomenu.settings.NumberSetting;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.HeldItemRenderEvent;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.RotationAxis;
 
 // Why did I code this like this
 public class ViewModel extends Mod {
 
     public ViewModel() {
         super("ViewModel", "Funne", Mod.Category.RENDER);
-        EventBus.subscribe(HeldItemRenderEvent.class, this::onHeldItemRender);
+        ClefEventBus.subscribe(HeldItemRenderEvent.class, this::onHeldItemRender);
     }
 
     public static final NumberSetting mainX = new NumberSetting("mainX", -10, 10, 0.4, 0.1);

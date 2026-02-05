@@ -1,7 +1,7 @@
 package adris.altoclef.mixins;
 
 import adris.altoclef.Debug;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.TitleScreenEntryEvent;
 import net.minecraft.client.gui.screen.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +19,7 @@ public class EntryMixin {
         if (!_initialized) {
             _initialized = true;
             Debug.logMessage("Global Init");
-            EventBus.publish(new TitleScreenEntryEvent());
+            ClefEventBus.publish(new TitleScreenEntryEvent());
         }
     }
 }

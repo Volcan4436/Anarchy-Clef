@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * Technically `ConfigHelper` does something like this, but here is a more general case.
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class EventBus {
+public class ClefEventBus {
 
     private static final HashMap<Class, List<Subscription>> _topics = new HashMap<>();
     private static final List<Pair<Class, Subscription>> _toAdd = new ArrayList<>();

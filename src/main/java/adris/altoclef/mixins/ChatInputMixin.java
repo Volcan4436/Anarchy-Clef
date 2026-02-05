@@ -1,6 +1,6 @@
 package adris.altoclef.mixins;
 
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.SendChatEvent;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +18,7 @@ public final class ChatInputMixin {
     )
     private void sendChatMessage(String content, CallbackInfo ci) {
         SendChatEvent event = new SendChatEvent(content);
-        EventBus.publish(event);
+        ClefEventBus.publish(event);
         if (event.isCancelled()) {
             ci.cancel();
         }

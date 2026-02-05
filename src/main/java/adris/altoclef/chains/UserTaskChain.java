@@ -2,7 +2,7 @@ package adris.altoclef.chains;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.TaskFinishedEvent;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.tasksystem.TaskRunner;
@@ -111,7 +111,7 @@ public class UserTaskChain extends SingleTaskChain {
         if (actuallyDone) {
             if (!_runningIdleTask) {
                 Debug.logMessage("User task FINISHED. Took %s seconds.", prettyPrintTimeDuration(seconds));
-                EventBus.publish(new TaskFinishedEvent(seconds, oldTask));
+                ClefEventBus.publish(new TaskFinishedEvent(seconds, oldTask));
             }
             if (shouldIdle) {
                 AltoClef.getCommandExecutor().executeWithPrefix(mod.getModSettings().getIdleCommand());

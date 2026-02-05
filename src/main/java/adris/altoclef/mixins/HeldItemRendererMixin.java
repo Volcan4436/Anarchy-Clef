@@ -1,12 +1,9 @@
 package adris.altoclef.mixins;
 
-import adris.altoclef.AltoClef;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.altomenu.modules.Render.OldSwing;
-import adris.altoclef.altomenu.modules.Render.ViewModel;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.HeldItemRenderEvent;
-import adris.altoclef.eventbus.events.TitleScreenEntryEvent;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -35,6 +32,6 @@ public class HeldItemRendererMixin {
     @Inject(method = "renderFirstPersonItem", at = @At("HEAD"))
     private void onRenderItem(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         HeldItemRenderEvent event = HeldItemRenderEvent.get(hand, matrices);
-        EventBus.publish(event);
+        ClefEventBus.publish(event);
     }
 }

@@ -3,7 +3,7 @@ package adris.altoclef.tasks.misc;
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
 import adris.altoclef.eventbus.events.GameOverlayEvent;
@@ -158,7 +158,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
             _wasSleeping = false;
 
             // Subscribe to respawn point set message event
-            _respawnPointSetMessageCheck = EventBus.subscribe(ChatMessageEvent.class, evt -> {
+            _respawnPointSetMessageCheck = ClefEventBus.subscribe(ChatMessageEvent.class, evt -> {
                 String msg = evt.toString();
                 if (msg.contains("Respawn point set")) {
                     _spawnSet = true;
@@ -167,7 +167,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
             });
 
             // Subscribe to respawn failure message event
-            _respawnFailureMessageCheck = EventBus.subscribe(GameOverlayEvent.class, evt -> {
+            _respawnFailureMessageCheck = ClefEventBus.subscribe(GameOverlayEvent.class, evt -> {
                 final String[] NEUTRAL_MESSAGES = new String[]{
                         "You can sleep only at night",
                         "You can only sleep at night",
@@ -409,12 +409,12 @@ public class PlaceBedAndSetSpawnTask extends Task {
 
         // Unsubscribe from respawn point set message
         if (_respawnPointSetMessageCheck != null) {
-            EventBus.unsubscribe(_respawnPointSetMessageCheck);
+            ClefEventBus.unsubscribe(_respawnPointSetMessageCheck);
         }
 
         // Unsubscribe from respawn failure message
         if (_respawnFailureMessageCheck != null) {
-            EventBus.unsubscribe(_respawnFailureMessageCheck);
+            ClefEventBus.unsubscribe(_respawnFailureMessageCheck);
         }
     }
 

@@ -2,7 +2,7 @@ package adris.altoclef.tasks.movement;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.ChunkLoadEvent;
 import adris.altoclef.tasksystem.Task;
@@ -37,7 +37,7 @@ public abstract class SearchChunksExploreTask extends Task {
         _mod = mod;
 
         // Listen for chunk loading
-        _chunkLoadedSubscription = EventBus.subscribe(ChunkLoadEvent.class, evt -> onChunkLoad(evt.chunk.getPos()));
+        _chunkLoadedSubscription = ClefEventBus.subscribe(ChunkLoadEvent.class, evt -> onChunkLoad(evt.chunk.getPos()));
 
         resetSearch(mod);
     }
@@ -69,7 +69,7 @@ public abstract class SearchChunksExploreTask extends Task {
 
     @Override
     protected void onStop(AltoClef mod, Task interruptTask) {
-        EventBus.unsubscribe(_chunkLoadedSubscription);
+        ClefEventBus.unsubscribe(_chunkLoadedSubscription);
     }
 
     // When we find a valid chunk, start our search there.

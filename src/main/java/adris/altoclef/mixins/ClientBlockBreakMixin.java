@@ -1,6 +1,6 @@
 package adris.altoclef.mixins;
 
-import adris.altoclef.eventbus.EventBus;
+import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.BlockBreakingCancelEvent;
 import adris.altoclef.eventbus.events.BlockBreakingEvent;
 import net.minecraft.client.MinecraftClient;
@@ -27,7 +27,7 @@ public final class ClientBlockBreakMixin {
         ClientBlockBreakAccessor breakAccessor = (ClientBlockBreakAccessor) (MinecraftClient.getInstance().interactionManager);
         if (breakAccessor != null) {
             _breakCancelFrames = 2;
-            EventBus.publish(new BlockBreakingEvent(pos, breakAccessor.getCurrentBreakingProgress()));
+            ClefEventBus.publish(new BlockBreakingEvent(pos, breakAccessor.getCurrentBreakingProgress()));
         }
     }
 
@@ -37,7 +37,7 @@ public final class ClientBlockBreakMixin {
     )
     private void cancelBlockBreaking(CallbackInfo ci) {
         if (_breakCancelFrames-- == 0) {
-            EventBus.publish(new BlockBreakingCancelEvent());
+            ClefEventBus.publish(new BlockBreakingCancelEvent());
         }
     }
 }
