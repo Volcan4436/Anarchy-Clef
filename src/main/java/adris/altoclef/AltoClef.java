@@ -11,14 +11,11 @@ import adris.altoclef.altomenu.UI.screens.clickgui.ClickGUI;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.commandsystem.CommandExecutor;
 import adris.altoclef.eventbus.ClefEventBus;
+import adris.altoclef.eventbus.events.*;
 import adris.altoclef.scripting.LuaScriptEngine;
 import adris.altoclef.control.InputControls;
 import adris.altoclef.control.PlayerExtraController;
 import adris.altoclef.control.SlotHandler;
-import adris.altoclef.eventbus.events.ClientRenderEvent;
-import adris.altoclef.eventbus.events.ClientTickEvent;
-import adris.altoclef.eventbus.events.SendChatEvent;
-import adris.altoclef.eventbus.events.TitleScreenEntryEvent;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.tasksystem.TaskRunner;
 import adris.altoclef.trackers.*;
@@ -32,6 +29,7 @@ import baritone.Baritone;
 import baritone.altoclef.AltoClefSettings;
 import baritone.api.BaritoneAPI;
 import baritone.api.Settings;
+import com.google.common.eventbus.Subscribe;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -318,6 +316,10 @@ public class AltoClef implements ModInitializer {
         ClefEventBus.subscribe(ClientTickEvent.class, evt -> onClientTick());
         // Render
         ClefEventBus.subscribe(ClientRenderEvent.class, evt -> onClientRenderOverlay(evt.stack));
+
+        // Packet
+        ClefEventBus.subscribe(PacketEvent.class, evt -> {
+        });
 
         // Playground
         Playground.IDLE_TEST_INIT_FUNCTION(this);
@@ -751,4 +753,5 @@ public class AltoClef implements ModInitializer {
             }
         }
     }
+
 }

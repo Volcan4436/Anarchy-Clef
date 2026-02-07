@@ -2,39 +2,36 @@ package adris.altoclef.eventbus.events;
 
 import net.minecraft.network.packet.Packet;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 public class PacketEvent extends Cancellable {
 
-    public static PacketEvent.Receive Receive;
     public Packet<?> packet;
+    public Direction direction;
 
-    public static class Receive extends PacketEvent {
-        private static final Receive INSTANCE = new Receive();
+    public enum Direction { SEND, RECEIVE }
 
-        public static Receive get(Packet<?> packet) {
-            INSTANCE.setCancelled(false);
-            INSTANCE.packet = packet;
-            return INSTANCE;
-        }
+    public PacketEvent(Packet<?> packet, Direction direction) {
+        this.packet = packet;
+        this.direction = direction;
     }
 
-    public static class Send extends PacketEvent {
-        private static final Send INSTANCE = new Send();
+    // Global packet listeners
+    private static final List<Consumer<PacketEvent>> GLOBAL_LISTENERS = new ArrayList<>();
 
-        public static Send get(Packet<?> packet) {
-            INSTANCE.setCancelled(false);
-            INSTANCE.packet = packet;
-            return INSTANCE;
-        }
+    public static void addGlobalListener(Consumer<PacketEvent> listener) {
+        GLOBAL_LISTENERS.add(listener);
     }
 
-    public static class Sent extends PacketEvent {
-        private static final Sent INSTANCE = new Sent();
-
-        public static Sent get(Packet<?> packet) {
-            INSTANCE.packet = packet;
-            return INSTANCE;
-        }
+    public static void removeGlobalListener(Consumer<PacketEvent> listener) {
+        GLOBAL_LISTENERS.remove(listener);
     }
 
-
+    public void callGlobal() {
+        for (Consumer<PacketEvent> l : GLOBAL_LISTENERS) {
+            l.accept(this);
+        }
+    }
 }
