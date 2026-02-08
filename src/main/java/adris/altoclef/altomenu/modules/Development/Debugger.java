@@ -4,6 +4,7 @@ import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.cheatUtils.CChatUtil;
 import adris.altoclef.altomenu.settings.BooleanSetting;
 import adris.altoclef.eventbus.EventHandler;
+import adris.altoclef.eventbus.events.PacketEvent;
 
 
 //todo:
@@ -28,12 +29,15 @@ public class Debugger extends Mod {
 
     public Debugger() {
         super("Debugger (BETA)", "Funne", Mod.Category.DEVELOPMENT);
+        PacketEvent.addGlobalListener(this::onPacket);
     }
 
 
     BooleanSetting ground = new BooleanSetting("Ground", false);
     BooleanSetting moved = new BooleanSetting("Moved", false);
     BooleanSetting tick = new BooleanSetting("Tick", false);
+    BooleanSetting packetLog = new BooleanSetting("Packet Logger", true); // New toggle
+
 
     // BooleanSetting crosshair = new BooleanSetting("Crosshair Debug", false);
 
@@ -64,9 +68,20 @@ public class Debugger extends Mod {
     }
 
     //This can easily cause lag if called too often
-    // Will Be Better if we made it just flash a box on the screen
+    // Will Be Better if we made it just flash a box on the screen with a counter
     @Override
     public void onRender() {
         //CChatUtil.addChatMessage(" Frame Rendered");
+    }
+
+    // Packet logging
+    private void onPacket(PacketEvent evt) {
+        if (!packetLog.isEnabled() || !Debugger.super.isEnabled()) return;
+
+        String direction = (evt.direction == PacketEvent.Direction.SEND) ? "OUTGOING" : "INCOMING";
+        String packetName = evt.packet.getClass().getSimpleName();
+
+        // Print packet info to chat
+        CChatUtil.addChatMessage("[" + direction + "] " + packetName);
     }
 }

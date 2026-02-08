@@ -15,8 +15,8 @@ public class AntiHunger extends Mod {
         PacketEvent.addGlobalListener(this::onPacket);
     }
 
-    BooleanSetting spoofValue = new BooleanSetting("SpoofValue", true);
-    BooleanSetting packetSpoof = new BooleanSetting("Packet", true);
+    BooleanSetting spoofValue = new BooleanSetting("SpoofValue", false);
+    BooleanSetting packetSpoof = new BooleanSetting("Silent Sprint", true);
 
     @EventHandler
     public boolean onShitTick() {

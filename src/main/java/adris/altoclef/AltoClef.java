@@ -729,11 +729,11 @@ public class AltoClef implements ModInitializer {
             if (key == GLFW.GLFW_KEY_INSERT) mc.setScreenAndRender(ClickGUI.INSTANCE);
         }
         if (action == GLFW.GLFW_PRESS) {
-            if (key == GLFW.GLFW_KEY_DELETE) {
+/*            if (key == GLFW.GLFW_KEY_DELETE) {
                 //check if click gui window is open if so ignore
                 ClickGuiWindow window = new ClickGuiWindow();
                 if (!window.isOpen()) window.open();
-            }
+            }*/
         }
     }
 
