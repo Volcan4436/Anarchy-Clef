@@ -23,7 +23,7 @@ public class ClientInit implements ClientModInitializer {
                 // Schedule Swing on EDT
                 SwingUtilities.invokeLater(() -> {
                     ClickGuiWindow window = new ClickGuiWindow();
-                    //window.open();
+                    window.open();
                 });
             } catch (Exception e) {
                 e.printStackTrace();
