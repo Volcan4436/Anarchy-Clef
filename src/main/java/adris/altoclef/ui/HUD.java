@@ -13,6 +13,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
 import java.util.Comparator;
@@ -67,8 +68,8 @@ public class HUD {
                 screenWidth - mc.textRenderer.getWidth("HP: " + mc.player.getHealth()) - 3,
                 screenHeight - 10, Color.red.getRGB(), false);
 
-        String yawText = Math.abs(Math.round(-mc.player.getYaw() % 360)) + " :Yaw";
-        String pitchText = -Math.round(mc.player.getPitch()) + " :Pitch";
+            String yawText = Math.round(((mc.player.getYaw() + 180f) % 360f + 360f) % 360f - 180f) + " :Yaw";
+            String pitchText = Math.round(MathHelper.clamp(mc.player.getPitch(), -90f, 90f)) + " :Pitch";
         context.drawText(mc.textRenderer, yawText,
                 screenWidth - mc.textRenderer.getWidth(yawText) - 3,
                 screenHeight - 20, -1, false);

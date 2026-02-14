@@ -4,6 +4,7 @@ package adris.altoclef.altomenu.managers;
 import adris.altoclef.altomenu.Mod;
 import adris.altoclef.altomenu.modules.Bot.AutoJump;
 import adris.altoclef.altomenu.modules.Bot.AutoWalk;
+import adris.altoclef.altomenu.modules.Bot.BotConfig;
 import adris.altoclef.altomenu.modules.Bot.ChatBot;
 import adris.altoclef.altomenu.modules.Combat.*;
 import adris.altoclef.altomenu.modules.Development.*;
@@ -83,6 +84,7 @@ public class ModuleManager {
     //This is where you add the modules to show on the clickgui
     private void addModules() {
         //Bot
+        addModule(new BotConfig());
         addModule(new ChatBot());
         addModule(new AutoFisher());
 

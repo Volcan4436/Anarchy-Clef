@@ -1,6 +1,7 @@
 package adris.altoclef.control;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.altomenu.modules.Bot.BotConfig;
 import adris.altoclef.eventbus.ClefEventBus;
 import adris.altoclef.eventbus.events.BlockBreakingCancelEvent;
 import adris.altoclef.eventbus.events.BlockBreakingEvent;
@@ -44,7 +45,10 @@ public class PlayerExtraController {
     }
 
     public boolean inRange(Entity entity) {
-        return _mod.getPlayer().isInRange(entity, _mod.getModSettings().getEntityReachRange());
+        if (BotConfig.INSTANCE.botReachOverride.isEnabled()) {
+            return _mod.getPlayer().isInRange(entity, BotConfig.INSTANCE.botReach.getValuefloat());
+        }
+        else return _mod.getPlayer().isInRange(entity, _mod.getModSettings().getEntityReachRange());
     }
 
     public void attack(Entity entity) {
