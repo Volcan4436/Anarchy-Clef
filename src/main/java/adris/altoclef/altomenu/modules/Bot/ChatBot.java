@@ -8,6 +8,7 @@ import adris.altoclef.eventbus.EventHandler;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.Random;
 // - Support Private Messaging
 // - Integrate Discord Bot Support
 // - add AutoSnitch (Automatically Snitches on players that Change to Creative Mode or Players that hold out Illegal Items)
-// - Support GreenText messages for Anarchy Servers
 // - Support Running Baritone / AltoClef Commands (With a User Whitelist)
 // - Support Toggling Modules with Chat (With a User Whitelist)
 // - Support BlackListing Players
@@ -34,6 +34,25 @@ import java.util.Random;
 // - Add ServerFinder Command (Scans for Server's on a certain IP Address)
 // - Add ServerStatus Commmand (Check's if a Server is current online and gets their current PlayerCount)
 // - Add ServerList Command (Lists all Servers found through ServerFinder by sending a Chat Message with link to a list sent on PasteBin)
+// - Add Command to check for Bots Uptime
+// - Add Command to check for Bots Memory Usage
+// - Add Command to check for Bots CPU Usage
+// - Add Command to check for Bots Current Average Packets Per Second
+// - Add Quote Command to send a quote let players save quotes and then recall them (Similar to other anarchy bots)
+// - Add Chat Games (Like RPS, Guess The Number, Math Question, Trivia, etc)
+// - Add Command to check for Bots Current Ping
+// - Add command to have bot Reconnect to the server (Whitelisted players only)
+// - Support sending Game Inputs through Game Chat, Twitch Chat, Discord Chat, Youtube Chat, etc
+// - Track Bots Statistics (Deaths, Chat History, etc) and let it be requested by chat commands
+// - Add Command to find out what version the bot is currently running (using VersionUtil.java)
+// - Add command to view Hypixel Data (Player Data, Skyblock Data, etc)
+// - Support Keeping Track of Ban History of Bots and let it be requested by whitelisted users
+// - Add Better Delay Settings
+// - Add ChatSuffix and ChatPrefix that can be customised using a config file
+// - Add Open Source IRC API Support
+// - Add Support for Telegram API
+// - Implement Workarounds for the new Chat Restrictions being implemented by Mojang/Microsoft
+// - Implement Server Detection and Toggle off if on a Server Like Hypixel on Join to stop the bot from getting banned on accidental join (Will be integrated with SafeMode once its implemented)
 
 public class ChatBot extends Mod {
     public static ChatBot instance;
@@ -146,7 +165,7 @@ public class ChatBot extends Mod {
 
     public void addAnnouncerMessage() {
         assert mc.player != null;
-        announcerMessages.add("I am holding " + mc.player.getMainHandStack().getName().getString());
+        announcerMessages.add("I am holding " + mc.player.getStackInHand(Hand.MAIN_HAND).getName().getString());
         announcerMessages.add("I have " + Math.round(mc.player.getHealth()) + " health left");
         announcerMessages.add("I have " + mc.player.getHungerManager().getFoodLevel() + " food left");
         //Add More Here

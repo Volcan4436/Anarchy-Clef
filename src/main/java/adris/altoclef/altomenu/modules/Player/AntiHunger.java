@@ -43,7 +43,7 @@ public class AntiHunger extends Mod {
                     mode == ClientCommandC2SPacket.Mode.STOP_SPRINTING) {
 
                 evt.cancel(); // stops sprint packet
-                System.out.println("Cancelled sprint packet: " + mode);
+                //System.out.println("Cancelled sprint packet: " + mode);
             }
         }
     }

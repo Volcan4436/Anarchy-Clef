@@ -13,5 +13,5 @@ public class SafeMode extends Mod {
     }
 
     //Settings
-    ModeSetting mode = new ModeSetting("Mode", "None", "None", "Matrix7", "MatrixLabs", "Vulcan", "GrimV2", "GrimV3", "NCP", "Spartan", "Verus", "Intave", "AACV3", "AACV4", "AACV5" , "MineMenClub" , "Hypixel", "CubeCraft", "HopLite");
+    ModeSetting mode = new ModeSetting("Mode", "None", "None", "Matrix7", "MatrixLabs", "Vulcan", "GrimV2", "GrimV3", "NCP", "Spartan", "Verus", "Intave", "AACV3", "AACV4", "AACV5" , "MineMenClub", "MMC (Modern)" , "Hypixel", "CubeCraft", "HopLite", "StrikeAC", "Themis", "BlocksMC", "Hypixel (Strict)", "Hypixel (Skyblock)", "Ghost", "Semi-Rage");
 }

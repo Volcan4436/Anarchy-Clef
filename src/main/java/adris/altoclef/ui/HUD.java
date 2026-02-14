@@ -35,6 +35,7 @@ import java.util.Objects;
 // add ServerBrand
 // add BPS Counter
 // add Latest Death Position to HUD
+// add Warning Popups
 public class HUD {
     private static final Identifier CUSTOM_ICON = new Identifier("altoclef", "textures/gui/kisaragi.png");
     protected static MinecraftClient mc = MinecraftClient.getInstance();
