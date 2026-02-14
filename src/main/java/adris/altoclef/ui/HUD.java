@@ -5,6 +5,7 @@ import adris.altoclef.altomenu.command.HUDSettings;
 import adris.altoclef.altomenu.command.impl.ToggleHud;
 import adris.altoclef.altomenu.managers.ModuleManager;
 import adris.altoclef.util.VersionUtil;
+import adris.altoclef.util.math.RotationUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -68,8 +69,8 @@ public class HUD {
                 screenWidth - mc.textRenderer.getWidth("HP: " + mc.player.getHealth()) - 3,
                 screenHeight - 10, Color.red.getRGB(), false);
 
-            String yawText = Math.round(((mc.player.getYaw() + 180f) % 360f + 360f) % 360f - 180f) + " :Yaw";
-            String pitchText = Math.round(MathHelper.clamp(mc.player.getPitch(), -90f, 90f)) + " :Pitch";
+            String yawText = Math.round(RotationUtil.getYaw()) + " :Yaw";
+            String pitchText = Math.round(RotationUtil.getPitch()) + " :Pitch";
         context.drawText(mc.textRenderer, yawText,
                 screenWidth - mc.textRenderer.getWidth(yawText) - 3,
                 screenHeight - 20, -1, false);
