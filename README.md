@@ -33,7 +33,9 @@ or this [Video explanation](https://youtu.be/q5OmcinQ2ck?t=387)
 - Cheat Menu (Currently in Beta)
 - Experimental Awareness System (Not Fully Working Yet)
 - Experimental AI (Not Fully Working Yet)
-- Experimental ChatBot
+- ChatBot (Currently in Beta)
+- External Cheat Menu (Currently Dev Only)
+- Scripting API (Currently in Beta)
 
 ## Download
 Check Releases
@@ -64,7 +66,7 @@ You can join most servers using these:
 - Bot Syncing
 - Semi-Headless Mode
 - Full Elytra Support
-- Task Script System
+- Task Script System [ADDED]
 - Improved Water PathFinding
 - Improved Combat
 - Support for as many AntiCheats as possible
