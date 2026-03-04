@@ -1,4 +1,4 @@
-# Altoclef [Anarchy Edition] DISCONTINUED
+# Altoclef [Anarchy Edition] Public Version DISCONTINUED
 
 ### [New AI System Coming Soon]
 
